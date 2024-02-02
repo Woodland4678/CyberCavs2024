@@ -18,8 +18,8 @@ public class TestAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(() -> S_Swerve.resetSwerveModules()),
-      new InstantCommand(() -> S_Swerve.zeroGyro()),
+     // new InstantCommand(() -> S_Swerve.resetSwerveModules()),
+      //new InstantCommand(() -> S_Swerve.zeroGyro()),
       S_Swerve.getAutonomousCommand("New Path", true)
     );
   }
