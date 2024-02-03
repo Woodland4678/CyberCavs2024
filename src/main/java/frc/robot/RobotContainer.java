@@ -57,7 +57,7 @@ public class RobotContainer {
         Command driveFieldOrientedAnglularVelocity = S_Swerve.driveCommand(
         () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> m_driverController.getRawAxis(4));
+        () -> -m_driverController.getRawAxis(4));
     S_Swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // S_Swerve.setDefaultCommand(new TeleopSwerve(S_Swerve,
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),

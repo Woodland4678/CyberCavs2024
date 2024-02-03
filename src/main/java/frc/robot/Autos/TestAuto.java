@@ -20,7 +20,7 @@ public class TestAuto extends SequentialCommandGroup {
     addCommands(
      // new InstantCommand(() -> S_Swerve.resetSwerveModules()),
       //new InstantCommand(() -> S_Swerve.zeroGyro()),
-      S_Swerve.getAutonomousCommand("New Path", true)
+      S_Swerve.getAutonomousCommand("New Auto", true)
     );
   }
 }
