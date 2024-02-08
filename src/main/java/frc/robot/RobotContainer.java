@@ -6,10 +6,10 @@ package frc.robot;
 
 import frc.robot.Autos.TestAuto;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.AutoGrabNote;
+//import frc.robot.commands.Autos;
+//import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveDrive;
 
@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+
   private final SwerveSubsystem S_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
 
@@ -55,8 +55,8 @@ public class RobotContainer {
         () -> m_driverController.getRawAxis(4));
 
         Command driveFieldOrientedAnglularVelocity = S_Swerve.driveCommand(
-        () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(-m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> -m_driverController.getRawAxis(4));
     S_Swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // S_Swerve.setDefaultCommand(new TeleopSwerve(S_Swerve,
@@ -77,14 +77,15 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     m_driverController.back().onTrue(new InstantCommand(() -> S_Swerve.zeroGyro()));
     m_driverController.start().onTrue(new InstantCommand(() -> S_Swerve.resetSwerveModules()));
+    m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve));
   }
 
   /**`

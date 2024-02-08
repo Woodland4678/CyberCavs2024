@@ -4,8 +4,10 @@
 
 package frc.robot.Autos;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.AutoGrabNote;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveDrive;
 
@@ -18,9 +20,10 @@ public class TestAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-     // new InstantCommand(() -> S_Swerve.resetSwerveModules()),
-      //new InstantCommand(() -> S_Swerve.zeroGyro()),
-      S_Swerve.getAutonomousCommand("New Auto", true)
+      new InstantCommand(() -> S_Swerve.resetSwerveModules()),
+      new InstantCommand(() -> S_Swerve.setHeadlights(true)),
+      S_Swerve.getAutonomousCommand("New Auto", true),
+      new AutoGrabNote(S_Swerve)
     );
   }
 }

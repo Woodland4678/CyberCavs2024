@@ -17,11 +17,20 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -44,6 +53,10 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public        double      maximumSpeed = Units.feetToMeters(14.5);
 
+  private Relay headlights;
+  private NetworkTable limelight;
+
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -65,6 +78,9 @@ public class SwerveSubsystem extends SubsystemBase
     System.out.println("\t\"drive\": " + driveConversionFactor);
     System.out.println("}");
 
+    headlights = new Relay(Constants.Swerve.headlightsRelayChannel);
+    limelight = NetworkTableInstance.getDefault().getTable("limelight");
+
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
@@ -83,7 +99,18 @@ public class SwerveSubsystem extends SubsystemBase
   public void resetSwerveModules() {
     swerveDrive.resetDriveEncoders();
   }
+  public void setHeadlights(boolean on) {
+    if (!on) {
+      headlights.set(Relay.Value.kOff);
+    }
+    else {
+      headlights.set(Relay.Value.kForward);
+    }
+  }
   
+  public void stop() {
+    swerveDrive.setChassisSpeeds(new ChassisSpeeds(0,0,0));    
+  }
   /**
    * Construct the swerve drive.
    *
@@ -93,6 +120,53 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
     swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
+  }
+
+  /**
+   * Limelight Functions
+   */
+  public void setLimelightPipeline(int pipelineNumber) {
+    limelight.getEntry("pipeline").setNumber(pipelineNumber);
+  }
+  public double getLimelightX() {
+    return limelight.getEntry("tx").getDouble(0);
+  }
+  public double getLimelightObjectSize() {
+    return limelight.getEntry("ta").getDouble(0);
+  }
+  public double getLimelightY() {
+    return limelight.getEntry("ty").getDouble(0);
+  }
+  public double limelightHasTarget() {
+    return limelight.getEntry("tv").getDouble(0);
+  }
+  public void setLimelightLED(boolean state) {
+    if(state == false)
+      limelight.getEntry("ledMode").setNumber(1);
+    else {
+      limelight.getEntry("ledMode").setNumber(3);
+    }
+  
+  }
+  public boolean isLimelightReady() {
+    InetAddress limelightIP;
+    try {
+      limelightIP = InetAddress.getByName("10.46.78.11");
+      boolean reachable = limelightIP.isReachable(3000);
+      if (reachable) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    } catch (UnknownHostException e) {
+      // TODO Auto-generated catch block
+      return false;
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      return false;
+    }
+    
   }
 
   /**
@@ -295,7 +369,10 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
-   // this.drive(new ChassisSpeeds(0,0,1));
+   // this.drive(new ChassisSpeeds(0,0,1));2
+    SmartDashboard.putNumber("Limelight X", getLimelightX());
+    SmartDashboard.putNumber("Limelight Y", getLimelightY());
+    SmartDashboard.putNumber("Limelight obj size", getLimelightObjectSize());
   }
 
   @Override
