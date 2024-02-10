@@ -7,13 +7,22 @@ package frc.robot;
 import frc.robot.Autos.TestAuto;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoGrabNote;
+import frc.robot.commands.QuickShoot;
+import frc.robot.commands.Shoot;
 //import frc.robot.commands.Autos;
 //import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveDrive;
 
 import java.io.File;
+
+import com.fasterxml.jackson.databind.util.Named;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -34,6 +43,10 @@ public class RobotContainer {
 
   private final SwerveSubsystem S_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
+  private final Shooter S_Shooter = new Shooter();
+  private final Intake S_Intake = new Intake();
+  private final Arm S_Arm = new Arm();
+  private final Climber S_Climber = new Climber();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -63,6 +76,10 @@ public class RobotContainer {
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
     //     () -> m_driverController.getRawAxis(4)));
+
+    NamedCommands.registerCommand("AutoGrabNote", new AutoGrabNote(S_Swerve));
+    NamedCommands.registerCommand("QuickShoot", new QuickShoot(S_Shooter, S_Intake));
+    NamedCommands.registerCommand("Shoot", new Shoot());
     
   }
 

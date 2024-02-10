@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.io.File;
@@ -20,7 +22,12 @@ import swervelib.parser.SwerveParser;
  */
 public class Robot extends TimedRobot
 {
-
+  private final SendableChooser<String> pidTuningChooser;
+  double tunePID_KP;
+  double tunePID_KI;
+  double tunePID_KD;
+  double tunePID_KIz;
+  double tunePID_KFF;
   private static Robot   instance;
   private        Command m_autonomousCommand;
 
@@ -30,7 +37,16 @@ public class Robot extends TimedRobot
 
   public Robot()
   {
+    pidTuningChooser = new SendableChooser<String>();
     instance = this;
+    pidTuningChooser.addOption("ShooterPIDF", "ShooterPIDF");
+    pidTuningChooser.addOption("ShooterMaintainPID", "ShooterMaintainPID");
+    pidTuningChooser.addOption("ElbowPID", "ElbowPID");
+    pidTuningChooser.addOption("ShoulderPID", "ShoulderPID");
+    pidTuningChooser.addOption("ShooterAnglePID", "ShooterAnglePID");
+    pidTuningChooser.addOption("AutoGrabNote_X_PID", "AutoGrabNote_X_PID");
+    pidTuningChooser.addOption("AutoGrabNote_Y_PID", "AutoGrabNote_Y_PID");
+    pidTuningChooser.addOption("AutoGrabNote_R_PID", "AutoGrabNote_R_PID");
   }
 
   public static Robot getInstance()
@@ -128,6 +144,18 @@ public class Robot extends TimedRobot
     }
     m_robotContainer.setDriveMode();
     m_robotContainer.setMotorBrake(true);
+
+    tunePID_KP =0; 
+    tunePID_KI = 0;
+    tunePID_KD = 0; 
+    tunePID_KIz = 0; 
+    tunePID_KFF = 0; 
+
+    SmartDashboard.putNumber("TunePID P Gain", tunePID_KP);
+    SmartDashboard.putNumber("TunePID I Gain", tunePID_KI);
+    SmartDashboard.putNumber("TunePID D Gain", tunePID_KD);
+    SmartDashboard.putNumber("TunePID I Zone", tunePID_KIz);
+    SmartDashboard.putNumber("TunePID Feed Forward", tunePID_KFF);
   }
 
   /**
@@ -136,6 +164,40 @@ public class Robot extends TimedRobot
   @Override
   public void teleopPeriodic()
   {
+    // double tunePID_Dashboard_P = SmartDashboard.getNumber("TunePID P Gain", 0);
+    // double tunePID_Dashboard_I = SmartDashboard.getNumber("TunePID I Gain", 0);
+    // double tunePID_Dashboard_D = SmartDashboard.getNumber("TunePID D Gain", 0);
+    // double tunePID_Dashboard_Iz = SmartDashboard.getNumber("TunePID I Zone", 0);
+    // double tunePID_Dashboard_FF = SmartDashboard.getNumber("TunePID Feed Forward", 0);
+    // if (tunePID_Dashboard_P != tunePID_KP || tunePID_Dashboard_I != tunePID_KI || tunePID_Dashboard_D != tunePID_KD || tunePID_Dashboard_Iz != tunePID_KIz || tunePID_Dashboard_FF != tunePID_KFF) {
+    //   if (pidTuningChooser.getSelected().equals("ShooterSpinUpPID")){
+    //     // m_robotContainer.setShooterPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("ElbowPID")){
+    //      //m_robotContainer.setElbowPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("ShoulderPID")){
+    //     // m_robotContainer.setShoulderPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("ShooterAnglePID")){
+    //     // m_robotContainer.setShooterAnglePIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   // else if (pidTuningChooser.getSelected().equals("AutoGrabNote_X_PID")){
+    //   //    m_robotContainer.setAutoGrabNoteXPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   // }
+    //   // else if (pidTuningChooser.getSelected().equals("AutoGrabNote_Y_PID")){
+    //   //    m_robotContainer.setAutoGrabNoteYPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   // }
+    //   // else if (pidTuningChooser.getSelected().equals("AutoGrabNote_R_PID")){
+    //   //    m_robotContainer.setAutoGrabNoteRPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   // }
+    //   tunePID_KP = tunePID_Dashboard_P;
+    //   tunePID_KI = tunePID_Dashboard_I;
+    //   tunePID_KD = tunePID_Dashboard_D;
+    //   tunePID_KIz = tunePID_Dashboard_Iz;
+    //   tunePID_KFF = tunePID_Dashboard_FF;
+    //}
+    
   }
 
   @Override

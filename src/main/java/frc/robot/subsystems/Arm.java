@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmPosition;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
@@ -30,6 +31,8 @@ public class Arm extends SubsystemBase {
   private RelativeEncoder integratedElbowEncoder;
   private RelativeEncoder integratedWristEncoder;
   private RelativeEncoder integratedRollerEncoder;
+
+  ArmPosition currentArmPosition = Constants.ArmConstants.restPosition;
   public Arm() {
     armShoulderMotor = new CANSparkMax(Constants.ArmConstants.armShoulderMotorCanID, MotorType.kBrushless);
     shoulderController = armShoulderMotor.getPIDController();
@@ -80,7 +83,11 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber( 
                   "Arm Y Position", getCurrentYPosition());    
     SmartDashboard.putNumber( 
-                  "Arm Wrist Position", getCurrentWristPosition());    
+                  "Arm Wrist Position", getCurrentWristPosition());
+    SmartDashboard.putNumber(
+                  "Arm Elbow Angle", calcElbowAngle(getCurrentXPosition(), getCurrentYPosition())); 
+    SmartDashboard.putNumber(
+                  "Arm Shoulder Angle", calcShoulderAngle(getCurrentXPosition(), getCurrentYPosition(), getCurrentElbowPosition()));   
 
   }
 
@@ -110,5 +117,48 @@ public class Arm extends SubsystemBase {
     double shoulderAngle = 90 - integratedShoulderEncoder.getPosition();
     double elbowAngle = integratedElbowEncoder.getPosition();
     return (shoulderLength * Math.sin(Math.toRadians(shoulderAngle)) + elbowLength * Math.sin(Math.toRadians((shoulderAngle) - elbowAngle)));
+  }
+  public void setElbowPIDF(double p, double i, double d, double iz, double ff) {
+    elbowController.setP(p);
+    elbowController.setI(i);
+    elbowController.setD(d);
+    elbowController.setIZone(iz);
+    elbowController.setFF(ff);
+  }
+  public void setShoulderPIDF(double p, double i, double d, double iz, double ff) {
+    shoulderController.setP(p);
+    shoulderController.setI(i);
+    shoulderController.setD(d);
+    shoulderController.setIZone(iz);
+    shoulderController.setFF(ff);
+  }
+  private double calcShoulderAngle(double x, double y, double calculatedElbowAngle) {
+    return Math.toDegrees(Math.atan(y / x) - Math.atan((Constants.ArmConstants.elbowLength * Math.sin(Math.toRadians(calculatedElbowAngle))) / (Constants.ArmConstants.elbowLength + Constants.ArmConstants.shoulderLength * Math.cos(Math.toRadians(calculatedElbowAngle)))));
+  }
+  private double calcElbowAngle(double x, double y) {
+    return Math.toDegrees(- Math.acos(((x * x) + (y * y) - (Math.pow(Constants.ArmConstants.shoulderLength, 2)) - (Math.pow(Constants.ArmConstants.elbowLength, 2))) / (2 * Constants.ArmConstants.shoulderLength * Constants.ArmConstants.elbowLength)));
+  }
+  public double MoveArm(ArmPosition targetPos) {
+    double currentX = getCurrentXPosition();
+    double currentY = getCurrentYPosition();
+    if (targetPos != currentArmPosition) {
+      double elbowAngle = calcElbowAngle(targetPos.xTarget, targetPos.yTarget);
+      double shoulderAngle = calcShoulderAngle(targetPos.xTarget, targetPos.yTarget, elbowAngle);
+      if (shoulderAngle >= 45 && shoulderAngle <= 138 && elbowAngle <= 0 && elbowAngle >= -175 ) { // 2023 values, change once robot done
+        moveToAngle(shoulderAngle, elbowAngle);
+      }
+      if (currentX > 17 || targetPos.wristPitchTarget > -30 || currentY > 25) {
+        wristController.setReference(targetPos.wristPitchTarget, com.revrobotics.CANSparkMax.ControlType.kPosition);
+      }
+      else {
+        armWristMotor.stopMotor();
+      }
+      currentArmPosition = targetPos;
+    }
+    double error = Math.sqrt((Math.pow(currentX - targetPos.xTarget,2)) + (Math.pow(currentY - targetPos.yTarget, 2))); //returns distance to target
+    return error;
+  }
+  public void setRollerOutputPercent(double percent){
+    armRollerMotor.set(percent);
   }
 }

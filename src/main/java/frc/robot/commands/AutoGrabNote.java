@@ -45,7 +45,7 @@ public class AutoGrabNote extends Command {
     rSpeed = 0;
     xSpeed = 0;
     ySpeed = 0;
-    S_Swerve.setLimelightPipeline(0); //was 0
+    S_Swerve.setLimelightPipeline(3); //was 0
     S_Swerve.setLimelightLED(false);
     xController.setSetpoint(Constants.Swerve.autoGrabNote_X_Target);
     xController.setTolerance(Constants.Swerve.autoGrabNote_X_Tolerance);
@@ -63,6 +63,12 @@ public class AutoGrabNote extends Command {
       case 0:
         if (S_Swerve.limelightHasTarget() == 1) {
             degrees = S_Swerve.getHeading().getDegrees();
+            if (rController.getSetpoint() > 0 && degrees < 0) {
+              degrees = 360 + degrees;
+            }
+            else if (rController.getSetpoint() < 0 && degrees > 0) {
+              degrees = degrees - 360;
+            }
             // if (degrees < 0) {
             //   degrees += 360;
             // }
@@ -83,11 +89,27 @@ public class AutoGrabNote extends Command {
               
             //   grabState++;
             //   s_Swerve.stop();                         
-            // }                          
+            // }       
+            if (yMeasurement < -10) {
+              waitCnt++;
+            }           
+            else {
+              waitCnt = 0;
+            }        
+            if (waitCnt > 15) {
+              grabState ++;
+            }
         }
         else {
-          S_Swerve.stop();
+          driveSpeed = new ChassisSpeeds(0, 0, 1.75);
+          rController.setSetpoint(S_Swerve.getHeading().getDegrees());
+          S_Swerve.setChassisSpeeds(driveSpeed);
+          //S_Swerve.stop();
         }
+      break;
+      case 1:
+        S_Swerve.stop();
+        isDone = true;
       break;
     }
   }
@@ -101,6 +123,6 @@ public class AutoGrabNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isDone;
   }
 }

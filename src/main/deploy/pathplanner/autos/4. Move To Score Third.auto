@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 7.81,
+      "y": 2.51
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5. Second return to shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Auto 1",
+  "choreoAuto": false
+}

@@ -33,15 +33,19 @@ public final class Constants {
     public static final int shooterLeftMotorCanID = 10;
     public static final int shooterAngleMotorCanID = 19;
     public static final int shooterAngleEncoderAbsoluteID = 6;
-    public static final double shooterP = 0.10;
-    public static final double shooterI = 0;
-    public static final double shooterD = 0;
+    public static final double shooter_SpinUp_P = 0.10;
+    public static final double shooter_SpinUp_I = 0;
+    public static final double shooter_SpinUp_D = 0;
+    public static final double shooter_Maintain_P = 0.10;
+    public static final double shooter_Maintain_I = 0;
+    public static final double shooter_Maintain_D = 0;
     public static final double angleP = 0.1;
     public static final double angleI = 0;
     public static final double angleD = 0;
     public static final double angleAbsoluteOffset = 0;
     public static final double angleGearRatio = 350/3;
     public static final double angleAngleConversionFactor = 360 / angleGearRatio;
+    public static final double restAngle = 85; // Just a guess, change when robot is built
   }
   public static class Swerve {
     public static final int headlightsRelayChannel = 0;
@@ -57,7 +61,7 @@ public final class Constants {
     public static final double autoGrabNote_Y_Tolerance = 1;
     public static final double autoGrabNote_Y_Target = -28;
 
-    public static final double autoGrabNote_R_P = 0.01;
+    public static final double autoGrabNote_R_P = 0.05;
     public static final double autoGrabNote_R_I = 0;
     public static final double autoGrabNote_R_D = 0;
     public static final double autoGrabNote_R_Tolerance = 3;
@@ -88,6 +92,10 @@ public final class Constants {
     public static final double wristAngleConversionFactor = 360 / wristGearRatio;
     public static final double shoulderLength = 19.07;
     public static final double elbowLength = 19.40;
+
+    public static final ArmPosition restPosition = new ArmPosition(5, 5, 35, false); // Approximate x and y values
+    public static final ArmPosition ampScoring = new ArmPosition(28, 15, -35, false); // Approximate x and y values
+    public static final ArmPosition trapScoring = new ArmPosition(10, 33, -35, false); //Approximate x and y values
   }
   public static class IntakeConstants {
     public static final int IntakeVerticalRollerCanID = 15;
@@ -103,5 +111,17 @@ public final class Constants {
     public static final double climberP = 0.1;
     public static final double climberI = 0;
     public static final double climberD = 0;
+  }
+  public static class ArmPosition{
+    public double xTarget = 10; //default "homeish" position
+    public double yTarget = 15; //default "homeish" position
+    public double wristPitchTarget = 0;
+    public boolean isAngleTarget = false;
+    public ArmPosition(double xTarget, double yTarget, double wristPitchTarget, boolean isAngleTarget) {
+      this.xTarget = xTarget;
+      this.yTarget = yTarget;
+      this.wristPitchTarget = wristPitchTarget;
+      this.isAngleTarget = isAngleTarget;
+    }
   }
 }

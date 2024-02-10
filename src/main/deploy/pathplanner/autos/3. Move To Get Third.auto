@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 4.08,
+      "y": 4.92
+    },
+    "rotation": 171.54
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4. Second Go To Middle"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Auto 1",
+  "choreoAuto": false
+}

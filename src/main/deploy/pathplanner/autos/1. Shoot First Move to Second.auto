@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 3.0,
-      "y": 2
+      "x": 1.47,
+      "y": 4.14
     },
     "rotation": 180.0
   },
@@ -14,24 +14,24 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "1. First Shoot Path"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AutoGrabNote"
+            "name": "QuickShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New New Path"
+            "pathName": "2. First Go To Middle Path"
           }
         }
       ]
     }
   },
-  "folder": "Test Auto",
+  "folder": "Auto 1",
   "choreoAuto": false
 }

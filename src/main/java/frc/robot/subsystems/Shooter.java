@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +28,9 @@ public class Shooter extends SubsystemBase {
   private RelativeEncoder integratedRightMotorEncoder;
   private RelativeEncoder integratedLeftMotorEncoder;
   private RelativeEncoder integratedAngleMotorEncoder;
+  
+  double shooterRightRPMTarget = 0;
+  double shooterLeftRPMTarget = 0;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -37,12 +41,12 @@ public class Shooter extends SubsystemBase {
     shooterAngleMotor = new CANSparkFlex(Constants.ShooterConstants.shooterAngleMotorCanID, MotorType.kBrushless);
     angleMotorController = shooterAngleMotor.getPIDController();
     shooterAngleAbsoluteEncoder = new DutyCycleEncoder(Constants.ShooterConstants.shooterAngleEncoderAbsoluteID);
-    rightMotorController.setP(Constants.ShooterConstants.shooterP);
-    rightMotorController.setI(Constants.ShooterConstants.shooterI);
-    rightMotorController.setD(Constants.ShooterConstants.shooterD);
-    leftMotorController.setP(Constants.ShooterConstants.shooterP);
-    leftMotorController.setI(Constants.ShooterConstants.shooterI);
-    leftMotorController.setD(Constants.ShooterConstants.shooterD);
+    rightMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
+    rightMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
+    rightMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
+    leftMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
+    leftMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
+    leftMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
     angleMotorController.setP(Constants.ShooterConstants.angleP);
     angleMotorController.setI(Constants.ShooterConstants.angleI);
     angleMotorController.setD(Constants.ShooterConstants.angleD);
@@ -66,10 +70,32 @@ public class Shooter extends SubsystemBase {
                   "Shooter Current Angle ", getAnglePosition());  
     SmartDashboard.putNumber( 
                   "Shooter Absolute Angle ", shooterAngleAbsoluteEncoder.getAbsolutePosition());  
+
+    // if (Math.abs(integratedRightMotorEncoder.getVelocity() - shooterRightRPMTarget) > 100) {
+    //   rightMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
+    //   rightMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
+    //   rightMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
+    // }
+    // else {
+    //   rightMotorController.setP(Constants.ShooterConstants.shooter_Maintain_P);
+    //   rightMotorController.setI(Constants.ShooterConstants.shooter_Maintain_I);
+    //   rightMotorController.setD(Constants.ShooterConstants.shooter_Maintain_D);
+    // }
+    // if (Math.abs(integratedLeftMotorEncoder.getVelocity() - shooterLeftRPMTarget) > 100) {
+    //   leftMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
+    //   leftMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
+    //   leftMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
+    // }
+    // else {
+    //   leftMotorController.setP(Constants.ShooterConstants.shooter_Maintain_P);
+    //   leftMotorController.setI(Constants.ShooterConstants.shooter_Maintain_I);
+    //   leftMotorController.setD(Constants.ShooterConstants.shooter_Maintain_D);
+    // }
   }
-  public void shoot(double rightRPM, double leftRPM) {
-    rightMotorController.setReference(rightRPM,  com.revrobotics.CANSparkMax.ControlType.kVelocity);
-    leftMotorController.setReference(leftRPM, com.revrobotics.CANSparkMax.ControlType.kVelocity);
+  public void setRightAndLeftRPM(double rightRPM, double leftRPM) {
+    
+    rightMotorController.setReference(rightRPM,  com.revrobotics.CANSparkFlex.ControlType.kVelocity);
+    leftMotorController.setReference(leftRPM, com.revrobotics.CANSparkFlex.ControlType.kVelocity);
   }
   public double getRightVelocity() {
     return integratedRightMotorEncoder.getVelocity();
@@ -79,5 +105,41 @@ public class Shooter extends SubsystemBase {
   }
   public double getAnglePosition() {
     return integratedAngleMotorEncoder.getPosition();
+  }
+  public void setShooterPIDFToSpinUp() {
+    rightMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
+    rightMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
+    rightMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
+    leftMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
+    leftMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
+    leftMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
+  }
+  public void setShooterPIDFToMaintain() {
+    rightMotorController.setP(Constants.ShooterConstants.shooter_Maintain_P);
+    rightMotorController.setI(Constants.ShooterConstants.shooter_Maintain_I);
+    rightMotorController.setD(Constants.ShooterConstants.shooter_Maintain_D);
+    leftMotorController.setP(Constants.ShooterConstants.shooter_Maintain_P);
+    leftMotorController.setI(Constants.ShooterConstants.shooter_Maintain_I);
+    leftMotorController.setD(Constants.ShooterConstants.shooter_Maintain_D);
+  }
+  public void setShooterPIDF(double p, double i, double d, double iz, double ff) {
+    rightMotorController.setP(p);
+    rightMotorController.setI(i);
+    rightMotorController.setD(d);
+    rightMotorController.setIZone(iz);
+    rightMotorController.setFF(ff);
+    leftMotorController.setP(p);
+    leftMotorController.setI(i);
+    leftMotorController.setD(d);
+    leftMotorController.setIZone(iz);
+    leftMotorController.setFF(ff);
+  }
+  public double setShooterAngle(double angle) {
+      angleMotorController.setReference(angle, com.revrobotics.CANSparkFlex.ControlType.kPosition);
+      return Math.abs(angle - getAnglePosition());
+  }
+  public void stopShooterMotor() {
+    shooterRightMotor.disable();
+    shooterLeftMotor.disable();
   }
 }

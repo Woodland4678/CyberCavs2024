@@ -168,6 +168,7 @@ public class SwerveSubsystem extends SubsystemBase
     }
     
   }
+  
 
   /**
    * Setup AutoBuilder for PathPlanner.
@@ -587,5 +588,10 @@ public class SwerveSubsystem extends SubsystemBase
   public void addFakeVisionReading()
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  }
+  public double AutoAim() {
+    // Fill later
+    double error = 0; // Some number
+    return error;
   }
 }

@@ -63,6 +63,9 @@ public class Intake extends SubsystemBase {
                   "Intake piece Departed sensor ", getPieceDeparted());    
   }
   
+  public double getIndexerVelocity() {
+    return integratedIndexerEncoder.getVelocity();
+  }
   public void setHorizontalRollerRPM(double speed) {
     horizontalController.setReference(speed, com.revrobotics.CANSparkMax.ControlType.kVelocity);
   }
@@ -87,7 +90,7 @@ public class Intake extends SubsystemBase {
   public void verticalMotorSetOutput(double percent) {
     intakeVerticalRoller.set(percent);
   }
-  public void indexerMotorSetOutput(double percent) {
+  public void setIndexMotorPercentOutput(double percent) {
     indexer.set(percent);
   }
 }
