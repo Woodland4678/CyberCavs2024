@@ -139,4 +139,7 @@ public class RobotContainer {
   public void setShooterMotorsPIDF(double p, double i, double d, double iz, double ff) {
     S_Shooter.setShooterMotorsPIDF(p, i, d, iz, ff);
   }
+  public void setAutoAimPIDF(double p, double i, double d, double iz, double ff) {
+    S_Swerve.setAutoAimPIDF(p, i, d, iz, ff);
+  }
 }

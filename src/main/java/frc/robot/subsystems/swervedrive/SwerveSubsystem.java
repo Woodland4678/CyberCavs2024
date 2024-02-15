@@ -60,6 +60,11 @@ public class SwerveSubsystem extends SubsystemBase
   private NetworkTable limelight;
   //private NetworkTable rpi;
   private PhotonCamera rpi;
+  double autoAimP = 0;
+  double autoAimI = 0;
+  double autoAimD = 0;
+  double autoAimIZ = 0;
+  double autoAimFF = 0;
 
 
 
@@ -185,7 +190,28 @@ public double getAprilTagX() {
   }
 }
 
-
+public void setAutoAimPIDF(double p, double i, double d, double iz, double f) {
+  autoAimP = p;
+  autoAimI = i;
+  autoAimD = d;
+  autoAimIZ = iz;
+  autoAimFF = f;
+}
+public double getAutoAimP() {
+  return autoAimP;
+}
+public double getAutoAimI() {
+  return autoAimI;
+}
+public double getAutoAimD() {
+  return autoAimD;
+}
+public double getAutoAimIZ() {
+  return autoAimIZ;
+}
+public double getAutoAimFF() {
+  return autoAimFF;
+}
 
 /**
    * Setup AutoBuilder for PathPlanner.

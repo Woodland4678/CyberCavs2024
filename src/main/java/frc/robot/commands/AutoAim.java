@@ -13,10 +13,11 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveDrive;
 
 public class AutoAim extends Command {
-   PIDController rController = new PIDController(0.1,0,0);
+   PIDController rController = new PIDController(0.1,0.00,0);
    SwerveSubsystem S_Swerve;
    double targetX = 0;
    double rSpeed = 0;
+   double startingYaw = 0;
   /** Creates a new AutoAim. */
   public AutoAim(SwerveSubsystem S_Swerve) {
     this.S_Swerve = S_Swerve;
@@ -27,13 +28,16 @@ public class AutoAim extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    startingYaw = S_Swerve.getAprilTagX();
+    rController.setSetpoint(S_Swerve.getHeading().getDegrees() - startingYaw);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    rSpeed = rController.calculate(S_Swerve.getAprilTagX());
+    //rController.setPID(S_Swerve.getAutoAimP(), S_Swerve.getAutoAimI(), S_Swerve.getAutoAimD());
+    //rController.setIZone(S_Swerve.getAutoAimIZ());
+    rSpeed = rController.calculate(S_Swerve.getHeading().getDegrees());
     ChassisSpeeds robotSpeed = new ChassisSpeeds(0,0,rSpeed);
     S_Swerve.setChassisSpeeds(robotSpeed);
     SmartDashboard.putNumber("rspeed", rSpeed);
