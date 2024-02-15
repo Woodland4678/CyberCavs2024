@@ -32,6 +32,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.function.DoubleSupplier;
+
+import org.photonvision.PhotonCamera;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -55,6 +58,9 @@ public class SwerveSubsystem extends SubsystemBase
 
   private Relay headlights;
   private NetworkTable limelight;
+  //private NetworkTable rpi;
+  private PhotonCamera rpi;
+
 
 
   /**
@@ -80,6 +86,7 @@ public class SwerveSubsystem extends SubsystemBase
 
     headlights = new Relay(Constants.Swerve.headlightsRelayChannel);
     limelight = NetworkTableInstance.getDefault().getTable("limelight");
+    rpi = new PhotonCamera("Arducam");
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -168,9 +175,19 @@ public class SwerveSubsystem extends SubsystemBase
     }
     
   }
-  
+  /** photon vision code */
+public double getAprilTagX() {
+  if (rpi.getLatestResult().getBestTarget() != null) {
+    return rpi.getLatestResult().getBestTarget().getYaw();
+  }
+  else {
+    return 0;
+  }
+}
 
-  /**
+
+
+/**
    * Setup AutoBuilder for PathPlanner.
    */
   public void setupPathPlanner()
@@ -374,6 +391,7 @@ public class SwerveSubsystem extends SubsystemBase
     SmartDashboard.putNumber("Limelight X", getLimelightX());
     SmartDashboard.putNumber("Limelight Y", getLimelightY());
     SmartDashboard.putNumber("Limelight obj size", getLimelightObjectSize());
+
   }
 
   @Override

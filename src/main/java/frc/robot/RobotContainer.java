@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Autos.TestAuto;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.AutoGrabNote;
 import frc.robot.commands.QuickShoot;
 import frc.robot.commands.Shoot;
@@ -79,7 +80,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("AutoGrabNote", new AutoGrabNote(S_Swerve));
     NamedCommands.registerCommand("QuickShoot", new QuickShoot(S_Shooter, S_Intake));
-    NamedCommands.registerCommand("Shoot", new Shoot());
+    NamedCommands.registerCommand("Shoot", new Shoot(S_Shooter, S_Swerve, S_Intake));
     
   }
 
@@ -103,6 +104,9 @@ public class RobotContainer {
     m_driverController.back().onTrue(new InstantCommand(() -> S_Swerve.zeroGyro()));
     m_driverController.start().onTrue(new InstantCommand(() -> S_Swerve.resetSwerveModules()));
     m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve));
+    m_driverController.y().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-1000,1000)));
+    m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
+    m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve));
   }
 
   /**`
@@ -122,5 +126,17 @@ public class RobotContainer {
   public void setMotorBrake(boolean brake)
   {
     S_Swerve.setMotorBrake(brake);
+  }
+  public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
+    S_Arm.setElbowPIDF(p, i, f, iz, ff);
+  }
+  public void setShoulderPIDF(double p, double i, double f, double iz, double ff) {
+    S_Arm.setShoulderPIDF(p, i, f, iz, ff);
+  }
+  public void setShooterAnglePIDF(double p, double i, double f, double iz, double ff) {
+    S_Shooter.setShooterAnglePIDF(p, i, f, iz, ff);
+  }
+  public void setShooterMotorsPIDF(double p, double i, double d, double iz, double ff) {
+    S_Shooter.setShooterMotorsPIDF(p, i, d, iz, ff);
   }
 }

@@ -41,12 +41,7 @@ public class Shooter extends SubsystemBase {
     shooterAngleMotor = new CANSparkFlex(Constants.ShooterConstants.shooterAngleMotorCanID, MotorType.kBrushless);
     angleMotorController = shooterAngleMotor.getPIDController();
     shooterAngleAbsoluteEncoder = new DutyCycleEncoder(Constants.ShooterConstants.shooterAngleEncoderAbsoluteID);
-    rightMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
-    rightMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
-    rightMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
-    leftMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
-    leftMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
-    leftMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
+    setShooterPIDFToSpinUp();
     angleMotorController.setP(Constants.ShooterConstants.angleP);
     angleMotorController.setI(Constants.ShooterConstants.angleI);
     angleMotorController.setD(Constants.ShooterConstants.angleD);
@@ -141,5 +136,25 @@ public class Shooter extends SubsystemBase {
   public void stopShooterMotor() {
     shooterRightMotor.disable();
     shooterLeftMotor.disable();
+  }
+  public void setShooterAnglePIDF(double p, double i, double d, double iz, double ff) {
+    angleMotorController.setP(p);
+    angleMotorController.setI(i);
+    angleMotorController.setD(d);
+    angleMotorController.setIZone(iz);
+    angleMotorController.setFF(ff);
+  }
+   public void setShooterMotorsPIDF(double p, double i, double d, double iz, double ff) {
+    rightMotorController.setP(p);
+    rightMotorController.setI(i);
+    rightMotorController.setD(d);
+    rightMotorController.setIZone(iz);
+    rightMotorController.setFF(ff);
+
+    leftMotorController.setP(p);
+    leftMotorController.setI(i);
+    leftMotorController.setD(d);
+    leftMotorController.setIZone(iz);
+    leftMotorController.setFF(ff);
   }
 }

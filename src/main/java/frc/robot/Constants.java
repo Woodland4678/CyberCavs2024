@@ -45,7 +45,7 @@ public final class Constants {
     public static final double angleAbsoluteOffset = 0;
     public static final double angleGearRatio = 350/3;
     public static final double angleAngleConversionFactor = 360 / angleGearRatio;
-    public static final double restAngle = 85; // Just a guess, change when robot is built
+    public static final double restAngle = 85; // TODO Just a guess, change when robot is built
   }
   public static class Swerve {
     public static final int headlightsRelayChannel = 0;
