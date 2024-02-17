@@ -33,6 +33,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+// power distribution module
+import edu.wpi.first.wpilibj.PowerDistribution;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -47,8 +50,8 @@ public class RobotContainer {
   private final Shooter S_Shooter = new Shooter();
   private final Intake S_Intake = new Intake();
   private final Arm S_Arm = new Arm();
-  private final Climber S_Climber = new Climber();
-
+  private final PowerDistribution PHD = new PowerDistribution();
+  private final Climber S_Climber = new Climber(PHD);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -127,7 +130,7 @@ public class RobotContainer {
   {
     S_Swerve.setMotorBrake(brake);
   }
-  public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
+public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
     S_Arm.setElbowPIDF(p, i, f, iz, ff);
   }
   public void setShoulderPIDF(double p, double i, double f, double iz, double ff) {

@@ -10,6 +10,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -19,7 +20,8 @@ public class Climber extends SubsystemBase {
   private SparkPIDController climberController;
   private DigitalInput climberDown;
   private RelativeEncoder integratedClimberEncoder;
-  public Climber() {
+  private PowerDistribution powerDistribution;
+  public Climber(PowerDistribution PHD) {
     climberMainMotor = new CANSparkFlex(Constants.ClimberConstants.ClimberMainMotorCanID, MotorType.kBrushless);
     climberController = climberMainMotor.getPIDController();
     climberDown = new DigitalInput(Constants.ClimberConstants.climberDownChannel);
@@ -27,6 +29,7 @@ public class Climber extends SubsystemBase {
     climberController.setI(Constants.ClimberConstants.climberI);
     climberController.setD(Constants.ClimberConstants.climberD);
     integratedClimberEncoder = climberMainMotor.getEncoder();
+    powerDistribution = PHD;
   }
 
   @Override
@@ -38,5 +41,13 @@ public class Climber extends SubsystemBase {
   }
   public boolean isClimberDown() {
     return climberDown.get();
+  }
+
+  public void disengageLock() { // toggles the switchable channel on to unlock the climber. 
+    powerDistribution.setSwitchableChannel(true);
+  }
+
+  public void engageLock() { // toggles the switchable channel off to lock climber. 
+    powerDistribution.setSwitchableChannel(false);
   }
 }
