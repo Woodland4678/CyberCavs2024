@@ -46,6 +46,10 @@ public final class Constants {
     public static final double angleGearRatio = 350/3;
     public static final double angleAngleConversionFactor = 360 / angleGearRatio;
     public static final double restAngle = 85; // TODO Just a guess, change when robot is built
+    public static final int subwooferShotRPMTolerance = 100;
+    public static final int subwooferShotAngleTolerance = 5;
+    public static final double subwooferShotAngle = 70;
+    public static final double subwooferShotRPM = 2000;
   }
   public static class Swerve {
     public static final int headlightsRelayChannel = 0;
@@ -96,6 +100,7 @@ public final class Constants {
     public static final ArmPosition restPosition = new ArmPosition(5, 5, 35, false); // Approximate x and y values
     public static final ArmPosition ampScoring = new ArmPosition(28, 15, -35, false); // Approximate x and y values
     public static final ArmPosition trapScoring = new ArmPosition(10, 33, -35, false); //Approximate x and y values
+    public static final int hasNoteSensor = 11;
   }
   public static class IntakeConstants {
     public static final int IntakeVerticalRollerCanID = 15;
@@ -104,6 +109,13 @@ public final class Constants {
     public static final int pieceAquireChannel = 7;
     public static final int diverterUpChannel = 8;
     public static final int pieceDepartedChannel = 9;
+    public static final double indexRollerShootSpeed = 0.5;
+    public static final double horizontalRollerShootSpeed = 0.5;
+    public static final double verticalRollerShootSpeed = 0.5;
+
+    public static final double horizontalRollerIntakeSpeed = 0.7;
+    public static final double verticalRollerIntakeSpeed = 0.7;
+    public static final double indexerIntakeSpeed = 0.7;
   }
   public static class ClimberConstants {
     public static final int ClimberMainMotorCanID = 18;
@@ -111,6 +123,11 @@ public final class Constants {
     public static final double climberP = 0.1;
     public static final double climberI = 0;
     public static final double climberD = 0;
+
+    public static final double grabHighPosition = 10; //TODO get actual value
+    public static final double grabLowPosition = 5; //TODO get actual value
+    public static final double scorePosition = 2; //TODO get actual value
+
   }
   public static class ArmPosition{
     public double xTarget = 10; //default "homeish" position

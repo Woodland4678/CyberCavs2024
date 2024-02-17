@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +32,7 @@ public class Arm extends SubsystemBase {
   private RelativeEncoder integratedElbowEncoder;
   private RelativeEncoder integratedWristEncoder;
   private RelativeEncoder integratedRollerEncoder;
+  private DigitalInput hasNoteSensor;
 
   ArmPosition currentArmPosition = Constants.ArmConstants.restPosition;
   public Arm() {
@@ -63,9 +65,9 @@ public class Arm extends SubsystemBase {
     integratedShoulderEncoder.setPositionConversionFactor(Constants.ArmConstants.shoulderAngleConversionFactor);
     integratedElbowEncoder.setPositionConversionFactor(Constants.ArmConstants.elbowAngleConversionFactor);
     integratedWristEncoder.setPositionConversionFactor(Constants.ArmConstants.wristAngleConversionFactor);
-
     shoulderController.setOutputRange(-0.1, 0.1);
     elbowController.setOutputRange(-0.1, 0.1);
+    hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
   }
   @Override
   public void periodic() {
@@ -118,6 +120,11 @@ public class Arm extends SubsystemBase {
     double elbowAngle = integratedElbowEncoder.getPosition();
     return (shoulderLength * Math.sin(Math.toRadians(shoulderAngle)) + elbowLength * Math.sin(Math.toRadians((shoulderAngle) - elbowAngle)));
   }
+
+  public boolean getHasNote(){
+    return hasNoteSensor.get()
+  }
+  
   public void setElbowPIDF(double p, double i, double d, double iz, double ff) {
     elbowController.setP(p);
     elbowController.setI(i);

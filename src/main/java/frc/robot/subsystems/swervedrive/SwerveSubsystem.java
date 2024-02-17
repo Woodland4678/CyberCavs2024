@@ -194,7 +194,7 @@ public double getAprilTagX() {
     var results = rpi.getLatestResult().getTargets();
     if (ally.get() == Alliance.Blue) {
       for (int i = 0; i < results.size(); i++) {
-        if (results.get(i).getFiducialId() == 5) {
+        if (results.get(i).getFiducialId() == 7) {
           return results.get(i).getYaw();
         }
       }

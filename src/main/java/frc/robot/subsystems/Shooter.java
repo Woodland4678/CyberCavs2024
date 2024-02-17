@@ -137,6 +137,10 @@ public class Shooter extends SubsystemBase {
     shooterRightMotor.disable();
     shooterLeftMotor.disable();
   }
+
+  public void stopAngleMotors() {
+    shooterAngleMotor.disable();
+  }
   public void setShooterAnglePIDF(double p, double i, double d, double iz, double ff) {
     angleMotorController.setP(p);
     angleMotorController.setI(i);
