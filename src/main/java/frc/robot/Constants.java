@@ -101,6 +101,7 @@ public final class Constants {
     public static final ArmPosition ampScoring = new ArmPosition(28, 15, -35, false); // Approximate x and y values
     public static final ArmPosition trapScoring = new ArmPosition(10, 33, -35, false); //Approximate x and y values
     public static final int hasNoteSensor = 11;
+    public static final double armIntakeSpeed = .5;
   }
   public static class IntakeConstants {
     public static final int IntakeVerticalRollerCanID = 15;

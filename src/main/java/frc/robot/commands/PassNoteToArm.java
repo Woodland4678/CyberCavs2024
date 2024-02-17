@@ -10,8 +10,9 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
 public class PassNoteToArm extends Command {
+  int pause;
+  int state;
   boolean isDone = false;
-  int state = 0;
   Arm S_Arm;
   Intake S_Intake;
   /** Creates a new PassNoteToArm. */
@@ -25,6 +26,8 @@ public class PassNoteToArm extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    state = 0;
+    pause = 0;
 
   }
 
@@ -33,20 +36,30 @@ public class PassNoteToArm extends Command {
   public void execute() {
     switch (state) {
     case 0:
+      S_Arm.MoveArm(Constants.ArmConstants.restPosition);
       S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerShootSpeed);
       S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexRollerShootSpeed);
         
-      if (S_Intake.isDiverterDown() == true) {
+      if (S_Intake.isDiverterDown() && S_Arm.MoveArm(Constants.ArmConstants.restPosition) < 4) {
         state ++;
       }
         
       break;
-         
+
     case 1:
+      pause ++;
+      S_Intake.stopIntakeMotors();
+      if (pause > 5) {
+        state ++;
+      }
+      break;
+
+    case 2:
       S_Intake.setVerticalPercentOutput(- (Constants.IntakeConstants.verticalRollerShootSpeed));
       S_Intake.setIndexMotorPercentOutput(- (Constants.IntakeConstants.indexRollerShootSpeed));
+      S_Arm.setRollerOutputPercent(Constants.ArmConstants.armIntakeSpeed);
        
-      if () {
+      if (S_Arm.getHasNote()) {
         isDone = true;
        }
       break;
@@ -57,6 +70,7 @@ public class PassNoteToArm extends Command {
   @Override
   public void end(boolean interrupted) {
     S_Intake.stopIntakeMotors();
+    S_Arm.stopArmRollers();
 
   }
 

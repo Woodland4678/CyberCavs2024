@@ -92,7 +92,6 @@ public class Arm extends SubsystemBase {
                   "Arm Shoulder Angle", calcShoulderAngle(getCurrentXPosition(), getCurrentYPosition(), getCurrentElbowPosition()));   
 
   }
-
   public void moveToAngle(double shoulderAngle, double elbowAngle) {
     shoulderController.setReference((90 - shoulderAngle) , com.revrobotics.CANSparkMax.ControlType.kPosition); //90 - inverse calc
     elbowController.setReference(-elbowAngle, com.revrobotics.CANSparkMax.ControlType.kPosition);
@@ -122,9 +121,9 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean getHasNote(){
-    return hasNoteSensor.get()
+    return hasNoteSensor.get();
   }
-  
+
   public void setElbowPIDF(double p, double i, double d, double iz, double ff) {
     elbowController.setP(p);
     elbowController.setI(i);
@@ -167,5 +166,8 @@ public class Arm extends SubsystemBase {
   }
   public void setRollerOutputPercent(double percent){
     armRollerMotor.set(percent);
+  }
+  public void stopArmRollers(){
+    armRollerMotor.stopMotor();
   }
 }

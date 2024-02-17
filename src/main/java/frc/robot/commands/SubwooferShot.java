@@ -40,8 +40,7 @@ public class SubwooferShot extends Command {
         S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexRollerShootSpeed);
       }
   }
-
-
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {

@@ -5,14 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Arm;
+import frc.robot.Constants;
+import frc.robot.subsystems.Intake;
 
-public class ScoreArm extends Command {
-  /** Creates a new ScoreArm. */
-  Arm s_Arm;
-  public ScoreArm(Arm s_Arm) {
-    this.s_Arm = s_Arm;
-    // Use addRequirements() here to declare subsystem dependencies.
+public class ReverseNoteOutOfBot extends Command {
+  Intake S_Intake;
+  /** Creates a new ReverseNoteOutOfBot. */
+  public ReverseNoteOutOfBot(Intake S_Intake) {
+    this.S_Intake = S_Intake;
+    addRequirements(S_Intake);
+
   }
 
   // Called when the command is initially scheduled.
@@ -22,14 +24,15 @@ public class ScoreArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Arm.setRollerOutputPercent(0.6);
+    if (S_Intake.isDiverterDown() == false){
+      S_Intake.setVerticalPercentOutput(- (Constants.IntakeConstants.verticalRollerShootSpeed));
+      S_Intake.setIndexMotorPercentOutput(- (Constants.IntakeConstants.indexRollerShootSpeed));
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    s_Arm.stopArmRollers();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

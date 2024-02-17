@@ -5,31 +5,35 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 
-public class ScoreArm extends Command {
-  /** Creates a new ScoreArm. */
-  Arm s_Arm;
-  public ScoreArm(Arm s_Arm) {
-    this.s_Arm = s_Arm;
+public class MoveClimber extends Command {
+  Climber S_Climber;
+  double climberPosition;
+  /** Creates a new MoveClimber. */
+  public MoveClimber(Climber S_Climber, double climberPosition) {
+    this.S_Climber = S_Climber;
+    this.climberPosition = climberPosition;
+    addRequirements(S_Climber);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // TODO unlock rachet 
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Arm.setRollerOutputPercent(0.6);
+    //TODO move to climberPosition
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    s_Arm.stopArmRollers();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
