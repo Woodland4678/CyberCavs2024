@@ -12,13 +12,13 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 
 
-public class Shoot extends Command {
+public class NormalShoot extends Command {
   /** Creates a new Shoot. */
   int excecute = 0;
   Shooter S_Shooter;
   SwerveSubsystem S_Swerve;
   Intake S_Intake;
-  public Shoot(Shooter S_Shooter, SwerveSubsystem S_Swerve, Intake S_Intake) {
+  public NormalShoot(Shooter S_Shooter, SwerveSubsystem S_Swerve, Intake S_Intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.S_Shooter = S_Shooter;
     this.S_Swerve = S_Swerve;
@@ -40,7 +40,6 @@ public class Shoot extends Command {
       case 0:
         double angle = 60; //Some angle
         S_Swerve.AutoAim(); 
-        S_Shooter.setShooterAngle(angle);
         S_Shooter.setRightAndLeftRPM(velocity, -velocity);
         if (S_Shooter.setShooterAngle(angle) < 3) {
           if (Math.abs(S_Shooter.getRightVelocity() - velocity) > 50 && Math.abs(S_Shooter.getLeftVelocity() + velocity) > 50) {

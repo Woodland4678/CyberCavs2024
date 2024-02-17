@@ -4,17 +4,21 @@
 
 package frc.robot.commands;
 
+import javax.print.attribute.standard.Sides;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveDrive;
 
 public class AutoGrabNote extends Command {
   SwerveSubsystem S_Swerve;
+  Intake S_Intake;
   PIDController xController = new PIDController(Constants.Swerve.autoGrabNote_X_P, Constants.Swerve.autoGrabNote_X_I, Constants.Swerve.autoGrabNote_X_D);
   PIDController yController = new PIDController(Constants.Swerve.autoGrabNote_Y_P, Constants.Swerve.autoGrabNote_Y_I, Constants.Swerve.autoGrabNote_Y_D);
   PIDController rController = new PIDController(Constants.Swerve.autoGrabNote_R_P, Constants.Swerve.autoGrabNote_R_I, Constants.Swerve.autoGrabNote_R_D);
@@ -27,9 +31,10 @@ public class AutoGrabNote extends Command {
   int waitCnt = 0;
   ChassisSpeeds driveSpeed;
   /** Creates a new AutoGrabNote. */
-  public AutoGrabNote(SwerveSubsystem S_Swerve) {
+  public AutoGrabNote(SwerveSubsystem S_Swerve, Intake S_Intake) {
     this.S_Swerve = S_Swerve;
-    addRequirements(S_Swerve);
+    this.S_Intake = S_Intake;
+    addRequirements(S_Swerve, S_Intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -54,6 +59,9 @@ public class AutoGrabNote extends Command {
     rController.setSetpoint(S_Swerve.getHeading().getDegrees());
     rController.setTolerance(Constants.Swerve.autoGrabNote_R_Tolerance);
     grabState = 0;
+    S_Intake.setHorizontalPercentOutput(0.7);
+    S_Intake.setVerticalPercentOutput(0.7);
+    S_Intake.setIndexMotorPercentOutput(0.7);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -89,7 +97,10 @@ public class AutoGrabNote extends Command {
               
             //   grabState++;
             //   s_Swerve.stop();                         
-            // }       
+            // }  
+            if (S_Intake.getPieceAquired()) {
+              grabState++;
+            }     
             if (yMeasurement < -10) {
               waitCnt++;
             }           

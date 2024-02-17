@@ -29,6 +29,9 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder integratedHorizontalRollerEncoder;
   private RelativeEncoder integratedIndexerEncoder;
 
+  int intakeState = 0;
+  int count = 0;
+
   public Intake() {
     intakeVerticalRoller = new CANSparkMax(Constants.IntakeConstants.IntakeVerticalRollerCanID, MotorType.kBrushless);
     verticalController = intakeVerticalRoller.getPIDController();
@@ -58,9 +61,36 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean( 
                   "Intake Piece Aquired Sensor ", getPieceAquired());  
     SmartDashboard.putBoolean( 
-                  "Intake diverter sensor ", getDiverterUp());
+                  "Intake diverter sensor ", isDiverterDown());
     SmartDashboard.putBoolean( 
-                  "Intake piece Departed sensor ", getPieceDeparted());    
+                  "Intake piece Departed sensor ", getPieceDeparted());  
+    switch (intakeState) {
+      case 0:
+        if (getPieceAquired()) {
+          setVerticalPercentOutput(0.8);
+          setHorizontalPercentOutput(0.8);
+          intakeState++;
+        }
+      break;
+      case 1:
+        if (isNoteFullyIn()) {
+          intakeState = 100;
+          stopIntakeMotors();
+        }
+      break;
+      case 2: //push to arm state, might not need this, might move to a command
+       setVerticalPercentOutput(0.8);
+       setIndexMotorPercentOutput(0.8);
+       if (isDiverterDown()) {
+        stopIntakeMotors();
+        count++;
+        if (count > 3) {
+          setVerticalPercentOutput(-0.8);
+          setIndexMotorPercentOutput(-0.8);
+        }
+       }
+      break;
+    }
   }
   
   public double getIndexerVelocity() {
@@ -78,19 +108,28 @@ public class Intake extends SubsystemBase {
   public boolean getPieceAquired() {
     return pieceAquired.get();
   }
-  public boolean getDiverterUp() {
+  public boolean isDiverterDown() {
     return diverterUp.get();
   }
   public boolean getPieceDeparted() {
     return pieceDeparted.get();
   }
-  public void horizontalMotorSetOutput(double percent) {
+  public void setHorizontalPercentOutput(double percent) {
     intakeHorizontalRoller.set(percent);
   }
-  public void verticalMotorSetOutput(double percent) {
+  public void setVerticalPercentOutput(double percent) {
     intakeVerticalRoller.set(percent);
   }
   public void setIndexMotorPercentOutput(double percent) {
     indexer.set(percent);
+  }
+  public void stopIntakeMotors() {
+    indexer.stopMotor();
+    intakeVerticalRoller.stopMotor();
+    intakeHorizontalRoller.stopMotor();
+  }
+  public boolean isNoteFullyIn() {
+    return false;
+    //return is note fully in sensor
   }
 }

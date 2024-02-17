@@ -10,6 +10,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonCamera;
@@ -66,6 +70,8 @@ public class SwerveSubsystem extends SubsystemBase
   double autoAimIZ = 0;
   double autoAimFF = 0;
 
+  
+
 
 
   /**
@@ -99,6 +105,7 @@ public class SwerveSubsystem extends SubsystemBase
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
       swerveDrive.resetDriveEncoders();
+      swerveDrive.swerveController.addSlewRateLimiters(new SlewRateLimiter(3.5), new SlewRateLimiter(3.5), new SlewRateLimiter(3.5));
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
@@ -182,12 +189,29 @@ public class SwerveSubsystem extends SubsystemBase
   }
   /** photon vision code */
 public double getAprilTagX() {
+  Optional<Alliance> ally = DriverStation.getAlliance();
   if (rpi.getLatestResult().getBestTarget() != null) {
-    return rpi.getLatestResult().getBestTarget().getYaw();
+    var results = rpi.getLatestResult().getTargets();
+    if (ally.get() == Alliance.Blue) {
+      for (int i = 0; i < results.size(); i++) {
+        if (results.get(i).getFiducialId() == 5) {
+          return results.get(i).getYaw();
+        }
+      }
+    }
+    else {
+      for (int i = 0; i < results.size(); i++) {
+        if (results.get(i).getFiducialId() == 6) {
+          return results.get(i).getYaw();
+        }
+      }
+    }
+   // return rpi.getLatestResult().getBestTarget().getYaw();
   }
   else {
     return 0;
   }
+  return 0;
 }
 
 public void setAutoAimPIDF(double p, double i, double d, double iz, double f) {

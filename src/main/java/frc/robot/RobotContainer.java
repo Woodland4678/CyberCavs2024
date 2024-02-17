@@ -9,7 +9,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.AutoGrabNote;
 import frc.robot.commands.QuickShoot;
-import frc.robot.commands.Shoot;
+import frc.robot.commands.NormalShoot;
 //import frc.robot.commands.Autos;
 //import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TeleopSwerve;
@@ -78,9 +78,9 @@ public class RobotContainer {
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
     //     () -> m_driverController.getRawAxis(4)));
 
-    NamedCommands.registerCommand("AutoGrabNote", new AutoGrabNote(S_Swerve));
+    NamedCommands.registerCommand("AutoGrabNote", new AutoGrabNote(S_Swerve, S_Intake));
     NamedCommands.registerCommand("QuickShoot", new QuickShoot(S_Shooter, S_Intake));
-    NamedCommands.registerCommand("Shoot", new Shoot(S_Shooter, S_Swerve, S_Intake));
+    NamedCommands.registerCommand("Shoot", new NormalShoot(S_Shooter, S_Swerve, S_Intake));
     
   }
 
@@ -103,10 +103,10 @@ public class RobotContainer {
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     m_driverController.back().onTrue(new InstantCommand(() -> S_Swerve.zeroGyro()));
     m_driverController.start().onTrue(new InstantCommand(() -> S_Swerve.resetSwerveModules()));
-    m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve));
+    m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve, S_Intake));
     m_driverController.y().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-1000,1000)));
     m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
-    m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve));
+    m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, m_driverController));
   }
 
   /**`
