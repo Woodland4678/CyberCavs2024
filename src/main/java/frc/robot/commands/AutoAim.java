@@ -16,20 +16,16 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveDrive;
 
 public class AutoAim extends Command {
-   PIDController rController = new PIDController(0.1,0.00,0);
+   PIDController rController = new PIDController(0.18,0.00,0);
    SwerveSubsystem S_Swerve;
    double targetX = 0;
    double rSpeed = 0;
    double startingYaw = 0;
-   double joystickX = 0;
-   double joystickY = 0;
    CommandXboxController driverController;
   /** Creates a new AutoAim. */
   public AutoAim(SwerveSubsystem S_Swerve, CommandXboxController driverController) {
     this.driverController = driverController;
     this.S_Swerve = S_Swerve;
-    this.joystickX = joystickX;
-    this.joystickY = joystickY;
     addRequirements(S_Swerve);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -50,8 +46,8 @@ public class AutoAim extends Command {
                                           Math.pow(-driverController.getLeftX(), 3) * 2),
                         rSpeed,
                         true);
-    rController.setPID(S_Swerve.getAutoAimP(), S_Swerve.getAutoAimI(), S_Swerve.getAutoAimD());
-    rController.setIZone(S_Swerve.getAutoAimIZ());
+    //rController.setPID(S_Swerve.getAutoAimP(), S_Swerve.getAutoAimI(), S_Swerve.getAutoAimD());
+    //rController.setIZone(S_Swerve.getAutoAimIZ());
    
     //ChassisSpeeds robotSpeed = new ChassisSpeeds(0,0.5,rSpeed);
     //S_Swerve.setChassisSpeeds(robotSpeed);

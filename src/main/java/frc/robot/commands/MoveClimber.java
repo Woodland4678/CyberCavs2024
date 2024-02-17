@@ -21,7 +21,7 @@ public class MoveClimber extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // TODO unlock rachet 
+    S_Climber.disengageLock();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
