@@ -107,9 +107,15 @@ public class RobotContainer {
     m_driverController.back().onTrue(new InstantCommand(() -> S_Swerve.zeroGyro()));
     m_driverController.start().onTrue(new InstantCommand(() -> S_Swerve.resetSwerveModules()));
     m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve, S_Intake));
-    m_driverController.y().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-1000,1000)));
+    m_driverController.y().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(3500,-3500)));
     m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
     m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, m_driverController));
+    m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.2,0.2,0.2)));
+    m_driverController.pov(180).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(0.2,-0.2,-0.2)));
+    m_driverController.pov(270).onTrue(new InstantCommand(() -> S_Intake.stopIntakeMotors()));
+    m_driverController.leftBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.3)));
+    m_driverController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-0.30)));
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.stopArmRollers()));
   }
 
   /**`
@@ -144,5 +150,8 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   }
   public void setAutoAimPIDF(double p, double i, double d, double iz, double ff) {
     S_Swerve.setAutoAimPIDF(p, i, d, iz, ff);
+  }
+  public void resetArmAngles() {
+    S_Arm.resetToAbsolute();
   }
 }

@@ -3,10 +3,10 @@
     "front": 12.5,
     "left": 12.25
   },
-  "absoluteEncoderOffset": 80,
+  "absoluteEncoderOffset": 51.45,
   "absoluteEncoderInverted": false,
   "drive": {
-    "type": "sparkmax",
+    "type": "sparkflex",
     "id": 7,
     "canbus": null
   },
@@ -18,7 +18,7 @@
   
   "encoder": {
     "type": "ctre_mag",
-    "id": 3,
+    "id": 0,
     "canbus": null
   },
   "inverted": {

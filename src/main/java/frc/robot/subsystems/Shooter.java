@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
   private SparkPIDController angleMotorController;
   private SparkPIDController rightMotorController;
   private SparkPIDController leftMotorController;
-  private final DutyCycleEncoder shooterAngleAbsoluteEncoder;
+ // private final DutyCycleEncoder shooterAngleAbsoluteEncoder;
   private RelativeEncoder integratedRightMotorEncoder;
   private RelativeEncoder integratedLeftMotorEncoder;
   private RelativeEncoder integratedAngleMotorEncoder;
@@ -40,7 +40,7 @@ public class Shooter extends SubsystemBase {
     leftMotorController = shooterLeftMotor.getPIDController();
     shooterAngleMotor = new CANSparkFlex(Constants.ShooterConstants.shooterAngleMotorCanID, MotorType.kBrushless);
     angleMotorController = shooterAngleMotor.getPIDController();
-    shooterAngleAbsoluteEncoder = new DutyCycleEncoder(Constants.ShooterConstants.shooterAngleEncoderAbsoluteID);
+    //shooterAngleAbsoluteEncoder = new DutyCycleEncoder(Constants.ShooterConstants.shooterAngleEncoderAbsoluteID);
     setShooterPIDFToSpinUp();
     angleMotorController.setP(Constants.ShooterConstants.angleP);
     angleMotorController.setI(Constants.ShooterConstants.angleI);
@@ -63,8 +63,8 @@ public class Shooter extends SubsystemBase {
                   "Shooter Right Velocity", getRightVelocity());  
     SmartDashboard.putNumber( 
                   "Shooter Current Angle ", getAnglePosition());  
-    SmartDashboard.putNumber( 
-                  "Shooter Absolute Angle ", shooterAngleAbsoluteEncoder.getAbsolutePosition());  
+    // SmartDashboard.putNumber( 
+    //               "Shooter Absolute Angle ", shooterAngleAbsoluteEncoder.getAbsolutePosition());  
 
     // if (Math.abs(integratedRightMotorEncoder.getVelocity() - shooterRightRPMTarget) > 100) {
     //   rightMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);

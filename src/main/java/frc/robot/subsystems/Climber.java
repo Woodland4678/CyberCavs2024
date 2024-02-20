@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -34,13 +35,15 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean(
+      "Climber isClimberDown Sensor", isClimberDown());
     // This method will be called once per scheduler run
   }
   public void setClimberSpeed(int speed) {
     climberController.setReference(speed, com.revrobotics.CANSparkMax.ControlType.kVelocity);
   }
   public boolean isClimberDown() {
-    return climberDown.get();
+    return !climberDown.get();
   }
 
   public void disengageLock() { // toggles the switchable channel on to unlock the climber. 

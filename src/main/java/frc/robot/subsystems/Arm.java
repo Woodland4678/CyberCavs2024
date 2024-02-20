@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,7 @@ public class Arm extends SubsystemBase {
   private RelativeEncoder integratedWristEncoder;
   private RelativeEncoder integratedRollerEncoder;
   private DigitalInput hasNoteSensor;
+  private AnalogInput wristHomeSensor;
 
   ArmPosition currentArmPosition = Constants.ArmConstants.restPosition;
   public Arm() {
@@ -68,6 +70,10 @@ public class Arm extends SubsystemBase {
     shoulderController.setOutputRange(-0.1, 0.1);
     elbowController.setOutputRange(-0.1, 0.1);
     hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
+    wristHomeSensor = new AnalogInput(Constants.ArmConstants.wristHomeSensorChannel);
+
+    resetToAbsolute();
+    
   }
   @Override
   public void periodic() {
@@ -79,17 +85,16 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber( 
                   "Arm Shoulder Absolute", (shoulderAbsolute.getAbsolutePosition()) * 360);
     SmartDashboard.putNumber( 
-                  "Arm Shoulder Angle",90 - getCurrentShoulderPosition());    
+                  "Arm Shoulder Angle",getCurrentShoulderPosition());    
     SmartDashboard.putNumber( 
                   "Arm X Position", getCurrentXPosition());
     SmartDashboard.putNumber( 
                   "Arm Y Position", getCurrentYPosition());    
     SmartDashboard.putNumber( 
                   "Arm Wrist Position", getCurrentWristPosition());
-    SmartDashboard.putNumber(
-                  "Arm Elbow Angle", calcElbowAngle(getCurrentXPosition(), getCurrentYPosition())); 
-    SmartDashboard.putNumber(
-                  "Arm Shoulder Angle", calcShoulderAngle(getCurrentXPosition(), getCurrentYPosition(), getCurrentElbowPosition()));   
+    SmartDashboard.putBoolean(
+                  "Arm has note sensor", getHasNote());
+    SmartDashboard.putNumber("Arm Wrist Home Sensor", wristHomeSensor.getValue());
 
   }
   public void moveToAngle(double shoulderAngle, double elbowAngle) {
@@ -121,7 +126,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean getHasNote(){
-    return hasNoteSensor.get();
+    return !hasNoteSensor.get();
   }
 
   public void setElbowPIDF(double p, double i, double d, double iz, double ff) {
@@ -169,5 +174,12 @@ public class Arm extends SubsystemBase {
   }
   public void stopArmRollers(){
     armRollerMotor.stopMotor();
+  }
+  public int getWristHomeSensorValue() {
+    return wristHomeSensor.getValue();
+  }
+  public void resetToAbsolute() {
+    integratedElbowEncoder.setPosition(elbowAbsolute.getAbsolutePosition() * 360 - Constants.ArmConstants.elbowAbsoluteOffset);
+    integratedShoulderEncoder.setPosition(shoulderAbsolute.getAbsolutePosition() * 360 - Constants.ArmConstants.shoulderAbsoluteOffset);
   }
 }

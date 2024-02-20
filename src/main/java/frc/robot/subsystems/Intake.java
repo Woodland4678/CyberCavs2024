@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,8 +24,9 @@ public class Intake extends SubsystemBase {
   private SparkPIDController horizontalController;
   private SparkPIDController indexerController;
   private DigitalInput pieceAquired; // Sensor after horizontal roller
-  private DigitalInput diverterUp;
-  private DigitalInput pieceDeparted; 
+  private DigitalInput noteOnRamp; //sensor if the note is on ramp
+  private AnalogInput diverter;
+  //private DigitalInput pieceDeparted; 
   private RelativeEncoder integratedVerticalRollerEncoder;
   private RelativeEncoder integratedHorizontalRollerEncoder;
   private RelativeEncoder integratedIndexerEncoder;
@@ -40,8 +42,8 @@ public class Intake extends SubsystemBase {
     indexer = new CANSparkMax(Constants.IntakeConstants.indexerCanID, MotorType.kBrushless);
     indexerController = indexer.getPIDController();
     pieceAquired = new DigitalInput(Constants.IntakeConstants.pieceAquireChannel);
-    diverterUp = new DigitalInput(Constants.IntakeConstants.diverterUpChannel);
-    pieceDeparted = new DigitalInput(Constants.IntakeConstants.pieceDepartedChannel);
+    diverter = new AnalogInput(Constants.IntakeConstants.diverterUpChannel);
+    noteOnRamp = new DigitalInput(Constants.IntakeConstants.noteOnRampSensor);
     verticalController.setP(0.1);
     verticalController.setI(0);
     verticalController.setD(0);
@@ -60,37 +62,38 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean( 
                   "Intake Piece Aquired Sensor ", getPieceAquired());  
-    SmartDashboard.putBoolean( 
-                  "Intake diverter sensor ", isDiverterDown());
-    SmartDashboard.putBoolean( 
-                  "Intake piece Departed sensor ", getPieceDeparted());  
-    switch (intakeState) {
-      case 0:
-        if (getPieceAquired()) {
-          setVerticalPercentOutput(0.8);
-          setHorizontalPercentOutput(0.8);
-          intakeState++;
-        }
-      break;
-      case 1:
-        if (isNoteFullyIn()) {
-          intakeState = 100;
-          stopIntakeMotors();
-        }
-      break;
-      case 2: //push to arm state, might not need this, might move to a command
-       setVerticalPercentOutput(0.8);
-       setIndexMotorPercentOutput(0.8);
-       if (isDiverterDown()) {
-        stopIntakeMotors();
-        count++;
-        if (count > 3) {
-          setVerticalPercentOutput(-0.8);
-          setIndexMotorPercentOutput(-0.8);
-        }
-       }
-      break;
-    }
+    SmartDashboard.putNumber( 
+                  "Intake diverter sensor ", diverter.getValue());
+    SmartDashboard.putBoolean(
+                  "Intake Note On Ramp Sensor", isNoteOnRamp());
+    
+    // switch (intakeState) {
+    //   case 0:
+    //     if (getPieceAquired()) {
+    //       setVerticalPercentOutput(0.8);
+    //       setHorizontalPercentOutput(0.8);
+    //       intakeState++;
+    //     }
+    //   break;
+    //   case 1:
+    //     if (isNoteFullyIn()) {
+    //       intakeState = 100;
+    //       stopIntakeMotors();
+    //     }
+    //   break;
+    //   case 2: //push to arm state, might not need this, might move to a command
+    //    setVerticalPercentOutput(0.8);
+    //    setIndexMotorPercentOutput(0.8);
+    //    if (isDiverterDown()) {
+    //     stopIntakeMotors();
+    //     count++;
+    //     if (count > 3) {
+    //       setVerticalPercentOutput(-0.8);
+    //       setIndexMotorPercentOutput(-0.8);
+    //     }
+    //    }
+    //   break;
+    // }
   }
   
   public double getIndexerVelocity() {
@@ -109,10 +112,16 @@ public class Intake extends SubsystemBase {
     return pieceAquired.get();
   }
   public boolean isDiverterDown() {
-    return diverterUp.get();
+    if (diverter.getValue() > 800) {
+      return true;
+    }
+    else {
+      return false;
+    }
+    //return diverterUp.getValue();
   }
-  public boolean getPieceDeparted() {
-    return pieceDeparted.get();
+  public boolean isNoteOnRamp() {
+    return !noteOnRamp.get();
   }
   public void setHorizontalPercentOutput(double percent) {
     intakeHorizontalRoller.set(percent);
@@ -128,8 +137,9 @@ public class Intake extends SubsystemBase {
     intakeVerticalRoller.stopMotor();
     intakeHorizontalRoller.stopMotor();
   }
-  public boolean isNoteFullyIn() {
-    return false;
-    //return is note fully in sensor
+  public void setAllMotorsPercentOutput(double horizontalSpeed, double verticalSpeed, double indexerSpeed) {
+    setHorizontalPercentOutput(horizontalSpeed);
+    setVerticalPercentOutput(verticalSpeed);
+    setIndexMotorPercentOutput(indexerSpeed);
   }
 }

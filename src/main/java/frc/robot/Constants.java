@@ -32,9 +32,9 @@ public final class Constants {
     public static final int shooterRightMotorCanID = 9;
     public static final int shooterLeftMotorCanID = 10;
     public static final int shooterAngleMotorCanID = 19;
-    public static final int shooterAngleEncoderAbsoluteID = 6;
-    public static final double shooter_SpinUp_P = 0.10;
-    public static final double shooter_SpinUp_I = 0;
+    //public static final int shooterAngleEncoderAbsoluteID = 4;
+    public static final double shooter_SpinUp_P = 0.0003;
+    public static final double shooter_SpinUp_I = 0.000001;
     public static final double shooter_SpinUp_D = 0;
     public static final double shooter_Maintain_P = 0.10;
     public static final double shooter_Maintain_I = 0;
@@ -86,9 +86,9 @@ public final class Constants {
     public static final double wristP = 0.1;
     public static final double wristI = 0;
     public static final double wristD = 0;
-    public static final double shoulderAbsoluteOffset = 0;
-    public static final double elbowAbsoluteOffset = 0;
-    public static final double shoulderGearRatio = 25/1 * 60/24;
+    public static final double shoulderAbsoluteOffset = 195.8; //arm resting against the limelight holder
+    public static final double elbowAbsoluteOffset = 301.4; 
+    public static final double shoulderGearRatio = (25.0/1.0) * (60.0/24.0);
     public static final double elbowGearRatio = 25/1;
     public static final double wristGearRatio = 84/29 * 76/21;
     public static final double shoulderAngleConversionFactor = 360 / shoulderGearRatio;
@@ -100,16 +100,17 @@ public final class Constants {
     public static final ArmPosition restPosition = new ArmPosition(5, 5, 35, false); // Approximate x and y values
     public static final ArmPosition ampScoring = new ArmPosition(28, 15, -35, false); // Approximate x and y values
     public static final ArmPosition trapScoring = new ArmPosition(10, 33, -35, false); //Approximate x and y values
-    public static final int hasNoteSensor = 11;
+    public static final int hasNoteSensor = 7;
+    public static final int wristHomeSensorChannel = 0;
     public static final double armIntakeSpeed = .5;
   }
   public static class IntakeConstants {
     public static final int IntakeVerticalRollerCanID = 15;
     public static final int IntakeHorizontalRollerCanID = 16;
     public static final int indexerCanID = 17;
-    public static final int pieceAquireChannel = 7;
-    public static final int diverterUpChannel = 8;
-    public static final int pieceDepartedChannel = 9;
+    public static final int pieceAquireChannel = 6;
+    public static final int diverterUpChannel = 1;
+    public static final int noteOnRampSensor = 9;
     public static final double indexRollerShootSpeed = 0.5;
     public static final double horizontalRollerShootSpeed = 0.5;
     public static final double verticalRollerShootSpeed = 0.5;
@@ -120,7 +121,7 @@ public final class Constants {
   }
   public static class ClimberConstants {
     public static final int ClimberMainMotorCanID = 18;
-    public static final int climberDownChannel = 10;
+    public static final int climberDownChannel = 8;
     public static final double climberP = 0.1;
     public static final double climberI = 0;
     public static final double climberD = 0;
