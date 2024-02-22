@@ -10,24 +10,26 @@ import frc.robot.Constants.ArmPosition;
 import frc.robot.Constants;
 
 public class MoveArmAmp extends Command {
-  Arm s_Arm;
+  Arm S_Arm;
   ArmPosition targetPos;
   /** Creates a new MoveArm. */
-  public MoveArmAmp(Arm s_Arm) {
-    this.s_Arm = s_Arm;
+  public MoveArmAmp(Arm S_Arm) {
+    this.S_Arm = S_Arm;
+    addRequirements(S_Arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    targetPos = Constants.ArmConstants.ampScoring;
+    //targetPos = Constants.ArmConstants.ampScoring;
+    targetPos = Constants.ArmConstants.testPos; 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Arm.MoveArm(targetPos);
+    S_Arm.MoveArm(targetPos);
   }
 
   // Called once the command ends or is interrupted.

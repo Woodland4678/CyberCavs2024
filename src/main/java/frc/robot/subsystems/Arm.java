@@ -35,6 +35,8 @@ public class Arm extends SubsystemBase {
   private RelativeEncoder integratedRollerEncoder;
   private DigitalInput hasNoteSensor;
   private AnalogInput wristHomeSensor;
+  private double WristSpeed=0.3;
+  private boolean WristCalibrate=false;
 
   ArmPosition currentArmPosition = Constants.ArmConstants.restPosition;
   public Arm() {
@@ -68,10 +70,11 @@ public class Arm extends SubsystemBase {
     integratedElbowEncoder.setPositionConversionFactor(Constants.ArmConstants.elbowAngleConversionFactor);
     integratedWristEncoder.setPositionConversionFactor(Constants.ArmConstants.wristAngleConversionFactor);
     shoulderController.setOutputRange(-0.1, 0.1);
-    elbowController.setOutputRange(-0.1, 0.1);
+    elbowController.setOutputRange(-0.15, 0.15);
+    wristController.setOutputRange(0, 0);
     hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
     wristHomeSensor = new AnalogInput(Constants.ArmConstants.wristHomeSensorChannel);
-
+    
     resetToAbsolute();
     
   }
@@ -98,8 +101,10 @@ public class Arm extends SubsystemBase {
 
   }
   public void moveToAngle(double shoulderAngle, double elbowAngle) {
-    shoulderController.setReference((90 - shoulderAngle) , com.revrobotics.CANSparkMax.ControlType.kPosition); //90 - inverse calc
-    elbowController.setReference(-elbowAngle, com.revrobotics.CANSparkMax.ControlType.kPosition);
+    shoulderController.setReference((shoulderAngle) , com.revrobotics.CANSparkMax.ControlType.kPosition); //90 - inverse calc
+    elbowController.setReference(elbowAngle, com.revrobotics.CANSparkMax.ControlType.kPosition);
+    SmartDashboard.putNumber("Arm Shoulder Target", shoulderAngle);
+    SmartDashboard.putNumber("Arm Elbow Target", elbowAngle);
   }
   public double getCurrentElbowPosition() {
     return integratedElbowEncoder.getPosition();
@@ -181,5 +186,18 @@ public class Arm extends SubsystemBase {
   public void resetToAbsolute() {
     integratedElbowEncoder.setPosition(elbowAbsolute.getAbsolutePosition() * 360 - Constants.ArmConstants.elbowAbsoluteOffset);
     integratedShoulderEncoder.setPosition(shoulderAbsolute.getAbsolutePosition() * 360 - Constants.ArmConstants.shoulderAbsoluteOffset);
+  }
+  public void calibrateWrist() {
+    int previousValue= getWristHomeSensorValue();
+    armWristMotor.set(WristSpeed);
+    if (getWristHomeSensorValue() < previousValue && WristCalibrate==false) {
+      armWristMotor.set(-WristSpeed);
+      WristSpeed=-WristSpeed;
+      WristCalibrate=true;
+    } 
+    previousValue = getWristHomeSensorValue();
+    if (getWristHomeSensorValue() < previousValue && WristCalibrate == false) {
+      armWristMotor.stopMotor();
+    }
   }
 }

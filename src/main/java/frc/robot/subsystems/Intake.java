@@ -67,31 +67,20 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean(
                   "Intake Note On Ramp Sensor", isNoteOnRamp());
     
-    // switch (intakeState) {
+    // switch (intakeState) { //constantly running to pull notes fully into robot
     //   case 0:
     //     if (getPieceAquired()) {
-    //       setVerticalPercentOutput(0.8);
-    //       setHorizontalPercentOutput(0.8);
+    //       setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
+    //       setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
+    //       setIndexMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
     //       intakeState++;
     //     }
     //   break;
     //   case 1:
-    //     if (isNoteFullyIn()) {
-    //       intakeState = 100;
+    //     if (isNoteOnRamp()) {
+    //       intakeState = 0;
     //       stopIntakeMotors();
     //     }
-    //   break;
-    //   case 2: //push to arm state, might not need this, might move to a command
-    //    setVerticalPercentOutput(0.8);
-    //    setIndexMotorPercentOutput(0.8);
-    //    if (isDiverterDown()) {
-    //     stopIntakeMotors();
-    //     count++;
-    //     if (count > 3) {
-    //       setVerticalPercentOutput(-0.8);
-    //       setIndexMotorPercentOutput(-0.8);
-    //     }
-    //    }
     //   break;
     // }
   }

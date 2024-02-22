@@ -64,7 +64,7 @@ public class NormalShoot extends Command {
   public void end(boolean interrupted) {
     S_Intake.setIndexMotorPercentOutput(0);
     S_Shooter.stopShooterMotor();
-    S_Shooter.setShooterAngle(Constants.ShooterConstants.restAngle);
+    S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
   }
 
   // Returns true when the command should end.

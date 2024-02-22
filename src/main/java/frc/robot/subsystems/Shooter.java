@@ -51,6 +51,8 @@ public class Shooter extends SubsystemBase {
     integratedAngleMotorEncoder.setPositionConversionFactor(Constants.ShooterConstants.angleAngleConversionFactor);
 
     angleMotorController.setOutputRange(-0.1, 0.1);
+
+    integratedAngleMotorEncoder.setPosition(Constants.ShooterConstants.shooterStartingAngle);
   
   }
 

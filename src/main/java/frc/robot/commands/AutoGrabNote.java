@@ -59,9 +59,9 @@ public class AutoGrabNote extends Command {
     rController.setSetpoint(S_Swerve.getHeading().getDegrees());
     rController.setTolerance(Constants.Swerve.autoGrabNote_R_Tolerance);
     grabState = 0;
-    S_Intake.setHorizontalPercentOutput(0.7);
-    S_Intake.setVerticalPercentOutput(0.7);
-    S_Intake.setIndexMotorPercentOutput(0.7);
+    S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
+    S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
+    S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

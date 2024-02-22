@@ -10,24 +10,26 @@ import frc.robot.Constants.ArmPosition;
 import frc.robot.Constants;
 
 public class MoveArmTrap extends Command {
-  Arm s_Arm;
+  Arm S_Arm;
   ArmPosition targetPos;
   /** Creates a new MoveArmTrap. */
-  public MoveArmTrap(Arm s_Arm) {
-    this.s_Arm = s_Arm;
+  public MoveArmTrap(Arm S_Arm) {
+    this.S_Arm = S_Arm;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(S_Arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    targetPos = Constants.ArmConstants.trapScoring;
+    //targetPos = Constants.ArmConstants.trapScoring;
+    targetPos = Constants.ArmConstants.testPos1;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Arm.MoveArm(targetPos);
+    S_Arm.MoveArm(targetPos);
   }
 
   // Called once the command ends or is interrupted.

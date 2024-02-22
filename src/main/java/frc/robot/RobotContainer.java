@@ -8,6 +8,8 @@ import frc.robot.Autos.TestAuto;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.AutoGrabNote;
+import frc.robot.commands.MoveArmAmp;
+import frc.robot.commands.MoveArmTrap;
 import frc.robot.commands.QuickShoot;
 import frc.robot.commands.NormalShoot;
 //import frc.robot.commands.Autos;
@@ -72,9 +74,9 @@ public class RobotContainer {
         () -> m_driverController.getRawAxis(4));
 
         Command driveFieldOrientedAnglularVelocity = S_Swerve.driveCommand(
-        () -> MathUtil.applyDeadband(-m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(-m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> -m_driverController.getRawAxis(4));
+        () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> m_driverController.getRawAxis(4));
     S_Swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // S_Swerve.setDefaultCommand(new TeleopSwerve(S_Swerve,
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
@@ -106,12 +108,14 @@ public class RobotContainer {
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     m_driverController.back().onTrue(new InstantCommand(() -> S_Swerve.zeroGyro()));
     m_driverController.start().onTrue(new InstantCommand(() -> S_Swerve.resetSwerveModules()));
-    m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve, S_Intake));
-    m_driverController.y().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(3500,-3500)));
+   // m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve, S_Intake));
+    m_driverController.a().onTrue(new MoveArmTrap(S_Arm));
+    m_driverController.b().onTrue(new MoveArmAmp(S_Arm));
+    m_driverController.y().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(5000,-5000)));
     m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
     m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, m_driverController));
-    m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.2,0.2,0.2)));
-    m_driverController.pov(180).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(0.2,-0.2,-0.2)));
+    m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.5,0.5,0.5)));
+    m_driverController.pov(180).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(0.5,-0.5,-0.5)));
     m_driverController.pov(270).onTrue(new InstantCommand(() -> S_Intake.stopIntakeMotors()));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.3)));
     m_driverController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-0.30)));
@@ -153,5 +157,8 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   }
   public void resetArmAngles() {
     S_Arm.resetToAbsolute();
+  }
+  public void turnOffClimberLock() {
+    S_Climber.disengageLock();
   }
 }

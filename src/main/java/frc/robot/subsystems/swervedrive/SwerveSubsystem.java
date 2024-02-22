@@ -89,7 +89,7 @@ public class SwerveSubsystem extends SubsystemBase
     //  In this case the wheel diameter is 4 inches, which must be converted to meters to get meters/second.
     //  The gear ratio is 6.75 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
-    double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
+    double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), (5.90625 / 1.0)); //6.75 * 14/16  its just 6.75 for practice frame
     System.out.println("\"conversionFactor\": {");
     System.out.println("\t\"angle\": " + angleConversionFactor + ",");
     System.out.println("\t\"drive\": " + driveConversionFactor);

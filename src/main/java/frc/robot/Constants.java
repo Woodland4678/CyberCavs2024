@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.Arm;
 import swervelib.math.Matter;
 
 /**
@@ -42,10 +43,11 @@ public final class Constants {
     public static final double angleP = 0.1;
     public static final double angleI = 0;
     public static final double angleD = 0;
-    public static final double angleAbsoluteOffset = 0;
-    public static final double angleGearRatio = 350/3;
+    //public static final double angleAbsoluteOffset = 0;
+    public static final double shooterStartingAngle = 64;
+    public static final double angleGearRatio = 116.6666666666667;
     public static final double angleAngleConversionFactor = 360 / angleGearRatio;
-    public static final double restAngle = 85; // TODO Just a guess, change when robot is built
+    //public static final double restAngle = 85; // TODO Just a guess, change when robot is built
     public static final int subwooferShotRPMTolerance = 100;
     public static final int subwooferShotAngleTolerance = 5;
     public static final double subwooferShotAngle = 70;
@@ -80,7 +82,7 @@ public final class Constants {
     public static final double shoudlerP = 0.1;
     public static final double shoulderI = 0;
     public static final double shoulderD = 0;
-    public static final double elbowP = 0.1;
+    public static final double elbowP = 0.01;
     public static final double elbowI = 0;
     public static final double elbowD = 0;
     public static final double wristP = 0.1;
@@ -100,9 +102,11 @@ public final class Constants {
     public static final ArmPosition restPosition = new ArmPosition(5, 5, 35, false); // Approximate x and y values
     public static final ArmPosition ampScoring = new ArmPosition(28, 15, -35, false); // Approximate x and y values
     public static final ArmPosition trapScoring = new ArmPosition(10, 33, -35, false); //Approximate x and y values
+    public static final ArmPosition testPos = new ArmPosition(11, 29, 0, false);
+    public static final ArmPosition testPos1 = new ArmPosition(8, 16, 0, false);
     public static final int hasNoteSensor = 7;
     public static final int wristHomeSensorChannel = 0;
-    public static final double armIntakeSpeed = .5;
+    public static final double armIntakeSpeed = 0.5;
   }
   public static class IntakeConstants {
     public static final int IntakeVerticalRollerCanID = 15;
@@ -115,9 +119,13 @@ public final class Constants {
     public static final double horizontalRollerShootSpeed = 0.5;
     public static final double verticalRollerShootSpeed = 0.5;
 
-    public static final double horizontalRollerIntakeSpeed = 0.7;
+    public static final double horizontalRollerIntakeSpeed = -0.7;
     public static final double verticalRollerIntakeSpeed = 0.7;
     public static final double indexerIntakeSpeed = 0.7;
+
+    public static final double horizontalRollerOuttakeSpeed = 0.7;
+    public static final double verticalRollerOuttakeSpeed = -0.7;
+    public static final double indexerOuttakeSpeed = -0.7;
   }
   public static class ClimberConstants {
     public static final int ClimberMainMotorCanID = 18;

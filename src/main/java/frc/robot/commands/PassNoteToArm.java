@@ -35,11 +35,17 @@ public class PassNoteToArm extends Command {
   @Override
   public void execute() {
     switch (state) {
-    case 0:
+    case 0://pull note up far enough for diverter to fall down
+    //TODO add a check to see if arm is near position already, if not we need an intermediate position
       S_Arm.MoveArm(Constants.ArmConstants.restPosition);
-      S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerShootSpeed);
-      S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexRollerShootSpeed);
-        
+      
+      if (S_Intake.isDiverterDown()) {
+        S_Intake.stopIntakeMotors();
+      }
+      else {
+        S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
+        S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
+      }
       if (S_Intake.isDiverterDown() && S_Arm.MoveArm(Constants.ArmConstants.restPosition) < 4) {
         state ++;
       }
@@ -55,8 +61,8 @@ public class PassNoteToArm extends Command {
       break;
 
     case 2:
-      S_Intake.setVerticalPercentOutput(- (Constants.IntakeConstants.verticalRollerShootSpeed));
-      S_Intake.setIndexMotorPercentOutput(- (Constants.IntakeConstants.indexRollerShootSpeed));
+      S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerOuttakeSpeed);
+      S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexerOuttakeSpeed);
       S_Arm.setRollerOutputPercent(Constants.ArmConstants.armIntakeSpeed);
        
       if (S_Arm.getHasNote()) {
