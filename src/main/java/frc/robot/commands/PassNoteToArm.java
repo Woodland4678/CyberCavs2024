@@ -14,6 +14,7 @@ public class PassNoteToArm extends Command {
   int state;
   boolean isDone = false;
   Arm S_Arm;
+  int count = 0;
   Intake S_Intake;
   /** Creates a new PassNoteToArm. */
   public PassNoteToArm(Arm S_Arm, Intake S_Intake) {
@@ -28,6 +29,8 @@ public class PassNoteToArm extends Command {
   public void initialize() {
     state = 0;
     pause = 0;
+    count = 0;
+    isDone = false;
 
   }
 
@@ -55,7 +58,7 @@ public class PassNoteToArm extends Command {
     case 1:
       pause ++;
       S_Intake.stopIntakeMotors();
-      if (pause > 5) {
+      if (pause > 1) {
         state ++;
       }
       break;
@@ -66,8 +69,15 @@ public class PassNoteToArm extends Command {
       S_Arm.setRollerOutputPercent(Constants.ArmConstants.armIntakeSpeed);
        
       if (S_Arm.getHasNote()) {
-        isDone = true;
+        state++;
+        //isDone = true;
        }
+      break;
+      case 3:
+        if (count > 5) {
+          isDone = true;
+        }
+        count ++;
       break;
     }
   }

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 import frc.robot.Constants.ArmPosition;
@@ -12,6 +13,8 @@ import frc.robot.Constants;
 public class MoveArmAmp extends Command {
   Arm S_Arm;
   ArmPosition targetPos;
+  int moveToAmpState = 0;
+  int count = 0;
   /** Creates a new MoveArm. */
   public MoveArmAmp(Arm S_Arm) {
     this.S_Arm = S_Arm;
@@ -22,14 +25,46 @@ public class MoveArmAmp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    moveToAmpState = 0;
     //targetPos = Constants.ArmConstants.ampScoring;
-    targetPos = Constants.ArmConstants.testPos; 
+    //targetPos = Constants.ArmConstants.testPos; 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    S_Arm.MoveArm(targetPos);
+    SmartDashboard.putNumber("Arm Move To Amp State", moveToAmpState);
+    switch (moveToAmpState) {
+      case 0:
+       // S_Arm.MoveArm(Constants.ArmConstants.AmpIntermediatePos1);
+       S_Arm.moveToAngle(Constants.ArmConstants.AmpIntermediatePos1.xTarget, Constants.ArmConstants.AmpIntermediatePos1.yTarget);
+        if (S_Arm.getShoulderAngleError() < 3) {
+          count ++;
+          if (count > 5) {
+            moveToAmpState ++;
+          }
+        }
+        else {count = 0;}   
+        break;     
+      case 1:
+        if (S_Arm.MoveArm(Constants.ArmConstants.AmpIntermediatePos2) < 4) {
+          count ++;
+          if (count > 5) {
+            moveToAmpState ++;
+          }
+        }
+        else {count = 0;} 
+        break;
+      case 2:
+        if (S_Arm.MoveArm(Constants.ArmConstants.ampScoring) < 4) {
+          count ++;
+          if (count > 5) {
+            moveToAmpState ++;
+          }
+        }
+        else {count = 0;} 
+        break;
+    }
   }
 
   // Called once the command ends or is interrupted.

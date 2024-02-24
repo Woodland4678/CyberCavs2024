@@ -67,22 +67,22 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean(
                   "Intake Note On Ramp Sensor", isNoteOnRamp());
     
-    // switch (intakeState) { //constantly running to pull notes fully into robot
-    //   case 0:
-    //     if (getPieceAquired()) {
-    //       setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
-    //       setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
-    //       setIndexMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
-    //       intakeState++;
-    //     }
-    //   break;
-    //   case 1:
-    //     if (isNoteOnRamp()) {
-    //       intakeState = 0;
-    //       stopIntakeMotors();
-    //     }
-    //   break;
-    // }
+    switch (intakeState) { //constantly running to pull notes fully into robot
+      case 0:
+        if (getPieceAquired()) {
+          setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
+          setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
+          setIndexMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
+          intakeState++;
+        }
+      break;
+      case 1:
+        if (isNoteOnRamp()) {
+          intakeState = 0;
+          stopIntakeMotors();
+        }
+      break;
+    }
   }
   
   public double getIndexerVelocity() {
@@ -98,7 +98,7 @@ public class Intake extends SubsystemBase {
     indexerController.setReference(speed, com.revrobotics.CANSparkMax.ControlType.kVelocity);
   }
   public boolean getPieceAquired() {
-    return pieceAquired.get();
+    return !pieceAquired.get();
   }
   public boolean isDiverterDown() {
     if (diverter.getValue() > 800) {

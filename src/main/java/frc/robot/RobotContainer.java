@@ -9,9 +9,11 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.AutoGrabNote;
 import frc.robot.commands.MoveArmAmp;
+import frc.robot.commands.MoveArmToRest;
 import frc.robot.commands.MoveArmTrap;
 import frc.robot.commands.QuickShoot;
 import frc.robot.commands.NormalShoot;
+import frc.robot.commands.PassNoteToArm;
 //import frc.robot.commands.Autos;
 //import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TeleopSwerve;
@@ -109,7 +111,7 @@ public class RobotContainer {
     m_driverController.back().onTrue(new InstantCommand(() -> S_Swerve.zeroGyro()));
     m_driverController.start().onTrue(new InstantCommand(() -> S_Swerve.resetSwerveModules()));
    // m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve, S_Intake));
-    m_driverController.a().onTrue(new MoveArmTrap(S_Arm));
+    m_driverController.a().onTrue(new MoveArmToRest(S_Arm));
     m_driverController.b().onTrue(new MoveArmAmp(S_Arm));
     m_driverController.y().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(5000,-5000)));
     m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
@@ -120,6 +122,7 @@ public class RobotContainer {
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.3)));
     m_driverController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-0.30)));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.stopArmRollers()));
+    m_driverController.pov(0).onTrue(new PassNoteToArm(S_Arm, S_Intake));
   }
 
   /**`
@@ -160,5 +163,8 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   }
   public void turnOffClimberLock() {
     S_Climber.disengageLock();
+  }
+  public void engageClimberLock() {
+    S_Climber.engageLock();
   }
 }

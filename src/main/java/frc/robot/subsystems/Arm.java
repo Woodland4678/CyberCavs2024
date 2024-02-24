@@ -37,12 +37,18 @@ public class Arm extends SubsystemBase {
   private AnalogInput wristHomeSensor;
   private double WristSpeed=0.3;
   private boolean WristCalibrate=false;
+  private int calibrateWristState = 0;
+  private int count = 0;
+  private double targetShoulderAngle = 0;
+  private double targetElbowAngle = 0;
 
+  private int previousWristMagValue = 0;
   ArmPosition currentArmPosition = Constants.ArmConstants.restPosition;
   public Arm() {
     armShoulderMotor = new CANSparkMax(Constants.ArmConstants.armShoulderMotorCanID, MotorType.kBrushless);
     shoulderController = armShoulderMotor.getPIDController();
     armElbowMotor = new CANSparkMax(Constants.ArmConstants.armElbowMotorCanID, MotorType.kBrushless);
+    armElbowMotor.setClosedLoopRampRate(0.1);
     elbowController = armElbowMotor.getPIDController();
     armWristMotor = new CANSparkMax(Constants.ArmConstants.armWristMotorCanID, MotorType.kBrushless);
     wristController = armWristMotor.getPIDController();
@@ -69,8 +75,8 @@ public class Arm extends SubsystemBase {
     integratedShoulderEncoder.setPositionConversionFactor(Constants.ArmConstants.shoulderAngleConversionFactor);
     integratedElbowEncoder.setPositionConversionFactor(Constants.ArmConstants.elbowAngleConversionFactor);
     integratedWristEncoder.setPositionConversionFactor(Constants.ArmConstants.wristAngleConversionFactor);
-    shoulderController.setOutputRange(-0.1, 0.1);
-    elbowController.setOutputRange(-0.15, 0.15);
+    shoulderController.setOutputRange(-0.8, 0.8);
+    elbowController.setOutputRange(-0.8, 0.8);
     wristController.setOutputRange(0, 0);
     hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
     wristHomeSensor = new AnalogInput(Constants.ArmConstants.wristHomeSensorChannel);
@@ -105,6 +111,8 @@ public class Arm extends SubsystemBase {
     elbowController.setReference(elbowAngle, com.revrobotics.CANSparkMax.ControlType.kPosition);
     SmartDashboard.putNumber("Arm Shoulder Target", shoulderAngle);
     SmartDashboard.putNumber("Arm Elbow Target", elbowAngle);
+    targetElbowAngle = elbowAngle;
+    targetShoulderAngle = shoulderAngle;
   }
   public double getCurrentElbowPosition() {
     return integratedElbowEncoder.getPosition();
@@ -118,15 +126,15 @@ public class Arm extends SubsystemBase {
   public double getCurrentXPosition() {
     double shoulderLength = Constants.ArmConstants.shoulderLength;
     double elbowLength = Constants.ArmConstants.elbowLength;
-    double shoulderAngle = 90 - integratedShoulderEncoder.getPosition();
-    double elbowAngle = integratedElbowEncoder.getPosition();
+    double shoulderAngle = integratedShoulderEncoder.getPosition();
+    double elbowAngle = integratedElbowEncoder.getPosition() * -1;
     return shoulderLength * Math.cos(Math.toRadians(shoulderAngle)) + elbowLength * Math.cos(Math.toRadians((shoulderAngle) - elbowAngle));
   }
   public double getCurrentYPosition() {
     double shoulderLength = Constants.ArmConstants.shoulderLength;
     double elbowLength = Constants.ArmConstants.elbowLength;
-    double shoulderAngle = 90 - integratedShoulderEncoder.getPosition();
-    double elbowAngle = integratedElbowEncoder.getPosition();
+    double shoulderAngle = integratedShoulderEncoder.getPosition();
+    double elbowAngle = integratedElbowEncoder.getPosition() * -1;
     return (shoulderLength * Math.sin(Math.toRadians(shoulderAngle)) + elbowLength * Math.sin(Math.toRadians((shoulderAngle) - elbowAngle)));
   }
 
@@ -187,17 +195,47 @@ public class Arm extends SubsystemBase {
     integratedElbowEncoder.setPosition(elbowAbsolute.getAbsolutePosition() * 360 - Constants.ArmConstants.elbowAbsoluteOffset);
     integratedShoulderEncoder.setPosition(shoulderAbsolute.getAbsolutePosition() * 360 - Constants.ArmConstants.shoulderAbsoluteOffset);
   }
-  public void calibrateWrist() {
-    int previousValue= getWristHomeSensorValue();
-    armWristMotor.set(WristSpeed);
-    if (getWristHomeSensorValue() < previousValue && WristCalibrate==false) {
-      armWristMotor.set(-WristSpeed);
-      WristSpeed=-WristSpeed;
-      WristCalibrate=true;
-    } 
-    previousValue = getWristHomeSensorValue();
-    if (getWristHomeSensorValue() < previousValue && WristCalibrate == false) {
-      armWristMotor.stopMotor();
+  public boolean calibrateWrist() {
+    switch(calibrateWristState) {
+      case 0: //move wrist in a positive rotation
+        previousWristMagValue = getWristHomeSensorValue();
+        armWristMotor.set(0.1);
+        calibrateWristState++;
+        count = 0;
+      break;  
+      case 1: 
+        if (count > 3) { //if for 3 counts the value has not decreased then move on
+          calibrateWristState++;
+        }
+        if (getWristHomeSensorValue() < previousWristMagValue) { //if the value is decreasing then switch directions
+          armWristMotor.set(-0.1);
+          count = 0;
+        }
+        count++;
+      break;
+      case 2:
+        if (getWristHomeSensorValue() < previousWristMagValue) { //once the value decreases we've hit our max and this is our 0 point
+            armWristMotor.stopMotor();
+            integratedWristEncoder.setPosition(0);
+            calibrateWristState = 0;
+            return true;
+        }
+      break;
     }
+    previousWristMagValue = getWristHomeSensorValue();
+    return false;
+    
+  }
+  public double getShoulderAngleError() {
+      return Math.abs(targetShoulderAngle - getCurrentShoulderPosition());
+  }
+  public double getElbowAngleError() {
+    return Math.abs(targetElbowAngle - getCurrentElbowPosition());
+  }
+  public void stopElbowMotor() {
+    armElbowMotor.stopMotor();
+  }
+  public void stopShoulderMotor() {
+    armShoulderMotor.stopMotor();
   }
 }

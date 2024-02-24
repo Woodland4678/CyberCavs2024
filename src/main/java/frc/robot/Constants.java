@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.swing.ActionMap;
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.Arm;
@@ -79,12 +81,12 @@ public final class Constants {
     public static final int armRollerMotorCanID = 14;
     public static final int shoulderEncoderAbsoluteID = 4;
     public static final int elbowEncoderAbsoluteID = 5;
-    public static final double shoudlerP = 0.1;
+    public static final double shoudlerP = 0.03;
     public static final double shoulderI = 0;
-    public static final double shoulderD = 0;
-    public static final double elbowP = 0.01;
+    public static final double shoulderD = 0.1;
+    public static final double elbowP = 0.02;
     public static final double elbowI = 0;
-    public static final double elbowD = 0;
+    public static final double elbowD = 0.1;
     public static final double wristP = 0.1;
     public static final double wristI = 0;
     public static final double wristD = 0;
@@ -99,14 +101,16 @@ public final class Constants {
     public static final double shoulderLength = 19.07;
     public static final double elbowLength = 19.40;
 
-    public static final ArmPosition restPosition = new ArmPosition(5, 5, 35, false); // Approximate x and y values
-    public static final ArmPosition ampScoring = new ArmPosition(28, 15, -35, false); // Approximate x and y values
+    public static final ArmPosition restPosition = new ArmPosition(4.1, 6, 35, false);
+    public static final ArmPosition AmpIntermediatePos1 = new ArmPosition(130, -163, 35, true);
+    public static final ArmPosition AmpIntermediatePos2 = new ArmPosition(5.55, 17.63, 35, false);
+    public static final ArmPosition ampScoring = new ArmPosition(8.8, 21.1, -35, false); // Approximate x and y values
     public static final ArmPosition trapScoring = new ArmPosition(10, 33, -35, false); //Approximate x and y values
     public static final ArmPosition testPos = new ArmPosition(11, 29, 0, false);
     public static final ArmPosition testPos1 = new ArmPosition(8, 16, 0, false);
     public static final int hasNoteSensor = 7;
     public static final int wristHomeSensorChannel = 0;
-    public static final double armIntakeSpeed = 0.5;
+    public static final double armIntakeSpeed = 0.9;
   }
   public static class IntakeConstants {
     public static final int IntakeVerticalRollerCanID = 15;
@@ -123,9 +127,9 @@ public final class Constants {
     public static final double verticalRollerIntakeSpeed = 0.7;
     public static final double indexerIntakeSpeed = 0.7;
 
-    public static final double horizontalRollerOuttakeSpeed = 0.7;
-    public static final double verticalRollerOuttakeSpeed = -0.7;
-    public static final double indexerOuttakeSpeed = -0.7;
+    public static final double horizontalRollerOuttakeSpeed = 0.9;
+    public static final double verticalRollerOuttakeSpeed = -0.9;
+    public static final double indexerOuttakeSpeed = -0.9;
   }
   public static class ClimberConstants {
     public static final int ClimberMainMotorCanID = 18;
