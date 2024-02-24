@@ -8,6 +8,7 @@ import frc.robot.Autos.TestAuto;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.AutoGrabNote;
+import frc.robot.commands.CalibrateWrist;
 import frc.robot.commands.MoveArmAmp;
 import frc.robot.commands.MoveArmToRest;
 import frc.robot.commands.MoveArmTrap;
@@ -122,7 +123,8 @@ public class RobotContainer {
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.3)));
     m_driverController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-0.30)));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.stopArmRollers()));
-    m_driverController.pov(0).onTrue(new PassNoteToArm(S_Arm, S_Intake));
+    //m_driverController.pov(0).onTrue(new PassNoteToArm(S_Arm, S_Intake));
+    m_driverController.pov(0).onTrue(new CalibrateWrist(S_Arm));
   }
 
   /**`

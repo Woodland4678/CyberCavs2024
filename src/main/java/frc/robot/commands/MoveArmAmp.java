@@ -26,6 +26,7 @@ public class MoveArmAmp extends Command {
   @Override
   public void initialize() {
     moveToAmpState = 0;
+    count = 0;
     //targetPos = Constants.ArmConstants.ampScoring;
     //targetPos = Constants.ArmConstants.testPos; 
   }
@@ -38,19 +39,21 @@ public class MoveArmAmp extends Command {
       case 0:
        // S_Arm.MoveArm(Constants.ArmConstants.AmpIntermediatePos1);
        S_Arm.moveToAngle(Constants.ArmConstants.AmpIntermediatePos1.xTarget, Constants.ArmConstants.AmpIntermediatePos1.yTarget);
-        if (S_Arm.getShoulderAngleError() < 3) {
+        if (S_Arm.getShoulderAngleError() < 5) {
           count ++;
-          if (count > 5) {
+          if (count > 3) {
             moveToAmpState ++;
+            count = 0;
           }
         }
         else {count = 0;}   
         break;     
       case 1:
-        if (S_Arm.MoveArm(Constants.ArmConstants.AmpIntermediatePos2) < 4) {
+        if (S_Arm.MoveArm(Constants.ArmConstants.AmpIntermediatePos2) < 9) {
           count ++;
-          if (count > 5) {
+          if (count > 3) {
             moveToAmpState ++;
+            count = 0;
           }
         }
         else {count = 0;} 
