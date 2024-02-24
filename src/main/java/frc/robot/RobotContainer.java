@@ -59,9 +59,11 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final LEDStrip ledStrip;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    ledStrip = LEDStrip.getInstance();
     configureBindings();
     // Configure the trigger bindings
     Command driveFieldOrientedDirectAngle = S_Swerve.driveCommand(
@@ -88,7 +90,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutoGrabNote", new AutoGrabNote(S_Swerve, S_Intake));
     NamedCommands.registerCommand("QuickShoot", new QuickShoot(S_Shooter, S_Intake));
     NamedCommands.registerCommand("Shoot", new NormalShoot(S_Shooter, S_Swerve, S_Intake));
-    
   }
 
   /**
@@ -167,4 +168,5 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   public void engageClimberLock() {
     S_Climber.engageLock();
   }
+  
 }
