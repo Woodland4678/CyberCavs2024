@@ -12,6 +12,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -41,6 +42,8 @@ public class Arm extends SubsystemBase {
   private int count = 0;
   private double targetShoulderAngle = 0;
   private double targetElbowAngle = 0;
+  private int currentHighestMagValueWristCalibrate;
+  private double currentHighestAngleWristCalibrate;
 
   private int previousWristMagValue = 0;
   ArmPosition currentArmPosition = Constants.ArmConstants.restPosition;
@@ -48,7 +51,7 @@ public class Arm extends SubsystemBase {
     armShoulderMotor = new CANSparkMax(Constants.ArmConstants.armShoulderMotorCanID, MotorType.kBrushless);
     shoulderController = armShoulderMotor.getPIDController();
     armElbowMotor = new CANSparkMax(Constants.ArmConstants.armElbowMotorCanID, MotorType.kBrushless);
-    armElbowMotor.setClosedLoopRampRate(0.1);
+    armElbowMotor.setClosedLoopRampRate(0.25);
     elbowController = armElbowMotor.getPIDController();
     armWristMotor = new CANSparkMax(Constants.ArmConstants.armWristMotorCanID, MotorType.kBrushless);
     wristController = armWristMotor.getPIDController();
@@ -75,14 +78,14 @@ public class Arm extends SubsystemBase {
     integratedShoulderEncoder.setPositionConversionFactor(Constants.ArmConstants.shoulderAngleConversionFactor);
     integratedElbowEncoder.setPositionConversionFactor(Constants.ArmConstants.elbowAngleConversionFactor);
     integratedWristEncoder.setPositionConversionFactor(Constants.ArmConstants.wristAngleConversionFactor);
-    shoulderController.setOutputRange(-0.8, 0.8);
-    elbowController.setOutputRange(-0.8, 0.8);
-    wristController.setOutputRange(0, 0);
+    shoulderController.setOutputRange(-0, 0);
+    elbowController.setOutputRange(-0, 0);
+    wristController.setOutputRange(-0.1, 0.1);
     hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
     wristHomeSensor = new AnalogInput(Constants.ArmConstants.wristHomeSensorChannel);
     
     resetToAbsolute();
-    
+    integratedWristEncoder.setPosition(0);
   }
   @Override
   public void periodic() {
@@ -196,34 +199,84 @@ public class Arm extends SubsystemBase {
     integratedShoulderEncoder.setPosition(shoulderAbsolute.getAbsolutePosition() * 360 - Constants.ArmConstants.shoulderAbsoluteOffset);
   }
   public boolean calibrateWrist() {
-    switch(calibrateWristState) {
-      case 0: //move wrist in a positive rotation
-        previousWristMagValue = getWristHomeSensorValue();
-        armWristMotor.set(0.1);
-        calibrateWristState++;
-        count = 0;
-      break;  
-      case 1: 
-        if (count > 3) { //if for 3 counts the value has not decreased then move on
+    switch (calibrateWristState) {
+      case 0:
+        armWristMotor.set(0.03);
+        count ++;
+        if (count > 25) {
+          count = 0;
           calibrateWristState++;
         }
-        if (getWristHomeSensorValue() < previousWristMagValue) { //if the value is decreasing then switch directions
-          armWristMotor.set(-0.1);
+        break;
+      case 1:
+        armWristMotor.set(-0.05);
+        count ++;
+        if (count > 50) {
           count = 0;
+          calibrateWristState ++;
         }
-        count++;
-      break;
+        break;
       case 2:
-        if (getWristHomeSensorValue() < previousWristMagValue) { //once the value decreases we've hit our max and this is our 0 point
-            armWristMotor.stopMotor();
-            integratedWristEncoder.setPosition(0);
-            calibrateWristState = 0;
-            return true;
-        }
+        wristController.setReference(currentHighestAngleWristCalibrate, com.revrobotics.CANSparkMax.ControlType.kPosition);
+        calibrateWristState ++;
+        count = 0;
       break;
+      case 3:
+       
+        if (Math.abs(integratedWristEncoder.getPosition() - currentHighestAngleWristCalibrate) < 2.5) {
+          count++;
+          if (count > 25) {
+            integratedWristEncoder.setPosition(0);
+            wristController.setReference(0, com.revrobotics.CANSparkMax.ControlType.kPosition);
+             calibrateWristState = 0;
+             count = 0;
+            return true;
+          }
+        }
+       
+        break;
+    }    
+    if (wristHomeSensor.getValue() > currentHighestMagValueWristCalibrate) {
+      currentHighestMagValueWristCalibrate = wristHomeSensor.getValue();
+      currentHighestAngleWristCalibrate = integratedWristEncoder.getPosition();
     }
-    previousWristMagValue = getWristHomeSensorValue();
     return false;
+    // switch(calibrateWristState) {
+    //   case 0:
+    //     previousWristMagValue = getWristHomeSensorValue();
+    //     calibrateWristState++;
+    //     wristController.setReference(50, com.revrobotics.CANSparkMax.ControlType.kVelocity);
+    //     //armWristMotor.set(0.03);
+    //   break;
+    //   case 1: //move wrist in a positive rotation
+    //     if (count > 5) {
+    //       calibrateWristState++;
+    //       count = 0;
+    //     }
+    //     count++;
+        
+    //   break;  
+    //   case 2: 
+    //     if (getWristHomeSensorValue() < previousWristMagValue) { //if the value is decreasing then switch directions
+    //       wristController.setReference(-50, com.revrobotics.CANSparkMax.ControlType.kVelocity);
+    //       count = 0;
+    //     }
+    //     calibrateWristState++;
+    //   break;
+    //   case 3:
+    //     SmartDashboard.putNumber("Arm Wrist Home Error", Math.abs(getWristHomeSensorValue() - Constants.ArmConstants.wristMagSensorMaxValue));
+    //     if (Math.abs(getWristHomeSensorValue() - Constants.ArmConstants.wristMagSensorMaxValue) < 50) { //once the value decreases we've hit our max and this is our 0 point
+    //         count++;
+    //         if (count > 10) {
+    //           armWristMotor.stopMotor();
+    //           integratedWristEncoder.setPosition(0);
+    //           calibrateWristState = 0;
+    //           return true;
+    //         }
+    //     }
+    //   break;
+    // }
+    // return false;
     
   }
   public double getShoulderAngleError() {

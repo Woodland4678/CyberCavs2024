@@ -35,6 +35,7 @@ public class MoveArmToRest extends Command {
           count ++;
           if (count > 5) {
             moveToAmpState ++;
+            count = 0;
           }
         }
         else {
@@ -43,10 +44,11 @@ public class MoveArmToRest extends Command {
         break;     
       case 1:
         S_Arm.moveToAngle(Constants.ArmConstants.AmpIntermediatePos1.xTarget, Constants.ArmConstants.AmpIntermediatePos1.yTarget);
-        if (S_Arm.getShoulderAngleError() < 3 && S_Arm.getElbowAngleError() < 3) {
+        if (S_Arm.getShoulderAngleError() < 4 && S_Arm.getElbowAngleError() < 4) {
           count ++;
-          if (count > 5) {
+          if (count > 3) {
             moveToAmpState ++;
+            count = 0;
           }
         }
         else {count = 0;} 
@@ -55,7 +57,7 @@ public class MoveArmToRest extends Command {
         if (S_Arm.MoveArm(Constants.ArmConstants.restPosition) < 3) {
           count ++;
           if (count > 5) {
-            S_Arm.stopElbowMotor();
+            //S_Arm.stopElbowMotor();
             moveToAmpState ++;
           }
         }
