@@ -54,7 +54,7 @@ public class NormalShoot extends Command {
         excecute++;
         break;
       case 2:
-        S_Intake.setIndexMotorPercentOutput(0.7);
+        S_Intake.setRampRollerMotorPercentOutput(0.7);
         break;
     }
   }
@@ -62,7 +62,7 @@ public class NormalShoot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    S_Intake.setIndexMotorPercentOutput(0);
+    S_Intake.setRampRollerMotorPercentOutput(0);
     S_Shooter.stopShooterMotor();
     S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
   }

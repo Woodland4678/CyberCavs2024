@@ -117,6 +117,7 @@ public final class Constants {
     public static final int IntakeVerticalRollerCanID = 15;
     public static final int IntakeHorizontalRollerCanID = 16;
     public static final int indexerCanID = 17;
+    public static final int indexerMotorCanID = 20;
     public static final int pieceAquireChannel = 6;
     public static final int diverterUpChannel = 1;
     public static final int noteOnRampSensor = 9;

@@ -31,7 +31,7 @@ public class QuickShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    S_Intake.setIndexMotorPercentOutput(0.8);
+    S_Intake.setRampRollerMotorPercentOutput(0.8);
     if (count >= 10) {
       isDone = true;
     }
@@ -41,7 +41,7 @@ public class QuickShoot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    S_Intake.setIndexMotorPercentOutput(0);
+    S_Intake.setRampRollerMotorPercentOutput(0);
   }
 
   // Returns true when the command should end.

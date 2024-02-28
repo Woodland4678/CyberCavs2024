@@ -61,7 +61,7 @@ public class AutoGrabNote extends Command {
     grabState = 0;
     S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
     S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
-    S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
+    S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

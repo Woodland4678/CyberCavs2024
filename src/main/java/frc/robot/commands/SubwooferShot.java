@@ -37,7 +37,7 @@ public class SubwooferShot extends Command {
 
         S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerShootSpeed);
         S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerShootSpeed);
-        S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexRollerShootSpeed);
+        S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexRollerShootSpeed);
       }
   }
   

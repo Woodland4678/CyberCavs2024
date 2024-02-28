@@ -19,9 +19,11 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private CANSparkMax intakeVerticalRoller; //Neo550 vertical roller
   private CANSparkMax intakeHorizontalRoller; //Neo horizontal roller
-  private CANSparkMax indexer; //Neo550 passing to roller
+  private CANSparkMax rampRoller; //Neo550 passing to roller
+  private CANSparkMax indexer;
   private SparkPIDController verticalController;
   private SparkPIDController horizontalController;
+  private SparkPIDController rampRollerController;
   private SparkPIDController indexerController;
   private DigitalInput pieceAquired; // Sensor after horizontal roller
   private DigitalInput noteOnRamp; //sensor if the note is on ramp
@@ -39,23 +41,25 @@ public class Intake extends SubsystemBase {
     verticalController = intakeVerticalRoller.getPIDController();
     intakeHorizontalRoller = new CANSparkMax(Constants.IntakeConstants.IntakeHorizontalRollerCanID, MotorType.kBrushless);
     horizontalController = intakeHorizontalRoller.getPIDController();
-    indexer = new CANSparkMax(Constants.IntakeConstants.indexerCanID, MotorType.kBrushless);
-    indexerController = indexer.getPIDController();
+    rampRoller = new CANSparkMax(Constants.IntakeConstants.indexerCanID, MotorType.kBrushless);
+    rampRollerController = rampRoller.getPIDController();
     pieceAquired = new DigitalInput(Constants.IntakeConstants.pieceAquireChannel);
     diverter = new AnalogInput(Constants.IntakeConstants.diverterUpChannel);
     noteOnRamp = new DigitalInput(Constants.IntakeConstants.noteOnRampSensor);
+    indexer = new CANSparkMax(Constants.IntakeConstants.indexerMotorCanID, MotorType.kBrushless);
+    indexerController = indexer.getPIDController();
     verticalController.setP(0.1);
     verticalController.setI(0);
     verticalController.setD(0);
     horizontalController.setP(0.1);
     horizontalController.setI(0);
     horizontalController.setD(0);
-    indexerController.setP(0.1);
-    indexerController.setI(0);
-    indexerController.setD(0);
+    rampRollerController.setP(0.1);
+    rampRollerController.setI(0);
+    rampRollerController.setD(0);
     integratedHorizontalRollerEncoder = intakeHorizontalRoller.getEncoder();
     integratedVerticalRollerEncoder = intakeVerticalRoller.getEncoder();
-    integratedIndexerEncoder = indexer.getEncoder();
+    integratedIndexerEncoder = rampRoller.getEncoder();
   }
 
   @Override
@@ -72,7 +76,7 @@ public class Intake extends SubsystemBase {
         if (getPieceAquired()) {
           setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
           setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
-          setIndexMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
+          setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
           intakeState++;
         }
       break;
@@ -84,7 +88,12 @@ public class Intake extends SubsystemBase {
       break;
     }
   }
-  
+  public void setIndexerRPM(double speed) {
+    indexerController.setReference(speed, com.revrobotics.CANSparkMax.ControlType.kVelocity);
+  }
+  public void setIndexerPecentOutput (double percent) {
+    indexer.set(percent);
+  }
   public double getIndexerVelocity() {
     return integratedIndexerEncoder.getVelocity();
   }
@@ -94,8 +103,8 @@ public class Intake extends SubsystemBase {
   public void setVerticalRollerRPM(double speed) {
     verticalController.setReference(speed, com.revrobotics.CANSparkMax.ControlType.kVelocity);
   }
-  public void setIndexerRPM(double speed) {
-    indexerController.setReference(speed, com.revrobotics.CANSparkMax.ControlType.kVelocity);
+  public void setRampRollerRPM(double speed) {
+    rampRollerController.setReference(speed, com.revrobotics.CANSparkMax.ControlType.kVelocity);
   }
   public boolean getPieceAquired() {
     return !pieceAquired.get();
@@ -118,17 +127,19 @@ public class Intake extends SubsystemBase {
   public void setVerticalPercentOutput(double percent) {
     intakeVerticalRoller.set(percent);
   }
-  public void setIndexMotorPercentOutput(double percent) {
-    indexer.set(percent);
+  public void setRampRollerMotorPercentOutput(double percent) {
+    rampRoller.set(percent);
   }
   public void stopIntakeMotors() {
-    indexer.stopMotor();
+    rampRoller.stopMotor();
     intakeVerticalRoller.stopMotor();
     intakeHorizontalRoller.stopMotor();
+    indexer.stopMotor();
   }
-  public void setAllMotorsPercentOutput(double horizontalSpeed, double verticalSpeed, double indexerSpeed) {
+  public void setAllMotorsPercentOutput(double horizontalSpeed, double verticalSpeed, double indexerSpeed, double rampRollerSpeed) {
     setHorizontalPercentOutput(horizontalSpeed);
     setVerticalPercentOutput(verticalSpeed);
-    setIndexMotorPercentOutput(indexerSpeed);
+    setRampRollerMotorPercentOutput(rampRollerSpeed);
+    setIndexerPecentOutput(indexerSpeed);
   }
 }

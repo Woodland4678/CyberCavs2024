@@ -26,7 +26,7 @@ public class ReverseNoteOutOfBot extends Command {
   public void execute() {
     if (S_Intake.isDiverterDown() == false){
       S_Intake.setVerticalPercentOutput(- (Constants.IntakeConstants.verticalRollerShootSpeed));
-      S_Intake.setIndexMotorPercentOutput(- (Constants.IntakeConstants.indexRollerShootSpeed));
+      S_Intake.setRampRollerMotorPercentOutput(- (Constants.IntakeConstants.indexRollerShootSpeed));
     }
   }
 

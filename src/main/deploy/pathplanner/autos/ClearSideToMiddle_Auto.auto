@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddle_Path1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "QuickShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddle_Path2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoGrabNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddle_Path3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "QuickShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddle_Path4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoGrabNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddle_Path5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "QuickShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "ClearSideToMiddle",
+  "choreoAuto": false
+}

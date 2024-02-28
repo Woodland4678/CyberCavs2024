@@ -117,8 +117,8 @@ public class RobotContainer {
     m_driverController.y().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(5000,-5000)));
     m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
     m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, m_driverController));
-    m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.5,0.5,0.5)));
-    m_driverController.pov(180).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(0.5,-0.5,-0.5)));
+    m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.5,0.5,0.5, 0.5)));
+    m_driverController.pov(180).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(0.5,-0.5,-0.5, -0.5)));
     m_driverController.pov(270).onTrue(new InstantCommand(() -> S_Intake.stopIntakeMotors()));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.3)));
     m_driverController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-0.30)));

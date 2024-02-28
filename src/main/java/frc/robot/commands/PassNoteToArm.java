@@ -47,7 +47,7 @@ public class PassNoteToArm extends Command {
       }
       else {
         S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
-        S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
+        S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
       }
       if (S_Intake.isDiverterDown() && S_Arm.MoveArm(Constants.ArmConstants.restPosition) < 4) {
         state ++;
@@ -65,7 +65,7 @@ public class PassNoteToArm extends Command {
 
     case 2:
       S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerOuttakeSpeed);
-      S_Intake.setIndexMotorPercentOutput(Constants.IntakeConstants.indexerOuttakeSpeed);
+      S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerOuttakeSpeed);
       S_Arm.setRollerOutputPercent(Constants.ArmConstants.armIntakeSpeed);
        
       if (S_Arm.getHasNote()) {
