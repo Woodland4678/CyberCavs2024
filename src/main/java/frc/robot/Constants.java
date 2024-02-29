@@ -25,6 +25,7 @@ public final class Constants {
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
     // Joystick Deadband
     public static final double LEFT_X_DEADBAND  = 0.1;
     public static final double LEFT_Y_DEADBAND  = 0.1;
@@ -48,7 +49,7 @@ public final class Constants {
     //public static final double angleAbsoluteOffset = 0;
     public static final double shooterStartingAngle = 64;
     public static final double angleGearRatio = 116.6666666666667;
-    public static final double angleAngleConversionFactor = 360 / angleGearRatio;
+    public static final double angleAngleConversionFactor = 360.0 / angleGearRatio;
     //public static final double restAngle = 85; // TODO Just a guess, change when robot is built
     public static final int subwooferShotRPMTolerance = 100;
     public static final int subwooferShotAngleTolerance = 5;
@@ -102,10 +103,10 @@ public final class Constants {
     public static final double shoulderLength = 19.07;
     public static final double elbowLength = 19.40;
 
-    public static final ArmPosition restPosition = new ArmPosition(4.7, 4.2, 35, false);
-    public static final ArmPosition AmpIntermediatePos1 = new ArmPosition(130, -154, 35, true);
-    public static final ArmPosition AmpIntermediatePos2 = new ArmPosition(5.55, 17.63, 35, false);
-    public static final ArmPosition ampScoring = new ArmPosition(6.5, 23.3, -35, false); // Approximate x and y values
+    public static final ArmPosition restPosition = new ArmPosition(4.7, 4.2, 0, false);
+    public static final ArmPosition AmpIntermediatePos1 = new ArmPosition(130, -154, 0, true);
+    public static final ArmPosition AmpIntermediatePos2 = new ArmPosition(5.55, 17.63, 0, false);
+    public static final ArmPosition ampScoring = new ArmPosition(6.5, 23.3, -50, false); // Approximate x and y values
     public static final ArmPosition trapScoring = new ArmPosition(10, 33, -35, false); //Approximate x and y values
     public static final ArmPosition testPos = new ArmPosition(11, 29, 0, false);
     public static final ArmPosition testPos1 = new ArmPosition(8, 16, 0, false);

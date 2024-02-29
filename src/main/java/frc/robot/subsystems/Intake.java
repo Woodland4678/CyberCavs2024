@@ -32,7 +32,7 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder integratedVerticalRollerEncoder;
   private RelativeEncoder integratedHorizontalRollerEncoder;
   private RelativeEncoder integratedIndexerEncoder;
-
+  private RelativeEncoder integratedRampRollerEncoder;
   int intakeState = 0;
   int count = 0;
 
@@ -57,9 +57,13 @@ public class Intake extends SubsystemBase {
     rampRollerController.setP(0.1);
     rampRollerController.setI(0);
     rampRollerController.setD(0);
+    indexerController.setP(0.1);
+    indexerController.setI(0);
+    indexerController.setD(0);
     integratedHorizontalRollerEncoder = intakeHorizontalRoller.getEncoder();
     integratedVerticalRollerEncoder = intakeVerticalRoller.getEncoder();
-    integratedIndexerEncoder = rampRoller.getEncoder();
+    integratedIndexerEncoder = indexer.getEncoder();
+    integratedRampRollerEncoder = rampRoller.getEncoder();
   }
 
   @Override
@@ -79,13 +83,19 @@ public class Intake extends SubsystemBase {
           setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
           intakeState++;
         }
-      break;
+        break;
       case 1:
         if (isNoteOnRamp()) {
-          intakeState = 0;
+          intakeState ++;
           stopIntakeMotors();
         }
-      break;
+        break;
+      case 2:
+        if (!isNoteOnRamp()) {
+          intakeState = 0;
+        }
+        break;
+        
     }
   }
   public void setIndexerRPM(double speed) {

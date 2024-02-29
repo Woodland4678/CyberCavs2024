@@ -74,7 +74,7 @@ public class PassNoteToArm extends Command {
        }
       break;
       case 3:
-        if (count > 5) {
+        if (count > 2) {
           isDone = true;
         }
         count ++;

@@ -78,9 +78,9 @@ public class Arm extends SubsystemBase {
     integratedShoulderEncoder.setPositionConversionFactor(Constants.ArmConstants.shoulderAngleConversionFactor);
     integratedElbowEncoder.setPositionConversionFactor(Constants.ArmConstants.elbowAngleConversionFactor);
     integratedWristEncoder.setPositionConversionFactor(Constants.ArmConstants.wristAngleConversionFactor);
-    shoulderController.setOutputRange(-0, 0);
-    elbowController.setOutputRange(-0, 0);
-    wristController.setOutputRange(-0.1, 0.1);
+    shoulderController.setOutputRange(-0.8, 0.8);
+    elbowController.setOutputRange(-0.8, 0.8);
+    wristController.setOutputRange(-0.2, 0.2);
     hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
     wristHomeSensor = new AnalogInput(Constants.ArmConstants.wristHomeSensorChannel);
     
@@ -174,12 +174,8 @@ public class Arm extends SubsystemBase {
       if (shoulderAngle >= 45 && shoulderAngle <= 138 && elbowAngle <= 0 && elbowAngle >= -175 ) { // 2023 values, change once robot done
         moveToAngle(shoulderAngle, elbowAngle);
       }
-      if (currentX > 17 || targetPos.wristPitchTarget > -30 || currentY > 25) {
-        wristController.setReference(targetPos.wristPitchTarget, com.revrobotics.CANSparkMax.ControlType.kPosition);
-      }
-      else {
-        armWristMotor.stopMotor();
-      }
+      
+      wristController.setReference(targetPos.wristPitchTarget, com.revrobotics.CANSparkMax.ControlType.kPosition);
       currentArmPosition = targetPos;
     }
     double error = Math.sqrt((Math.pow(currentX - targetPos.xTarget,2)) + (Math.pow(currentY - targetPos.yTarget, 2))); //returns distance to target
