@@ -65,7 +65,7 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private final CommandXboxController m_operatorController = 
       new CommandXboxController(OperatorConstants.kOperatorControllerPort);
-  private final LEDStrip ledStrip;
+  private LEDStrip ledStrip;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -211,5 +211,31 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   public void engageClimberLock() {
     S_Climber.engageLock();
   }
-  
+ public boolean isShoulderReady () {
+    return S_Arm.isShoulderReady();
+ }
+ public boolean isElbowReady(){
+    return S_Arm.isElbowReady();
+ }  
+ public boolean isFrontLeftSwerveReady(){
+  return S_Swerve.isModuleReady(0);
+ }
+ public boolean isFrontRightSwerveReady(){
+  return S_Swerve.isModuleReady(1);
+ }
+ public boolean isBackLeftSwerveReady(){
+  return S_Swerve.isModuleReady(2);
+ }
+ public boolean isBackRightSwerveReady(){
+  return S_Swerve.isModuleReady(3);
+ }
+ public boolean isGyroReady(){
+  return S_Swerve.isGyroReady();
+ }
+ public boolean isLimelightReady(){
+  return true;
+ }
+ public boolean isAprilTagCameraReady(){
+  return false;
+ }
 }

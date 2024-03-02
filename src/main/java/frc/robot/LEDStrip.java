@@ -23,7 +23,7 @@ public class LEDStrip {
         RAINBOW,
         ROBOTDISABLEDPATTERN
       }
-
+    
     LEDModes LEDMode;
 
     private static final LEDStrip instance = new LEDStrip();
@@ -32,7 +32,29 @@ public class LEDStrip {
     private double intervalSeconds= 0.5; 
 	private boolean blinkLEDon = true;
 	private double lastChange = 0;
-    private int diagnosticPattern = 0;
+    private int diagnosticPattern;
+    
+    // diagnostic segments 
+    /** Left segment 1 (starts at the top)*/  
+    public static final int elbowDiag = 0X01;
+    /** Left segment 2 */
+    public static final int shoulderDiag = 0X02;
+    /** Left segment 3*/
+    public static final int gyroDiag = 0X04;
+    /** Left segment 4 */
+    public static final int limelightDiag = 0X08;
+    /** Left segment 5 (bottom) */
+    public static final int apriltagDiag = 0X10;
+    /** Right segment 1 (starts at bottom) */
+    public static final int swerve1Diag = 0X20; // needs position on robot?
+    /** Right segment 2 */
+    public static final int swerve2Diag = 0X40; // ^
+    /** Right segment 3*/
+    public static final int swerve3Diag = 0X80; // ^
+    /** Right segment 4 */
+    public static final int swerve4Diag = 0X100; // ^
+    /** All segments blue */
+    public static final int allClear = 0X1FF;
 
     // private constructor so clients can't use it
     private LEDStrip(){
@@ -85,8 +107,8 @@ public class LEDStrip {
      *  Strips were divided into segments of LEDs, 1 segment per diagnostic, none spanning over multiple strips.
      *  
      */
-    private void diagnosticLEDmode(){
-        if (diagnosticPattern == 0x1FF) { // if all is good, go entirely blue
+    public void diagnosticLEDmode(){
+        if (diagnosticPattern == allClear) { // if all is good, go entirely blue
 	        setLEDMode(LEDModes.SOLIDBLUE);
         }
 	    else { // Something other than "all is well".  Light up the required segments that have a 0 bit in bval
@@ -98,41 +120,41 @@ public class LEDStrip {
 
             // First strip of LEDS, 6 leds per diagnostic state, 
             // represents shoulder/elbow/gryo/limelight/april tag camera (not necessarily in that order) 
-            if((diagnosticPattern & 0x01) != 0) {
+            if((diagnosticPattern & elbowDiag) != 0) {
                 for(int i = 0;i<=5;i++)
                     ledBuffer.setRGB(i, 0, 255, 0); 
             }
-            if((diagnosticPattern & 0x02) != 0) {
+            if((diagnosticPattern & shoulderDiag) != 0) {
                 for(int i = 6;i<=11;i++) 
                     ledBuffer.setRGB(i, 0, 255, 0); 
             }
-            if((diagnosticPattern & 0x04) != 0) {
+            if((diagnosticPattern & gyroDiag) != 0) {
                 for(int i = 12;i<=17;i++) 
                     ledBuffer.setRGB(i, 0, 255, 0); 
             }
-            if((diagnosticPattern & 0x08) != 0) {
+            if((diagnosticPattern & limelightDiag) != 0) {
                 for(int i = 18;i<=23;i++) 
                     ledBuffer.setRGB(i, 0, 255, 0); 
             }
-            if((diagnosticPattern & 0x10) != 0) {
+            if((diagnosticPattern & apriltagDiag) != 0) {
                 for(int i = 24;i<=29;i++) 
                     ledBuffer.setRGB(i, 0, 255, 0); 
             }
             // Second LED strip, 7 or 8 leds per diagnostic check
             // represents each each swerve module
-            if((diagnosticPattern & 0x20) != 0) {
+            if((diagnosticPattern & swerve1Diag) != 0) {
                 for(int i = 30;i<=36;i++) 
                     ledBuffer.setRGB(i, 0, 255, 0); 
             }
-            if((diagnosticPattern & 0x40) != 0) {
+            if((diagnosticPattern & swerve2Diag) != 0) {
                 for(int i = 37;i<=44;i++) 
                     ledBuffer.setRGB(i, 0, 255, 0); 
             }
-            if((diagnosticPattern & 0x80) != 0) {
+            if((diagnosticPattern & swerve3Diag) != 0) {
                 for(int i = 45;i<=51;i++) 
                     ledBuffer.setRGB(i, 0, 255, 0); 
             }
-            if((diagnosticPattern & 0x100) != 0){
+            if((diagnosticPattern & swerve4Diag) != 0){
                 for(int i = 52; i<=59;i++)
                     ledBuffer.setRGB(i, 0, 255, 0);
             }

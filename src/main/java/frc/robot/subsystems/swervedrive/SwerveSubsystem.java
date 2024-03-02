@@ -41,6 +41,7 @@ import org.photonvision.PhotonCamera;
 
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -166,6 +167,40 @@ public class SwerveSubsystem extends SubsystemBase
       limelight.getEntry("ledMode").setNumber(3);
     }
   
+  }
+  public boolean isModuleReady(int module) {
+    //double degrees = swerveDrive[module].getCanCoder().getDegrees();
+     if (swerveDrive.getModulePositions()[module].angle.getDegrees() != 0) {
+      return true;
+     }
+    return false;
+  }
+  public boolean isGyroReady() {
+    return true;
+    //return gyro.isConnected();
+    // double curGyro = getYaw().getDegrees();
+    // if (curGyro < chkGyroMinValue) {
+    //   chkGyroMinValue = curGyro;
+    // }
+    // else if (curGyro > chkGyroMaxValue) {
+    //   chkGyroMaxValue = curGyro;
+    // }
+    // if (Math.abs(Math.abs(chkGyroMaxValue) - Math.abs(chkGyroMaxValue)) > 0.5) {
+    //   return false;
+    // }
+    // if (Math.abs(getYaw().getDegrees() - chkGyroCurrentValue) != 0) {
+    //   chkGyroCnt = 50;
+    //   return true;
+    // }
+    // else {
+    //   chkGyroCnt--;
+    // }
+    // if (chkGyroCnt == 0) {
+    //   chkGyroCnt = 50;
+    //   return false;
+    // }
+    // chkGyroCurrentValue = curGyro;
+    // return false;
   }
   public boolean isLimelightReady() {
     InetAddress limelightIP;
