@@ -21,8 +21,8 @@ public class TestAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(() -> S_Swerve.resetSwerveModules()),
-      new InstantCommand(() -> S_Swerve.setHeadlights(true)),
-      S_Swerve.getAutonomousCommand("New Auto", true)
+     // new InstantCommand(() -> S_Swerve.setHeadlights(true)),
+      S_Swerve.getAutonomousCommand("TestRotateAuto", true)
      // new AutoGrabNote(S_Swerve)
     );
   }

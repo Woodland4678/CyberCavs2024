@@ -68,6 +68,7 @@ public class Arm extends SubsystemBase {
     wristController.setP(Constants.ArmConstants.wristP);
     wristController.setI(Constants.ArmConstants.wristI);
     wristController.setD(Constants.ArmConstants.wristD);
+    wristController.setIZone(Constants.ArmConstants.wristIz);
     rollerController.setP(0.1);
     rollerController.setI(0);
     rollerController.setD(0);
@@ -78,14 +79,18 @@ public class Arm extends SubsystemBase {
     integratedShoulderEncoder.setPositionConversionFactor(Constants.ArmConstants.shoulderAngleConversionFactor);
     integratedElbowEncoder.setPositionConversionFactor(Constants.ArmConstants.elbowAngleConversionFactor);
     integratedWristEncoder.setPositionConversionFactor(Constants.ArmConstants.wristAngleConversionFactor);
-    shoulderController.setOutputRange(-0.8, 0.8);
-    elbowController.setOutputRange(-0.8, 0.8);
-    wristController.setOutputRange(-0.2, 0.2);
+    shoulderController.setOutputRange(-0.9, 0.9);
+    elbowController.setOutputRange(-0.9, 0.9);
+    wristController.setOutputRange(-0.5, 0.5);
     hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
     wristHomeSensor = new AnalogInput(Constants.ArmConstants.wristHomeSensorChannel);
     
     resetToAbsolute();
     integratedWristEncoder.setPosition(0);
+    integratedRollerEncoder.setPosition(0);
+    armShoulderMotor.setSmartCurrentLimit(40);
+    armElbowMotor.setSmartCurrentLimit(40);
+    
   }
   @Override
   public void periodic() {
@@ -107,10 +112,11 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putBoolean(
                   "Arm has note sensor", getHasNote());
     SmartDashboard.putNumber("Arm Wrist Home Sensor", wristHomeSensor.getValue());
+    SmartDashboard.putNumber("Arm Roller Position", integratedRollerEncoder.getPosition());
 
   }
   public void moveToAngle(double shoulderAngle, double elbowAngle) {
-    shoulderController.setReference((shoulderAngle) , com.revrobotics.CANSparkMax.ControlType.kPosition); //90 - inverse calc
+    shoulderController.setReference((shoulderAngle) , com.revrobotics.CANSparkMax.ControlType.kPosition); 
     elbowController.setReference(elbowAngle, com.revrobotics.CANSparkMax.ControlType.kPosition);
     SmartDashboard.putNumber("Arm Shoulder Target", shoulderAngle);
     SmartDashboard.putNumber("Arm Elbow Target", elbowAngle);
@@ -158,6 +164,13 @@ public class Arm extends SubsystemBase {
     shoulderController.setD(d);
     shoulderController.setIZone(iz);
     shoulderController.setFF(ff);
+  }
+  public void setWristPIDF(double p, double i, double d, double iz, double ff) {
+    wristController.setP(p);
+    wristController.setI(i);
+    wristController.setD(d);
+    wristController.setIZone(iz);
+    wristController.setFF(ff);
   }
   private double calcShoulderAngle(double x, double y, double calculatedElbowAngle) {
     return Math.toDegrees(Math.atan(y / x) - Math.atan((Constants.ArmConstants.elbowLength * Math.sin(Math.toRadians(calculatedElbowAngle))) / (Constants.ArmConstants.elbowLength + Constants.ArmConstants.shoulderLength * Math.cos(Math.toRadians(calculatedElbowAngle)))));
@@ -287,4 +300,16 @@ public class Arm extends SubsystemBase {
   public void stopShoulderMotor() {
     armShoulderMotor.stopMotor();
   }
+  public void setWristPosition(double angle) {
+    wristController.setReference(angle, com.revrobotics.CANSparkMax.ControlType.kPosition);
+  }
+  public void setArmRollers(double pos) {
+    rollerController.setReference(pos, com.revrobotics.CANSparkMax.ControlType.kPosition);
+  }
+  public void setRollerPositionToZero() {
+    integratedRollerEncoder.setPosition(0);
+  }
+  public void moveArmRollers(double pos) {
+    rollerController.setReference(pos, com.revrobotics.CANSparkMax.ControlType.kPosition);
+  } 
 }

@@ -86,7 +86,7 @@ public class RobotContainer {
         Command driveFieldOrientedAnglularVelocity = S_Swerve.driveCommand(
         () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> m_driverController.getRawAxis(4));
+        () -> -m_driverController.getRawAxis(4));
     S_Swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // S_Swerve.setDefaultCommand(new TeleopSwerve(S_Swerve,
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
@@ -140,27 +140,36 @@ public class RobotContainer {
    // m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve, S_Intake));
     //m_driverController.a().onTrue(new MoveArmAmp(S_Arm));
     //m_driverController.b().onTrue(new MoveArmToRest(S_Arm));
-    m_driverController.rightTrigger().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-3000,-2500)));
+    //m_driverController.rightTrigger().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-3000,-2500)));
     m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
-    m_driverController.leftTrigger().whileTrue(new AutoGrabNote(S_Swerve, S_Intake));
+    m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, S_Shooter, S_Intake, m_driverController));
+    m_driverController.leftTrigger().whileTrue(new AutoGrabNote(S_Swerve, S_Intake, false));
     m_driverController.y().whileTrue(new SubwooferShot(S_Shooter, S_Intake));
     //m_driverController.y().whileTrue(new AutoAim(S_Swerve, m_driverController));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.5,0.5,-0.5, 0.5)));
+    m_driverController.leftBumper().onFalse(new InstantCommand(() ->S_Intake.stopIntakeMotors()));
     m_driverController.pov(180).onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(0.5,-0.5,0.5, -0.5)));
     m_driverController.pov(270).onTrue(new InstantCommand(() -> S_Intake.stopIntakeMotors()));
-    m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.3)));
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-1)));
     m_driverController.rightBumper().onFalse(new InstantCommand(() -> S_Arm.stopArmRollers()));
     //m_driverController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-0.30)));
     //m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.stopArmRollers()));
    // m_driverController.pov(0).onTrue(new PassNoteToArm(S_Arm, S_Intake));
     //m_driverController.pov(0).onTrue(new CalibrateWrist(S_Arm));
-    m_driverController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.setShooterAngle(92)));
+   // m_driverController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.setShooterAngle(80)));
+   // m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Shooter.setShooterAngle(69)));
     
     m_operatorController.a().onTrue(new MoveArmAmp(S_Arm));
     m_operatorController.b().onTrue(new PassNoteToArm(S_Arm, S_Intake));
     m_operatorController.y().onTrue(new MoveArmTrap(S_Arm));
     m_operatorController.x().onTrue(new MoveArmToRest(S_Arm));
     m_operatorController.back().onTrue(new CalibrateWrist(S_Arm));
+
+    m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.increaseShooterAngle()));
+    m_operatorController.pov(180).onTrue(new InstantCommand(() -> S_Shooter.decreaseShooterAngle()));
+    m_operatorController.pov(90).onTrue(new InstantCommand(() -> S_Shooter.stopAngleMotors()));
+   // m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> S_Arm.setWristPosition(0)));
+    // m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setWristPosition(45)));
     //m_operatorController.rightTrigger(new SendNoteToShooter());
    // m_operatorController.pov(0).onTrue(new ReverseNoteOutOfBot(S_Intake));
    // m_operatorController.pov(90).onTrue(new MoveClimber(S_Climber, 0)); //Change Climber Position
@@ -192,6 +201,9 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   public void setShoulderPIDF(double p, double i, double f, double iz, double ff) {
     S_Arm.setShoulderPIDF(p, i, f, iz, ff);
   }
+  public void setWristPIDF(double p, double i, double f, double iz, double ff) {
+    S_Arm.setWristPIDF(p, i, f, iz, ff);
+  }
 
   public void setShooterAnglePIDF(double p, double i, double f, double iz, double ff) {
     S_Shooter.setShooterAnglePIDF(p, i, f, iz, ff);
@@ -211,5 +223,14 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   public void engageClimberLock() {
     S_Climber.engageLock();
   }
-  
+  public void setShooterTargets(double leftRPM, double rightRPM) {
+    if (leftRPM == 0 || rightRPM == 0) {
+      S_Shooter.stopShooterMotor();
+    } else {
+      S_Shooter.setRightAndLeftRPM(rightRPM, leftRPM);
+    }
+  }
+ public double getPDHCurrentDraw(int channel) {
+  return PHD.getCurrent(channel);
+ } 
 }

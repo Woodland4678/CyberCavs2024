@@ -25,19 +25,20 @@ public class SubwooferShot extends Command {
   public void initialize() {
     
     S_Shooter.setShooterAngle(Constants.ShooterConstants.subwooferShotAngle);
-    S_Shooter.setRightAndLeftRPM(Constants.ShooterConstants.subwooferShotRPM, Constants.ShooterConstants.subwooferShotRPM);
+    S_Shooter.setRightAndLeftRPM(Constants.ShooterConstants.subwooferShotRightRPM, Constants.ShooterConstants.subwooferShotLeftRPM);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (S_Shooter.setShooterAngle(Constants.ShooterConstants.subwooferShotAngle) < Constants.ShooterConstants.subwooferShotAngleTolerance && 
-      Math.abs(S_Shooter.getLeftVelocity()) < Constants.ShooterConstants.subwooferShotRPMTolerance &&
-      Math.abs(S_Shooter.getRightVelocity()) < Constants.ShooterConstants.subwooferShotRPMTolerance ) {
+      Math.abs(S_Shooter.getLeftVelocity() - Constants.ShooterConstants.subwooferShotLeftRPM) < Constants.ShooterConstants.subwooferShotRPMTolerance &&
+      Math.abs(S_Shooter.getRightVelocity() - Constants.ShooterConstants.subwooferShotRightRPM) < Constants.ShooterConstants.subwooferShotRPMTolerance ) {
 
         S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerShootSpeed);
         S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerShootSpeed);
-        S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexRollerShootSpeed);
+        S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.rampRollerShooterSpeed);
+        S_Intake.setIndexerPecentOutput(Constants.IntakeConstants.indexRollerShootSpeed);
       }
   }
   

@@ -24,6 +24,9 @@ public class MoveArmToRest extends Command {
   @Override
   public void initialize() {
     moveToAmpState = 0;
+    if (S_Arm.getCurrentXPosition() < 5 && S_Arm.getCurrentYPosition() < 5.5) {
+      moveToAmpState = 2;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

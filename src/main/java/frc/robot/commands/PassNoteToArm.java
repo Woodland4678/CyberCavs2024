@@ -31,6 +31,14 @@ public class PassNoteToArm extends Command {
     pause = 0;
     count = 0;
     isDone = false;
+    if (S_Intake.isDiverterDown()) {
+      state = 2;
+    }
+    if (S_Arm.MoveArm(Constants.ArmConstants.restPosition) > 3) { //don't move the note to the arm if the arm isn't in the right spot
+      state = -1; 
+      isDone = true;
+      //TODO blink LEDs red or something
+    }
 
   }
 
@@ -54,7 +62,6 @@ public class PassNoteToArm extends Command {
       }
         
       break;
-
     case 1:
       pause ++;
       S_Intake.stopIntakeMotors();
@@ -69,15 +76,10 @@ public class PassNoteToArm extends Command {
       S_Arm.setRollerOutputPercent(Constants.ArmConstants.armIntakeSpeed);
        
       if (S_Arm.getHasNote()) {
-        state++;
-        //isDone = true;
+        S_Arm.setRollerPositionToZero();
+        S_Arm.moveArmRollers(Constants.ArmConstants.intakeRollerPosition);
+        isDone = true;
        }
-      break;
-      case 3:
-        if (count > 2) {
-          isDone = true;
-        }
-        count ++;
       break;
     }
   }
@@ -86,8 +88,6 @@ public class PassNoteToArm extends Command {
   @Override
   public void end(boolean interrupted) {
     S_Intake.stopIntakeMotors();
-    S_Arm.stopArmRollers();
-
   }
 
   // Returns true when the command should end.

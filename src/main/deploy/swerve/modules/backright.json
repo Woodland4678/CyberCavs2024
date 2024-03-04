@@ -3,22 +3,22 @@
     "front": -12.375,
     "left": -9.375
   },
-  "absoluteEncoderOffset": 34.3, 
+  "absoluteEncoderOffset": 51.45,
   "absoluteEncoderInverted": false,
   "drive": {
     "type": "sparkflex",
-    "id": 2,
+    "id": 7,
     "canbus": null
   },
   "angle": {
     "type": "sparkmax",
-    "id": 1,
+    "id": 8,
     "canbus": null
   },
   
   "encoder": {
     "type": "ctre_mag",
-    "id": 3,
+    "id": 0,
     "canbus": null
   },
   "inverted": {

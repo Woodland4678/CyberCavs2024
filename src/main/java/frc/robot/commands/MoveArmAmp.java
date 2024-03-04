@@ -34,7 +34,7 @@ public class MoveArmAmp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Arm Move To Amp State", moveToAmpState);
+    //SmartDashboard.putNumber("Arm Move To Amp State", moveToAmpState);
     switch (moveToAmpState) {
       case 0:
        // S_Arm.MoveArm(Constants.ArmConstants.AmpIntermediatePos1);
