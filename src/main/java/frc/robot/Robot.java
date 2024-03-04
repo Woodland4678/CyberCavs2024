@@ -11,10 +11,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.LEDStrip.LEDModes;
+
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.text.AbstractDocument.LeafElement;
+
+import com.ctre.phoenix6.signals.Led1OffColorValue;
 
 import swervelib.parser.SwerveParser;
 
@@ -103,12 +107,28 @@ public class Robot extends TimedRobot
     m_robotContainer.turnOffClimberLock();
     disabledTimer.reset();
     disabledTimer.start();
+
     ledstrip = LEDStrip.getInstance();
+    // ??? test
+    // System.out.print("disabledInit() LEDStrip.getInstance() = " + ledstrip.toString());
+    for (int index = 0; index < ledstrip.ledBuffer.getLength(); index++){
+			ledstrip.ledBuffer.setRGB(index, 0, 0, 255);
+		}
+    //System.out.print("disabledInit() ledstrip.ledBuffer = " + ledstrip.ledBuffer.toString());
+    ledstrip.addressableLED.setData(ledstrip.ledBuffer);
   }
 
   @Override
   public void disabledPeriodic()
   {
+ledstrip = LEDStrip.getInstance();
+    // ??? test
+    // System.out.print("disabledPeriodic() LEDStrip.getInstance() = " + ledstrip.toString());
+    for (int index = 0; index < ledstrip.ledBuffer.getLength(); index++){
+			ledstrip.ledBuffer.setRGB(index, 0, 0, 255);
+		}
+    ledstrip.addressableLED.setData(ledstrip.ledBuffer);
+
     var diagState = 0; //diagnostic state 
     m_robotContainer.resetArmAngles();
     // 0x01 is first set of LEDs (lower right).  Front right Swerve
@@ -146,8 +166,12 @@ public class Robot extends TimedRobot
     if (m_robotContainer.isBackRightSwerveReady()){
       diagState += LEDStrip.swerve4Diag; 
     }
+    
+    /*
     ledstrip.setDiagnosticPattern(diagState);
     ledstrip.diagnosticLEDmode();
+    ledstrip.setLEDMode(LEDModes.SOLIDBLUE);
+    */
     // if (disabledTimer.hasElapsed(Constants.Drivebase.WHEEL_LOCK_TIME))
     // {
     //   m_robotContainer.setMotorBrake(false);
