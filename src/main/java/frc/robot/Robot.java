@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.io.File;
 import java.io.IOException;
+
+import javax.swing.text.AbstractDocument.LeafElement;
+
 import swervelib.parser.SwerveParser;
 
 /**
@@ -37,6 +40,8 @@ public class Robot extends TimedRobot
   private RobotContainer m_robotContainer;
 
   private Timer disabledTimer;
+
+  private LEDStrip ledstrip;
 
   public Robot()
   {
@@ -119,12 +124,51 @@ public class Robot extends TimedRobot
     m_robotContainer.turnOffClimberLock();
     disabledTimer.reset();
     disabledTimer.start();
+    ledstrip = LEDStrip.getInstance();
   }
 
   @Override
   public void disabledPeriodic()
   {
+    var diagState = 0; //diagnostic state 
     m_robotContainer.resetArmAngles();
+    // 0x01 is first set of LEDs (lower right).  Front right Swerve
+    // 0x02 is second set (mid lower right). Shoulder encoder
+    // 0x04 is third set (mid upper right). Elbow encoder
+    // 0x08 is 4th set (upper right).  Rear right Swerve
+    // 0x10 is 5th set (upper left). Rear left Swerve
+    // 0x20 is 6th set (mid upper left).  Gyro
+    // 0x40 is 7th set (mid lower left).  Limelight
+    // 0x80 is 8th set (lower left).  Front left Swerve
+    if (m_robotContainer.isElbowReady()){
+      diagState += LEDStrip.elbowDiag; 
+    }
+    if (m_robotContainer.isShoulderReady()){
+      diagState += LEDStrip.shoulderDiag; 
+    }
+    if (m_robotContainer.isGyroReady()){
+      diagState += LEDStrip.gyroDiag; 
+    }
+    if (m_robotContainer.isLimelightReady()){
+      diagState += LEDStrip.limelightDiag; 
+    }
+    if (m_robotContainer.isAprilTagCameraReady()){
+      diagState += LEDStrip.apriltagDiag;
+    }  
+    if (m_robotContainer.isFrontLeftSwerveReady()){
+      diagState += LEDStrip.swerve1Diag; 
+    }
+    if (m_robotContainer.isFrontRightSwerveReady()){
+      diagState += LEDStrip.swerve2Diag; 
+    }
+    if (m_robotContainer.isBackLeftSwerveReady()){
+      diagState += LEDStrip.swerve3Diag; 
+    }
+    if (m_robotContainer.isBackRightSwerveReady()){
+      diagState += LEDStrip.swerve4Diag; 
+    }
+    ledstrip.setDiagnosticPattern(diagState);
+    ledstrip.diagnosticLEDmode();
     // if (disabledTimer.hasElapsed(Constants.Drivebase.WHEEL_LOCK_TIME))
     // {
     //   m_robotContainer.setMotorBrake(false);

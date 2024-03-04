@@ -300,6 +300,26 @@ public class Arm extends SubsystemBase {
   public void stopShoulderMotor() {
     armShoulderMotor.stopMotor();
   }
+
+  public boolean isElbowReady() {
+    /*
+     * ??? Need real values
+     */
+    if (elbowAbsolute.getAbsolutePosition()*360 < 276 && elbowAbsolute.getAbsolutePosition()*360 > 101) {
+      return true;
+    }
+    return false;
+  }
+  public boolean isShoulderReady() {
+    /*
+     *  ??? Need real values
+     */
+    if (shoulderAbsolute.getAbsolutePosition() * 360 < 178 && shoulderAbsolute.getAbsolutePosition()*360 > 89) {
+      return true;
+    }
+    return false;
+  }
+  }
   public void setWristPosition(double angle) {
     wristController.setReference(angle, com.revrobotics.CANSparkMax.ControlType.kPosition);
   }
