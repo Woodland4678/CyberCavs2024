@@ -35,6 +35,9 @@ public class Robot extends TimedRobot
   double tunePID_KD;
   double tunePID_KIz;
   double tunePID_KFF;
+
+  double tuneShot_KLeftRPM;
+  double tuneShot_KRightRPM;
   private static Robot   instance;
   private        Command m_autonomousCommand;
 
@@ -56,7 +59,10 @@ public class Robot extends TimedRobot
     pidTuningChooser.addOption("AutoGrabNote_Y_PID", "AutoGrabNote_Y_PID");
     pidTuningChooser.addOption("AutoGrabNote_R_PID", "AutoGrabNote_R_PID");
     pidTuningChooser.addOption("AutoAimPID", "AutoAimPID");
+    pidTuningChooser.addOption("WristPID", "WristPID");
+     pidTuningChooser.addOption("ShooterSpeeds", "ShooterSpeeds");
     pidTuningChooser.setDefaultOption("AutoAimPID", "AutoAimPID");
+   
   }
 
   public static Robot getInstance()
@@ -78,6 +84,21 @@ public class Robot extends TimedRobot
     // immediately when disabled, but then also let it be pushed more 
     disabledTimer = new Timer();
     m_robotContainer.turnOffClimberLock();
+    tunePID_KP =0; 
+    tunePID_KI = 0;
+    tunePID_KD = 0; 
+    tunePID_KIz = 0; 
+    tunePID_KFF = 0; 
+    tuneShot_KLeftRPM = 0;
+    tuneShot_KRightRPM = 0;
+
+    SmartDashboard.putNumber("TunePID P Gain", tunePID_KP);
+    SmartDashboard.putNumber("TunePID I Gain", tunePID_KI);
+    SmartDashboard.putNumber("TunePID D Gain", tunePID_KD);
+    SmartDashboard.putNumber("TunePID I Zone", tunePID_KIz);
+    SmartDashboard.putNumber("TunePID Feed Forward", tunePID_KFF);
+    SmartDashboard.putNumber("TuneShot Left RPM", tuneShot_KLeftRPM);
+    SmartDashboard.putNumber("TuneShot Right RPM", tuneShot_KRightRPM);
   }
 
   /**
@@ -217,17 +238,7 @@ ledstrip = LEDStrip.getInstance();
     m_robotContainer.setDriveMode();
     m_robotContainer.setMotorBrake(true);
 
-    tunePID_KP =0; 
-    tunePID_KI = 0;
-    tunePID_KD = 0; 
-    tunePID_KIz = 0; 
-    tunePID_KFF = 0; 
-
-    SmartDashboard.putNumber("TunePID P Gain", tunePID_KP);
-    SmartDashboard.putNumber("TunePID I Gain", tunePID_KI);
-    SmartDashboard.putNumber("TunePID D Gain", tunePID_KD);
-    SmartDashboard.putNumber("TunePID I Zone", tunePID_KIz);
-    SmartDashboard.putNumber("TunePID Feed Forward", tunePID_KFF);
+    
   }
 
   /**
@@ -242,7 +253,9 @@ ledstrip = LEDStrip.getInstance();
     double tunePID_Dashboard_D = SmartDashboard.getNumber("TunePID D Gain", 0);
     double tunePID_Dashboard_Iz = SmartDashboard.getNumber("TunePID I Zone", 0);
     double tunePID_Dashboard_FF = SmartDashboard.getNumber("TunePID Feed Forward", 0);
-    if (tunePID_Dashboard_P != tunePID_KP || tunePID_Dashboard_I != tunePID_KI || tunePID_Dashboard_D != tunePID_KD || tunePID_Dashboard_Iz != tunePID_KIz || tunePID_Dashboard_FF != tunePID_KFF) {
+    double tuneShot_Dashboard_LeftRPM = SmartDashboard.getNumber("TuneShot Left RPM", 0);
+    double tuneShot_Dashboard_RightRPM = SmartDashboard.getNumber("TuneShot Right RPM", 0);
+    if (tunePID_Dashboard_P != tunePID_KP || tunePID_Dashboard_I != tunePID_KI || tunePID_Dashboard_D != tunePID_KD || tunePID_Dashboard_Iz != tunePID_KIz || tunePID_Dashboard_FF != tunePID_KFF || tuneShot_Dashboard_LeftRPM != tuneShot_KLeftRPM || tuneShot_Dashboard_RightRPM != tuneShot_KRightRPM) {
       if (pidTuningChooser.getSelected().equals("ShooterMotorPIDF")){
          m_robotContainer.setShooterMotorsPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
       }
@@ -257,6 +270,12 @@ ledstrip = LEDStrip.getInstance();
       }
       else if (pidTuningChooser.getSelected().equals("AutoAimPID")){
          m_robotContainer.setAutoAimPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+      }
+      else if (pidTuningChooser.getSelected().equals("ShooterSpeeds")) {
+        m_robotContainer.setShooterTargets(tuneShot_Dashboard_LeftRPM, tuneShot_Dashboard_RightRPM);
+      }
+      else if (pidTuningChooser.getSelected().equals("WristPID")) {
+        m_robotContainer.setWristPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF);
       }
       // else if (pidTuningChooser.getSelected().equals("AutoGrabNote_X_PID")){
       //    m_robotContainer.setAutoGrabNoteXPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
@@ -273,6 +292,7 @@ ledstrip = LEDStrip.getInstance();
       tunePID_KIz = tunePID_Dashboard_Iz;
       tunePID_KFF = tunePID_Dashboard_FF;
     }
+    
     
   }
 

@@ -30,10 +30,12 @@ public class AutoGrabNote extends Command {
   boolean isDone = false;
   int waitCnt = 0;
   ChassisSpeeds driveSpeed;
+  boolean isAuto = false;
   /** Creates a new AutoGrabNote. */
-  public AutoGrabNote(SwerveSubsystem S_Swerve, Intake S_Intake) {
+  public AutoGrabNote(SwerveSubsystem S_Swerve, Intake S_Intake, boolean isAuto) {
     this.S_Swerve = S_Swerve;
     this.S_Intake = S_Intake;
+    this.isAuto = isAuto;
     addRequirements(S_Swerve, S_Intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -50,13 +52,14 @@ public class AutoGrabNote extends Command {
     rSpeed = 0;
     xSpeed = 0;
     ySpeed = 0;
-    S_Swerve.setLimelightPipeline(3); //was 0
+    S_Swerve.setLimelightPipeline(0); //was 0
     S_Swerve.setLimelightLED(false);
     xController.setSetpoint(Constants.Swerve.autoGrabNote_X_Target);
     xController.setTolerance(Constants.Swerve.autoGrabNote_X_Tolerance);
     yController.setSetpoint(Constants.Swerve.autoGrabNote_Y_Target);
     yController.setTolerance(Constants.Swerve.autoGrabNote_Y_Tolerance);
-    rController.setSetpoint(S_Swerve.getHeading().getDegrees());
+   // rController.setSetpoint(S_Swerve.getHeading().getDegrees());
+    rController.setSetpoint(0);
     rController.setTolerance(Constants.Swerve.autoGrabNote_R_Tolerance);
     grabState = 0;
     S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
@@ -70,23 +73,20 @@ public class AutoGrabNote extends Command {
     switch(grabState) {
       case 0:
         if (S_Swerve.limelightHasTarget() == 1) {
-            degrees = S_Swerve.getHeading().getDegrees();
-            if (rController.getSetpoint() > 0 && degrees < 0) {
-              degrees = 360 + degrees;
-            }
-            else if (rController.getSetpoint() < 0 && degrees > 0) {
-              degrees = degrees - 360;
-            }
-            // if (degrees < 0) {
-            //   degrees += 360;
+            // degrees = S_Swerve.getHeading().getDegrees();
+            // if (rController.getSetpoint() > 0 && degrees < 0) {
+            //   degrees = 360 + degrees;
             // }
-            //var boundingBoxXY = s_Swerve.getBoundingBoxX();
-            rSpeed = rController.calculate(degrees);
-            xSpeed = xController.calculate(S_Swerve.getLimelightX());
+            // else if (rController.getSetpoint() < 0 && degrees > 0) {
+            //   degrees = degrees - 360;
+            // }
+           
+            rSpeed = rController.calculate(S_Swerve.getLimelightX());
+           // xSpeed = xController.calculate(S_Swerve.getLimelightX());
             double yMeasurement = S_Swerve.getLimelightY();
                   
             ySpeed = yController.calculate(yMeasurement);                     
-            driveSpeed = new ChassisSpeeds(ySpeed, -xSpeed, rSpeed);
+            driveSpeed = new ChassisSpeeds(-ySpeed, 0, rSpeed); //no x speed for now
             
             SmartDashboard.putNumber("rSpeed", rSpeed);
             SmartDashboard.putNumber("xSpeed", xSpeed);
@@ -112,10 +112,13 @@ public class AutoGrabNote extends Command {
             }
         }
         else {
-          driveSpeed = new ChassisSpeeds(0, 0, 1.75);
-          rController.setSetpoint(S_Swerve.getHeading().getDegrees());
-          S_Swerve.setChassisSpeeds(driveSpeed);
-          //S_Swerve.stop();
+          if (isAuto) {
+            driveSpeed = new ChassisSpeeds(0, 0, 1.75);
+            rController.setSetpoint(S_Swerve.getHeading().getDegrees());
+            S_Swerve.setChassisSpeeds(driveSpeed);
+          } else {
+            S_Swerve.stop();
+          }
         }
       break;
       case 1:

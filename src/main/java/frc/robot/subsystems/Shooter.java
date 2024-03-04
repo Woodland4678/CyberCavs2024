@@ -33,6 +33,8 @@ public class Shooter extends SubsystemBase {
   double shooterRightRPMTarget = 0;
   double shooterLeftRPMTarget = 0;
 
+  double shooterAngleTarget = Constants.ShooterConstants.shooterStartingAngle;
+
   /** Creates a new Shooter. */
   public Shooter() {
     shooterRightMotor = new CANSparkFlex(Constants.ShooterConstants.shooterRightMotorCanID, MotorType.kBrushless);
@@ -46,12 +48,13 @@ public class Shooter extends SubsystemBase {
     angleMotorController.setP(Constants.ShooterConstants.angleP);
     angleMotorController.setI(Constants.ShooterConstants.angleI);
     angleMotorController.setD(Constants.ShooterConstants.angleD);
+    angleMotorController.setFF(Constants.ShooterConstants.angleFF);
     integratedRightMotorEncoder = shooterRightMotor.getEncoder();
     integratedLeftMotorEncoder = shooterLeftMotor.getEncoder();
     integratedAngleMotorEncoder = shooterAngleMotor.getEncoder();
     integratedAngleMotorEncoder.setPositionConversionFactor(Constants.ShooterConstants.angleAngleConversionFactor);
 
-    angleMotorController.setOutputRange(-0.1, 0.1);
+    angleMotorController.setOutputRange(-0.6, 0.6);
 
     integratedAngleMotorEncoder.setPosition(Constants.ShooterConstants.shooterStartingAngle);
   
@@ -108,9 +111,11 @@ public class Shooter extends SubsystemBase {
     rightMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
     rightMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
     rightMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
+    rightMotorController.setFF(Constants.ShooterConstants.shooter_SpinUp_FF);
     leftMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
     leftMotorController.setI(Constants.ShooterConstants.shooter_SpinUp_I);
     leftMotorController.setD(Constants.ShooterConstants.shooter_SpinUp_D);
+    leftMotorController.setFF(Constants.ShooterConstants.shooter_SpinUp_FF);
   }
   public void setShooterPIDFToMaintain() {
     rightMotorController.setP(Constants.ShooterConstants.shooter_Maintain_P);
@@ -163,5 +168,19 @@ public class Shooter extends SubsystemBase {
     leftMotorController.setD(d);
     leftMotorController.setIZone(iz);
     leftMotorController.setFF(ff);
+  }
+  public void increaseShooterAngle() {
+    shooterAngleTarget++;
+    if (shooterAngleTarget > 92) {
+      shooterAngleTarget = 92;
+    }
+    setShooterAngle(shooterAngleTarget);
+  }
+  public void decreaseShooterAngle() {
+    shooterAngleTarget--;
+    if (shooterAngleTarget < 64) {
+      shooterAngleTarget = 64;
+    }
+    setShooterAngle(shooterAngleTarget);
   }
 }

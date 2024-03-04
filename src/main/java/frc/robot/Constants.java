@@ -38,14 +38,16 @@ public final class Constants {
     public static final int shooterAngleMotorCanID = 19;
     //public static final int shooterAngleEncoderAbsoluteID = 4;
     public static final double shooter_SpinUp_P = 0.0003;
-    public static final double shooter_SpinUp_I = 0.000001;
+    public static final double shooter_SpinUp_I = 0.0;
     public static final double shooter_SpinUp_D = 0;
+    public static final double shooter_SpinUp_FF = 0.00016;
     public static final double shooter_Maintain_P = 0.10;
     public static final double shooter_Maintain_I = 0;
     public static final double shooter_Maintain_D = 0;
-    public static final double angleP = 0.1;
-    public static final double angleI = 0;
+    public static final double angleP = 0.04;
+    public static final double angleI = 0.00001;
     public static final double angleD = 0;
+    public static final double angleFF = 0;
     //public static final double angleAbsoluteOffset = 0;
     public static final double shooterStartingAngle = 64;
     public static final double angleGearRatio = 116.6666666666667;
@@ -53,11 +55,12 @@ public final class Constants {
     //public static final double restAngle = 85; // TODO Just a guess, change when robot is built
     public static final int subwooferShotRPMTolerance = 100;
     public static final int subwooferShotAngleTolerance = 5;
-    public static final double subwooferShotAngle = 70;
-    public static final double subwooferShotRPM = 2000;
+    public static final double subwooferShotAngle = 64;
+    public static final double subwooferShotLeftRPM = -3000;
+    public static final double subwooferShotRightRPM = -2300;
   }
   public static class Swerve {
-    public static final int headlightsRelayChannel = 0;
+    public static final int headlightsRelayChannel = 3;
     public static final double autoGrabNote_X_P = 0.05;
     public static final double autoGrabNote_X_I = 0;
     public static final double autoGrabNote_X_D = 0;
@@ -88,9 +91,10 @@ public final class Constants {
     public static final double elbowP = 0.015;
     public static final double elbowI = 0;
     public static final double elbowD = 1;
-    public static final double wristP = 0.0018;
-    public static final double wristI = 0.0000065;
+    public static final double wristP = 0.006;
+    public static final double wristI = 0.0001;
     public static final double wristD = 0;
+    public static final double wristIz = 5;
     public static final int wristMagSensorMaxValue = 950;
     public static final double shoulderAbsoluteOffset = 195.8; //arm resting against the limelight holder
     public static final double elbowAbsoluteOffset = 301.4; 
@@ -102,11 +106,12 @@ public final class Constants {
     public static final double wristAngleConversionFactor = 360.0 / wristGearRatio;
     public static final double shoulderLength = 19.07;
     public static final double elbowLength = 19.40;
+    public static final double intakeRollerPosition = 15.4; // Some Number, TODO
 
     public static final ArmPosition restPosition = new ArmPosition(4.7, 4.2, 0, false);
-    public static final ArmPosition AmpIntermediatePos1 = new ArmPosition(130, -154, 0, true);
+    public static final ArmPosition AmpIntermediatePos1 = new ArmPosition(128, -154, 0, true);
     public static final ArmPosition AmpIntermediatePos2 = new ArmPosition(5.55, 17.63, 0, false);
-    public static final ArmPosition ampScoring = new ArmPosition(6.5, 23.3, -50, false); // Approximate x and y values
+    public static final ArmPosition ampScoring = new ArmPosition(7, 29, -35, false); // Approximate x and y values
     public static final ArmPosition trapScoring = new ArmPosition(10, 33, -35, false); //Approximate x and y values
     public static final ArmPosition testPos = new ArmPosition(11, 29, 0, false);
     public static final ArmPosition testPos1 = new ArmPosition(8, 16, 0, false);
@@ -122,9 +127,10 @@ public final class Constants {
     public static final int pieceAquireChannel = 6;
     public static final int diverterUpChannel = 1;
     public static final int noteOnRampSensor = 9;
-    public static final double indexRollerShootSpeed = 0.5;
-    public static final double horizontalRollerShootSpeed = 0.5;
-    public static final double verticalRollerShootSpeed = 0.5;
+    public static final double indexRollerShootSpeed = -0.9;
+    public static final double rampRollerShooterSpeed = 0.8;
+    public static final double horizontalRollerShootSpeed = 0.7;
+    public static final double verticalRollerShootSpeed = 0.7;
 
     public static final double horizontalRollerIntakeSpeed = -0.7;
     public static final double verticalRollerIntakeSpeed = 0.7;

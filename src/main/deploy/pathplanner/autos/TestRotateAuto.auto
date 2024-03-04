@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 3.0,
+      "x": 2,
       "y": 2
     },
-    "rotation": 180.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -15,18 +15,6 @@
           "type": "path",
           "data": {
             "pathName": "TestPathRotate"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoGrabNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "New New Path"
           }
         }
       ]
