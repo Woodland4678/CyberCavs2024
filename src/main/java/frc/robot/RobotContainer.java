@@ -6,15 +6,18 @@ package frc.robot;
 
 import frc.robot.Autos.TestAuto;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoAdjustShooterAngle;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.AutoGrabNote;
 import frc.robot.commands.CalibrateWrist;
+import frc.robot.commands.ClimberDown;
 import frc.robot.commands.MoveArmAmp;
 import frc.robot.commands.MoveArmToRest;
 import frc.robot.commands.MoveArmTrap;
 import frc.robot.commands.MoveClimber;
 import frc.robot.commands.QuickShoot;
 import frc.robot.commands.ReverseNoteOutOfBot;
+import frc.robot.commands.RotateToAmp;
 import frc.robot.commands.SubwooferShot;
 import frc.robot.commands.NormalShoot;
 import frc.robot.commands.PassNoteToArm;
@@ -84,10 +87,11 @@ public class RobotContainer {
         () -> m_driverController.getRawAxis(4));
 
         Command driveFieldOrientedAnglularVelocity = S_Swerve.driveCommand(
-        () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(-m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> -m_driverController.getRawAxis(4));
     S_Swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    S_Shooter.setDefaultCommand(new AutoAdjustShooterAngle(S_Shooter, S_Intake, S_Swerve));
     // S_Swerve.setDefaultCommand(new TeleopSwerve(S_Swerve,
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
@@ -95,7 +99,11 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("AutoGrabNote", new AutoGrabNote(S_Swerve, S_Intake, false));
     NamedCommands.registerCommand("QuickShoot", new QuickShoot(S_Shooter, S_Intake));
-    NamedCommands.registerCommand("Shoot", new NormalShoot(S_Shooter, S_Swerve, S_Intake));
+    NamedCommands.registerCommand("Shoot", new AutoAim(S_Swerve, S_Shooter, S_Intake, m_driverController, true));
+    NamedCommands.registerCommand("SetShooterCloseShot", new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-3000, -2600)));
+    NamedCommands.registerCommand("SetShooterAngleCloseShot", new InstantCommand(() -> S_Shooter.setShooterAngle(77)));
+    NamedCommands.registerCommand("SubwooferShot", new SubwooferShot(S_Shooter, S_Intake, true));
+
   }
 
   /**
@@ -137,14 +145,14 @@ public class RobotContainer {
      */
     m_driverController.back().onTrue(new InstantCommand(() -> S_Swerve.zeroGyro()));
     m_driverController.start().onTrue(new InstantCommand(() -> S_Swerve.resetSwerveModules()));
-   // m_driverController.a().whileTrue(new AutoGrabNote(S_Swerve, S_Intake));
+    m_driverController.a().whileTrue(new RotateToAmp(S_Swerve, m_driverController));
     //m_driverController.a().onTrue(new MoveArmAmp(S_Arm));
     //m_driverController.b().onTrue(new MoveArmToRest(S_Arm));
     //m_driverController.rightTrigger().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-3000,-2500)));
     m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
-    m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, S_Shooter, S_Intake, m_driverController));
+    m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, S_Shooter, S_Intake, m_driverController, false));
     m_driverController.leftTrigger().whileTrue(new AutoGrabNote(S_Swerve, S_Intake, false));
-    m_driverController.y().whileTrue(new SubwooferShot(S_Shooter, S_Intake));
+    m_driverController.y().whileTrue(new SubwooferShot(S_Shooter, S_Intake, false));
     //m_driverController.y().whileTrue(new AutoAim(S_Swerve, m_driverController));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.5,0.5,-0.5, 0.5)));
     m_driverController.leftBumper().onFalse(new InstantCommand(() ->S_Intake.stopIntakeMotors()));
@@ -152,6 +160,8 @@ public class RobotContainer {
     m_driverController.pov(270).onTrue(new InstantCommand(() -> S_Intake.stopIntakeMotors()));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-1)));
     m_driverController.rightBumper().onFalse(new InstantCommand(() -> S_Arm.stopArmRollers()));
+    m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.6)));
+    m_driverController.pov(90).onFalse(new InstantCommand(() -> S_Arm.stopArmRollers()));
     //m_driverController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-0.30)));
     //m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.stopArmRollers()));
    // m_driverController.pov(0).onTrue(new PassNoteToArm(S_Arm, S_Intake));
@@ -160,14 +170,22 @@ public class RobotContainer {
    // m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Shooter.setShooterAngle(69)));
     
     m_operatorController.a().onTrue(new MoveArmAmp(S_Arm));
-    m_operatorController.b().onTrue(new PassNoteToArm(S_Arm, S_Intake));
-    m_operatorController.y().onTrue(new MoveArmTrap(S_Arm));
+    m_operatorController.b().onTrue(new PassNoteToArm(S_Arm, S_Intake, S_Shooter));
+    m_operatorController.y().onTrue(new MoveArmTrap(S_Arm, S_Shooter));
     m_operatorController.x().onTrue(new MoveArmToRest(S_Arm));
     m_operatorController.back().onTrue(new CalibrateWrist(S_Arm));
 
     m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.increaseShooterAngle()));
+    //m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(Constants.ClimberConstants.maxClimberHeight)));
     m_operatorController.pov(180).onTrue(new InstantCommand(() -> S_Shooter.decreaseShooterAngle()));
-    m_operatorController.pov(90).onTrue(new InstantCommand(() -> S_Shooter.stopAngleMotors()));
+    //m_operatorController.pov(90).onTrue(new InstantCommand(() -> S_Shooter.stopAngleMotors()));
+     m_operatorController.pov(270).onTrue(new ClimberDown(S_Climber));
+    m_operatorController.leftBumper().onTrue(new InstantCommand(() -> S_Climber.disengageLock()));
+    m_operatorController.rightBumper().onTrue(new InstantCommand(() -> S_Climber.engageLock()));
+    //m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(-79)));
+    //m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(-45)));
+    m_operatorController.pov(180).onTrue(new InstantCommand(() -> S_Climber.setClimberSpeed(0.85)));
+    m_operatorController.pov(180).onFalse(new InstantCommand(() -> S_Climber.stopClimber()));
    // m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> S_Arm.setWristPosition(0)));
     // m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setWristPosition(45)));
     //m_operatorController.rightTrigger(new SendNoteToShooter());
@@ -204,7 +222,9 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   public void setWristPIDF(double p, double i, double f, double iz, double ff) {
     S_Arm.setWristPIDF(p, i, f, iz, ff);
   }
-
+  public void setClimberPIDF(double p, double i, double f, double iz, double ff) {
+    S_Climber.setClimberPIDF(p, i, f, iz, ff);
+  }
   public void setShooterAnglePIDF(double p, double i, double f, double iz, double ff) {
     S_Shooter.setShooterAnglePIDF(p, i, f, iz, ff);
   }

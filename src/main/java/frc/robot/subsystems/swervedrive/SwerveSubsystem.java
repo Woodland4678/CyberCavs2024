@@ -115,7 +115,7 @@ public class SwerveSubsystem extends SubsystemBase
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     setupPathPlanner();
-    swerveDrive.getModules()[0]
+    
   }
   public void resetSwerveModules() {
     swerveDrive.resetDriveEncoders();
@@ -168,6 +168,12 @@ public class SwerveSubsystem extends SubsystemBase
       limelight.getEntry("ledMode").setNumber(3);
     }
   
+  }
+  public double getMaximumVelocity() {
+    return swerveDrive.getMaximumVelocity();
+  }
+  public double getMaximumAngularVelocity() {
+    return swerveDrive.getMaximumAngularVelocity();
   }
   public boolean isModuleReady(int module) {
     //double degrees = swerveDrive[module].getCanCoder().getDegrees();
@@ -239,6 +245,37 @@ public double getAprilTagX() {
       for (int i = 0; i < results.size(); i++) {
         if (results.get(i).getFiducialId() == 6) {
           return results.get(i).getYaw();
+        }
+      }
+    }
+   // return rpi.getLatestResult().getBestTarget().getYaw();
+  }
+  else {
+    return 0;
+  }
+  return 0;
+}
+public boolean hasAprilTagTarget() {
+  if (rpi.getLatestResult().getBestTarget() != null) {
+    return true;
+  }
+  return false;
+}
+public double getAprilTagY() {
+  Optional<Alliance> ally = DriverStation.getAlliance();
+  if (rpi.getLatestResult().getBestTarget() != null) {
+    var results = rpi.getLatestResult().getTargets();
+    if (ally.get() == Alliance.Blue) {
+      for (int i = 0; i < results.size(); i++) {
+        if (results.get(i).getFiducialId() == 7) {
+          return results.get(i).getPitch();
+        }
+      }
+    }
+    else {
+      for (int i = 0; i < results.size(); i++) {
+        if (results.get(i).getFiducialId() == 4) {
+          return results.get(i).getPitch();
         }
       }
     }
@@ -353,8 +390,8 @@ public double getAutoAimFF() {
     // Load the path you want to follow using its name in the GUI
    // PathPlannerPath path = PathPlannerPath.fromPathFile(autoname);
 
-   // if (setOdomToStart)
-   // {
+  //  if (setOdomToStart)
+  //  {
   //    resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
   //  }
 
@@ -477,6 +514,9 @@ public double getAutoAimFF() {
     SmartDashboard.putNumber("Limelight X", getLimelightX());
     SmartDashboard.putNumber("Limelight Y", getLimelightY());
     SmartDashboard.putNumber("Limelight obj size", getLimelightObjectSize());
+   // SmartDashboard.putNumber("Swerve Module 0 speed",swerveDrive.getModules()[0].getDriveMotor().getAppliedOutput());
+    //SmartDashboard.putNumber("Swerve Max speed",getMaximumVelocity());
+   // swerveDrive.getModules()[0].getDriveMotor().getVelocity();
 
   }
 

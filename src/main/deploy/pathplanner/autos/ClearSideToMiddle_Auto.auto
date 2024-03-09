@@ -38,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "QuickShoot"
+            "name": "Shoot"
           }
         },
         {
@@ -62,7 +62,31 @@
         {
           "type": "named",
           "data": {
-            "name": "QuickShoot"
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddle_Path6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoGrabNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddle_Path7"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
           }
         }
       ]

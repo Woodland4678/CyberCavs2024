@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.0,
+        "x": 6.5,
         "y": 2.0
       },
       "prevControl": {
-        "x": 3.4793093674254454,
+        "x": 4.979309367425445,
         "y": 2.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Shoot auto Link 1"
     }
   ],
   "rotationTargets": [],
@@ -38,8 +38,8 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 180.0,
+    "velocity": 2.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,

@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
     integratedIndexerEncoder = indexer.getEncoder();
     integratedRampRollerEncoder = rampRoller.getEncoder();
     
-    intakeHorizontalRoller.setSmartCurrentLimit(40);
+    intakeHorizontalRoller.setSmartCurrentLimit(80);
     intakeVerticalRoller.setSmartCurrentLimit(40);
     rampRoller.setSmartCurrentLimit(40);
   }
@@ -96,9 +96,8 @@ public class Intake extends SubsystemBase {
         }
         break;
       case 2:
-          setVerticalPercentOutput(0.55);
-          setHorizontalPercentOutput(-0.55);
-          setRampRollerMotorPercentOutput(0.55);
+          setVerticalPercentOutput(0.5);
+          setRampRollerMotorPercentOutput(0.5);
           intakeState++;
       break;
       case 3:

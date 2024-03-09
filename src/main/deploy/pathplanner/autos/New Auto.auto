@@ -1,20 +1,14 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 3.0,
-      "y": 2
-    },
-    "rotation": 180.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "TestPathRotate"
+            "name": "Shoot"
           }
         },
         {
@@ -22,16 +16,10 @@
           "data": {
             "name": "AutoGrabNote"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "New New Path"
-          }
         }
       ]
     }
   },
-  "folder": "Test Auto",
+  "folder": "7Note_Auto",
   "choreoAuto": false
 }

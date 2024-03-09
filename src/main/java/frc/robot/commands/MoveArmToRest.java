@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmPosition;
@@ -26,6 +27,7 @@ public class MoveArmToRest extends Command {
     moveToAmpState = 0;
     if (S_Arm.getCurrentXPosition() < 5 && S_Arm.getCurrentYPosition() < 5.5) {
       moveToAmpState = 2;
+      S_Arm.MoveArm(Constants.ArmConstants.restPosition);
     }
   }
 

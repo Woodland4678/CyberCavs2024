@@ -22,6 +22,7 @@ public class Climber extends SubsystemBase {
   private DigitalInput climberDown;
   private RelativeEncoder integratedClimberEncoder;
   private PowerDistribution powerDistribution;
+  boolean isClimberLocked = true;
   public Climber(PowerDistribution PHD) {
     climberMainMotor = new CANSparkFlex(Constants.ClimberConstants.ClimberMainMotorCanID, MotorType.kBrushless);
     climberController = climberMainMotor.getPIDController();
@@ -31,15 +32,23 @@ public class Climber extends SubsystemBase {
     climberController.setD(Constants.ClimberConstants.climberD);
     integratedClimberEncoder = climberMainMotor.getEncoder();
     powerDistribution = PHD;
+    climberController.setOutputRange(-1, 1);
+    climberMainMotor.setSmartCurrentLimit(60);
+   // climberMainMotor.setIdleMode(mode.brake);
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putBoolean(
       "Climber isClimberDown Sensor", isClimberDown());
+
+    SmartDashboard.putNumber("Climber Position", integratedClimberEncoder.getPosition());
     // This method will be called once per scheduler run
   }
   public void setClimberSpeed(int speed) {
+    if (integratedClimberEncoder.getPosition() < Constants.ClimberConstants.minClimberPosition) {
+      speed = 0;
+    }
     climberController.setReference(speed, com.revrobotics.CANSparkMax.ControlType.kVelocity);
   }
   public boolean isClimberDown() {
@@ -48,9 +57,37 @@ public class Climber extends SubsystemBase {
 
   public void disengageLock() { // toggles the switchable channel on to unlock the climber. 
     powerDistribution.setSwitchableChannel(true);
+    isClimberLocked = false;
   }
 
   public void engageLock() { // toggles the switchable channel off to lock climber. 
     powerDistribution.setSwitchableChannel(false);
+    isClimberLocked = true;
+  }
+  public void moveClimberToPosition(double pos) {
+    //if (isClimberLocked == false) {
+      climberController.setReference(pos, com.revrobotics.CANSparkFlex.ControlType.kPosition);
+    //}
+  }
+  public void setClimberSpeed(double speed) {
+    if (!isClimberDown()) {
+      climberMainMotor.set(speed); //positive to bring climber down/climb
+    }
+    else {
+      stopClimber();
+    }
+  }
+  public void stopClimber() {
+    climberMainMotor.disable();
+  }
+  public void setPosition(double pos) {
+    integratedClimberEncoder.setPosition(pos);
+  }
+  public void setClimberPIDF(double p, double i, double d, double iz, double ff) {
+    climberController.setP(p);
+    climberController.setI(i);
+    climberController.setD(d);
+    climberController.setIZone(iz);
+    climberController.setFF(ff);
   }
 }

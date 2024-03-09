@@ -55,7 +55,9 @@ public class Shooter extends SubsystemBase {
     integratedAngleMotorEncoder.setPositionConversionFactor(Constants.ShooterConstants.angleAngleConversionFactor);
 
     angleMotorController.setOutputRange(-0.6, 0.6);
-
+    shooterAngleMotor.setSmartCurrentLimit(40);
+    shooterRightMotor.setSmartCurrentLimit(80);
+    shooterLeftMotor.setSmartCurrentLimit(80);
     integratedAngleMotorEncoder.setPosition(Constants.ShooterConstants.shooterStartingAngle);
   
   }
@@ -94,7 +96,8 @@ public class Shooter extends SubsystemBase {
     // }
   }
   public void setRightAndLeftRPM(double rightRPM, double leftRPM) {
-    
+    shooterRightRPMTarget = rightRPM;
+    shooterLeftRPMTarget = leftRPM;
     rightMotorController.setReference(rightRPM,  com.revrobotics.CANSparkFlex.ControlType.kVelocity);
     leftMotorController.setReference(leftRPM, com.revrobotics.CANSparkFlex.ControlType.kVelocity);
   }
@@ -171,8 +174,8 @@ public class Shooter extends SubsystemBase {
   }
   public void increaseShooterAngle() {
     shooterAngleTarget++;
-    if (shooterAngleTarget > 92) {
-      shooterAngleTarget = 92;
+    if (shooterAngleTarget > 94) {
+      shooterAngleTarget = 94;
     }
     setShooterAngle(shooterAngleTarget);
   }
@@ -182,5 +185,29 @@ public class Shooter extends SubsystemBase {
       shooterAngleTarget = 64;
     }
     setShooterAngle(shooterAngleTarget);
+  }
+  public double calculateShooterAngle(double targetY) {
+    //*First shooter angle calcs as of March 1st 2024 */
+    //shooterAngleTarget = 0.0144 * Math.pow(targetY ,2) - 1.3578 * targetY + 71.7528;
+   // shooterAngleTarget = 0.0049 * Math.pow(targetY, 3) + 0.0628 * Math.pow(targetY, 2) -1.6032 * targetY + 70.284;
+   // shooterAngleTarget = 0.0053 * Math.pow(targetY, 3) + 0.0725 * Math.pow(targetY, 2) -1.6548 * targetY + 70.1025;
+    //shooterAngleTarget = 0.0009 * Math.pow(targetY, 4) + 0.0176 * Math.pow(targetY, 3) + 0.0315 * Math.pow(targetY, 2) -2.2287 * targetY + 71.6418; //70.1218
+   
+   
+   /*New shooter calcs March 9th 2024 */
+   shooterAngleTarget = 0.0341 * Math.pow(targetY ,2) - 1.237 * targetY + 71.1036;
+    if (shooterAngleTarget < Constants.ShooterConstants.minShooterAngle) {
+      shooterAngleTarget = Constants.ShooterConstants.minShooterAngle;
+    }
+    else if (shooterAngleTarget > Constants.ShooterConstants.maxShooterAngle) {
+      shooterAngleTarget = Constants.ShooterConstants.maxShooterAngle;
+    }
+    return shooterAngleTarget;
+  }
+  public double getLeftTargetVelocity() {
+    return shooterLeftRPMTarget;
+  }
+  public double getRightTargetVelocity() {
+    return shooterRightRPMTarget;
   }
 }

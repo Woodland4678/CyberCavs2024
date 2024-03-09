@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.LEDStrip.LEDModes;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -57,7 +59,9 @@ public class Robot extends TimedRobot
     pidTuningChooser.addOption("AutoAimPID", "AutoAimPID");
     pidTuningChooser.addOption("WristPID", "WristPID");
      pidTuningChooser.addOption("ShooterSpeeds", "ShooterSpeeds");
+     pidTuningChooser.addOption("ClimberPID", "ClimberPID");
     pidTuningChooser.setDefaultOption("AutoAimPID", "AutoAimPID");
+
    
   }
 
@@ -112,6 +116,9 @@ public class Robot extends TimedRobot
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    // for (int i = 0; i < 20; i++) {
+    //   SmartDashboard.putNumber("PDH Amp draw channel: " + i, m_robotContainer.getPDHCurrentDraw(i));
+    // }
   }
 
   /**
@@ -121,7 +128,7 @@ public class Robot extends TimedRobot
   public void disabledInit()
   {
     m_robotContainer.setMotorBrake(true);
-    m_robotContainer.turnOffClimberLock();
+    m_robotContainer.engageClimberLock();
     disabledTimer.reset();
     disabledTimer.start();
     ledstrip = LEDStrip.getInstance();
@@ -140,40 +147,41 @@ public class Robot extends TimedRobot
     // 0x20 is 6th set (mid upper left).  Gyro
     // 0x40 is 7th set (mid lower left).  Limelight
     // 0x80 is 8th set (lower left).  Front left Swerve
-    if (m_robotContainer.isElbowReady()){
-      diagState += LEDStrip.elbowDiag; 
-    }
-    if (m_robotContainer.isShoulderReady()){
-      diagState += LEDStrip.shoulderDiag; 
-    }
-    if (m_robotContainer.isGyroReady()){
-      diagState += LEDStrip.gyroDiag; 
-    }
-    if (m_robotContainer.isLimelightReady()){
-      diagState += LEDStrip.limelightDiag; 
-    }
-    if (m_robotContainer.isAprilTagCameraReady()){
-      diagState += LEDStrip.apriltagDiag;
-    }  
-    if (m_robotContainer.isFrontLeftSwerveReady()){
-      diagState += LEDStrip.swerve1Diag; 
-    }
-    if (m_robotContainer.isFrontRightSwerveReady()){
-      diagState += LEDStrip.swerve2Diag; 
-    }
-    if (m_robotContainer.isBackLeftSwerveReady()){
-      diagState += LEDStrip.swerve3Diag; 
-    }
-    if (m_robotContainer.isBackRightSwerveReady()){
-      diagState += LEDStrip.swerve4Diag; 
-    }
-    ledstrip.setDiagnosticPattern(diagState);
-    ledstrip.diagnosticLEDmode();
+    // if (m_robotContainer.isElbowReady()){
+    //   diagState += LEDStrip.elbowDiag; 
+    // }
+    // if (m_robotContainer.isShoulderReady()){
+    //   diagState += LEDStrip.shoulderDiag; 
+    // }
+    // if (m_robotContainer.isGyroReady()){
+    //   diagState += LEDStrip.gyroDiag; 
+    // }
+    // if (m_robotContainer.isLimelightReady()){
+    //   diagState += LEDStrip.limelightDiag; 
+    // }
+    // if (m_robotContainer.isAprilTagCameraReady()){
+    //   diagState += LEDStrip.apriltagDiag;
+    // }  
+    // if (m_robotContainer.isFrontLeftSwerveReady()){
+    //   diagState += LEDStrip.swerve1Diag; 
+    // }
+    // if (m_robotContainer.isFrontRightSwerveReady()){
+    //   diagState += LEDStrip.swerve2Diag; 
+    // }
+    // if (m_robotContainer.isBackLeftSwerveReady()){
+    //   diagState += LEDStrip.swerve3Diag; 
+    // }
+    // if (m_robotContainer.isBackRightSwerveReady()){
+    //   diagState += LEDStrip.swerve4Diag; 
+    // }
+    // ledstrip.setDiagnosticPattern(diagState);
+    // ledstrip.diagnosticLEDmode();
     // if (disabledTimer.hasElapsed(Constants.Drivebase.WHEEL_LOCK_TIME))
     // {
     //   m_robotContainer.setMotorBrake(false);
     //   disabledTimer.stop();
     // }
+    ledstrip.LEDMode = LEDModes.SOLIDBLUE;
   }
 
   /**
@@ -252,6 +260,9 @@ public class Robot extends TimedRobot
       }
       else if (pidTuningChooser.getSelected().equals("WristPID")) {
         m_robotContainer.setWristPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF);
+      }
+      else if (pidTuningChooser.getSelected().equals("ClimberPID")) {
+        m_robotContainer.setClimberPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF);
       }
       // else if (pidTuningChooser.getSelected().equals("AutoGrabNote_X_PID")){
       //    m_robotContainer.setAutoGrabNoteXPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 

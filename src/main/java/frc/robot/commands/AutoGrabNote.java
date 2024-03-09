@@ -31,6 +31,8 @@ public class AutoGrabNote extends Command {
   int waitCnt = 0;
   ChassisSpeeds driveSpeed;
   boolean isAuto = false;
+  int noteCloseCount = 0;
+  int runCnt = 0;
   /** Creates a new AutoGrabNote. */
   public AutoGrabNote(SwerveSubsystem S_Swerve, Intake S_Intake, boolean isAuto) {
     this.S_Swerve = S_Swerve;
@@ -43,6 +45,14 @@ public class AutoGrabNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // runCnt++;
+    // if (isAuto && runCnt == 1) {
+    //   yController.setP(0.08);
+    // }
+    // else {
+    //   yController.setP(Constants.Swerve.autoGrabNote_Y_P);
+    // }
+    noteCloseCount = 0;
     rController.reset();
     xController.reset();
     yController.reset();
@@ -70,9 +80,14 @@ public class AutoGrabNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+   // rController.setPID(S_Swerve.getAutoAimP(), S_Swerve.getAutoAimI(), S_Swerve.getAutoAimD());
+    //rController.setIZone(S_Swerve.getAutoAimIZ());
     switch(grabState) {
       case 0:
         if (S_Swerve.limelightHasTarget() == 1) {
+          if (S_Swerve.getLimelightY() < -5) {
+            noteCloseCount++;
+          }
             // degrees = S_Swerve.getHeading().getDegrees();
             // if (rController.getSetpoint() > 0 && degrees < 0) {
             //   degrees = 360 + degrees;
@@ -98,7 +113,7 @@ public class AutoGrabNote extends Command {
             //   grabState++;
             //   s_Swerve.stop();                         
             // }  
-            if (S_Intake.getPieceAquired()) {
+            if (S_Intake.getPieceAquired() || S_Intake.isNoteOnRamp()) {
               grabState++;
             }     
             if (yMeasurement < -10) {
@@ -112,12 +127,19 @@ public class AutoGrabNote extends Command {
             }
         }
         else {
-          if (isAuto) {
+          if (noteCloseCount > 15) {
+            driveSpeed = new ChassisSpeeds(-1, 0, 0);
+            S_Swerve.setChassisSpeeds(driveSpeed);
+          }
+          if (isAuto && noteCloseCount < 15) {
             driveSpeed = new ChassisSpeeds(0, 0, 1.75);
             rController.setSetpoint(S_Swerve.getHeading().getDegrees());
             S_Swerve.setChassisSpeeds(driveSpeed);
           } else {
             S_Swerve.stop();
+          }
+          if (S_Intake.isNoteOnRamp()) {
+            grabState++;
           }
         }
       break;

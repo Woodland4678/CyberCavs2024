@@ -46,7 +46,7 @@ public class Arm extends SubsystemBase {
   private double currentHighestAngleWristCalibrate;
 
   private int previousWristMagValue = 0;
-  ArmPosition currentArmPosition = Constants.ArmConstants.restPosition;
+  ArmPosition currentArmPosition = Constants.ArmConstants.startPosition;
   public Arm() {
     armShoulderMotor = new CANSparkMax(Constants.ArmConstants.armShoulderMotorCanID, MotorType.kBrushless);
     shoulderController = armShoulderMotor.getPIDController();
@@ -79,9 +79,11 @@ public class Arm extends SubsystemBase {
     integratedShoulderEncoder.setPositionConversionFactor(Constants.ArmConstants.shoulderAngleConversionFactor);
     integratedElbowEncoder.setPositionConversionFactor(Constants.ArmConstants.elbowAngleConversionFactor);
     integratedWristEncoder.setPositionConversionFactor(Constants.ArmConstants.wristAngleConversionFactor);
-    shoulderController.setOutputRange(-0.9, 0.9);
-    elbowController.setOutputRange(-0.9, 0.9);
+    shoulderController.setOutputRange(-0.5, 0.5);
+    elbowController.setOutputRange(-0.5, 0.5);
     wristController.setOutputRange(-0.5, 0.5);
+    armWristMotor.setClosedLoopRampRate(0.25);
+    armRollerMotor.setClosedLoopRampRate(0.1);
     hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
     wristHomeSensor = new AnalogInput(Constants.ArmConstants.wristHomeSensorChannel);
     
@@ -178,6 +180,9 @@ public class Arm extends SubsystemBase {
   private double calcElbowAngle(double x, double y) {
     return Math.toDegrees(- Math.acos(((x * x) + (y * y) - (Math.pow(Constants.ArmConstants.shoulderLength, 2)) - (Math.pow(Constants.ArmConstants.elbowLength, 2))) / (2 * Constants.ArmConstants.shoulderLength * Constants.ArmConstants.elbowLength)));
   }
+  public void moveWristToAngle(double angle) {
+    wristController.setReference(angle, com.revrobotics.CANSparkMax.ControlType.kPosition);
+  }
   public double MoveArm(ArmPosition targetPos) {
     double currentX = getCurrentXPosition();
     double currentY = getCurrentYPosition();
@@ -210,17 +215,17 @@ public class Arm extends SubsystemBase {
   public boolean calibrateWrist() {
     switch (calibrateWristState) {
       case 0:
-        armWristMotor.set(0.03);
+        armWristMotor.set(0.06);
         count ++;
-        if (count > 25) {
+        if (count > 15) {
           count = 0;
           calibrateWristState++;
         }
         break;
       case 1:
-        armWristMotor.set(-0.05);
+        armWristMotor.set(-0.06);
         count ++;
-        if (count > 50) {
+        if (count > 30) {
           count = 0;
           calibrateWristState ++;
         }
@@ -319,7 +324,7 @@ public class Arm extends SubsystemBase {
     }
     return false;
   }
-  }
+  
   public void setWristPosition(double angle) {
     wristController.setReference(angle, com.revrobotics.CANSparkMax.ControlType.kPosition);
   }
