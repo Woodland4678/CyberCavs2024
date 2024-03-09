@@ -18,6 +18,8 @@ import java.io.IOException;
 
 import javax.swing.text.AbstractDocument.LeafElement;
 
+import com.ctre.phoenix6.signals.Led1OffColorValue;
+
 import swervelib.parser.SwerveParser;
 
 /**
@@ -131,12 +133,28 @@ public class Robot extends TimedRobot
     m_robotContainer.engageClimberLock();
     disabledTimer.reset();
     disabledTimer.start();
+
     ledstrip = LEDStrip.getInstance();
+    // ??? test
+    // System.out.print("disabledInit() LEDStrip.getInstance() = " + ledstrip.toString());
+    for (int index = 0; index < ledstrip.ledBuffer.getLength(); index++){
+			ledstrip.ledBuffer.setRGB(index, 0, 0, 255);
+		}
+    //System.out.print("disabledInit() ledstrip.ledBuffer = " + ledstrip.ledBuffer.toString());
+    ledstrip.addressableLED.setData(ledstrip.ledBuffer);
   }
 
   @Override
   public void disabledPeriodic()
   {
+ledstrip = LEDStrip.getInstance();
+    // ??? test
+    // System.out.print("disabledPeriodic() LEDStrip.getInstance() = " + ledstrip.toString());
+    for (int index = 0; index < ledstrip.ledBuffer.getLength(); index++){
+			ledstrip.ledBuffer.setRGB(index, 0, 0, 255);
+		}
+    ledstrip.addressableLED.setData(ledstrip.ledBuffer);
+
     var diagState = 0; //diagnostic state 
     m_robotContainer.resetArmAngles();
     // 0x01 is first set of LEDs (lower right).  Front right Swerve
@@ -181,7 +199,6 @@ public class Robot extends TimedRobot
     //   m_robotContainer.setMotorBrake(false);
     //   disabledTimer.stop();
     // }
-    ledstrip.LEDMode = LEDModes.SOLIDBLUE;
   }
 
   /**

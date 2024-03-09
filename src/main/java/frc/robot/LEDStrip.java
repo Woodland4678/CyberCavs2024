@@ -24,9 +24,8 @@ public class LEDStrip {
         ROBOTDISABLEDPATTERN
       }
     
-    LEDModes LEDMode;
+    private LEDModes LEDMode;
 
-    private static final LEDStrip instance = new LEDStrip();
     AddressableLED addressableLED = new AddressableLED(0); //should be PWM location
     AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(NUM_LEDS);
     private double intervalSeconds= 0.5; 
@@ -56,6 +55,8 @@ public class LEDStrip {
     /** All segments blue */
     public static final int allClear = 0X1FF;
 
+    private static final LEDStrip instance = new LEDStrip();
+
     // private constructor so clients can't use it
     private LEDStrip(){
         addressableLED.setLength(ledBuffer.getLength());
@@ -63,7 +64,7 @@ public class LEDStrip {
         // Set the data
         addressableLED.setData(ledBuffer);
         addressableLED.start();
-        LEDMode = LEDModes.OFF;
+        LEDMode = LEDModes.SOLIDBLUE; // ??? set these OFF to start
     }
 
     
@@ -72,11 +73,9 @@ public class LEDStrip {
     }
     
     private void setColour(int r,int g, int b){
-
         for (int index = 0; index < ledBuffer.getLength(); index++){
 			ledBuffer.setRGB(index, r, g, b);
 		}
-		
     }
 
     private void blinkLEDs(int r, int g,int b){
@@ -158,6 +157,8 @@ public class LEDStrip {
                 for(int i = 52; i<=59;i++)
                     ledBuffer.setRGB(i, 0, 255, 0);
             }
+            // ??? this is probably redundant
+            // addressableLED.setData(ledBuffer);
 	    }
     }
 
@@ -191,9 +192,9 @@ public class LEDStrip {
                 diagnosticLEDmode();
                 break;
         }
-        addressableLED.setData(ledBuffer);
+        addressableLED.setData(ledBuffer); // ??? remove this line if we use the periodic(), below
     }
-/*
+
     public void periodic(){
         switch(LEDMode){
             case OFF:
@@ -220,5 +221,4 @@ public class LEDStrip {
         }
         addressableLED.setData(ledBuffer);
     }
-    */
 }
