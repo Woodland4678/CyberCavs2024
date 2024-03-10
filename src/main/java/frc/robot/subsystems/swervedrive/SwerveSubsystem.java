@@ -105,8 +105,8 @@ public class SwerveSubsystem extends SubsystemBase
     try
     {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
-     // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
+      //swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
       swerveDrive.resetDriveEncoders();
       //swerveDrive.swerveController.addSlewRateLimiters(new SlewRateLimiter(5.5), new SlewRateLimiter(5.5), new SlewRateLimiter(3.5));
       

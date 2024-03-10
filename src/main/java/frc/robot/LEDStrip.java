@@ -25,10 +25,12 @@ public class LEDStrip {
       }
     
     private LEDModes LEDMode;
+    private int blinkCnt = 0;
 
     AddressableLED addressableLED = new AddressableLED(0); //should be PWM location
     AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(NUM_LEDS);
-    private double intervalSeconds= 0.5; 
+    private double intervalSeconds= 0.2; 
+    private double blinkTime = 3;
 	private boolean blinkLEDon = true;
 	private double lastChange = 0;
     private int diagnosticPattern;
@@ -82,12 +84,16 @@ public class LEDStrip {
 		if (timestamp- lastChange > intervalSeconds){
 		    blinkLEDon = !blinkLEDon;
 			lastChange = timestamp;
+            blinkCnt++;
 		}
 		if (blinkLEDon){
 			setColour(r, g, b);
 		} else {
 			setColour(0, 0, 0);
 		}
+        if (blinkCnt > 12) {
+            setLEDMode(LEDModes.SOLIDGREEN);
+        }
     }
 
     private void rainbow(){
@@ -166,6 +172,7 @@ public class LEDStrip {
 
     public void setLEDMode(LEDModes inputLEDMode){
         LEDMode = inputLEDMode;
+        blinkCnt = 0;
     }
 
     public void periodic(){

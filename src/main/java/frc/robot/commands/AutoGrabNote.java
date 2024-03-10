@@ -84,7 +84,7 @@ public class AutoGrabNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Note Close Count", noteCloseCount);
+    //SmartDashboard.putNumber("Note Close Count", noteCloseCount);
    // rController.setPID(S_Swerve.getAutoAimP(), S_Swerve.getAutoAimI(), S_Swerve.getAutoAimD());
     //rController.setIZone(S_Swerve.getAutoAimIZ());
     switch(grabState) {
@@ -153,6 +153,7 @@ public class AutoGrabNote extends Command {
       case 1:
         S_Swerve.stop();
         isDone = true;
+        LEDStrip.getInstance().setLEDMode(LEDModes.BLINKGREEN);
       break;
     }
   }
