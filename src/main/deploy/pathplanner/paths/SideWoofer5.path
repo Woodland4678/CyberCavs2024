@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3624950107043077,
-        "y": 5.511956166769477
+        "x": 3.2127435683442798,
+        "y": 2.711999709713705
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.377154468594652,
-        "y": 6.025037192931529
+        "x": 4.502775862694583,
+        "y": 3.73816176203781
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SideWoofer4End"
     },
     {
       "anchor": {
-        "x": 2.171922058129831,
-        "y": 5.981058819260496
+        "x": 6.55998645330624,
+        "y": 4.049179990251873
       },
       "prevControl": {
-        "x": 2.230559889691208,
-        "y": 5.907761529808774
+        "x": 5.397002794005589,
+        "y": 4.0020320040640085
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SideWoofer5End"
     }
   ],
   "rotationTargets": [],
@@ -38,14 +38,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 33.690067525979785,
-    "rotateFast": false
+    "velocity": 3.0,
+    "rotation": 0.0,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "7 Note Auto",
+  "folder": "ClearSideToMiddleWoofer",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -33.11134196037194,
     "velocity": 0
   },
   "useDefaultConstraints": true

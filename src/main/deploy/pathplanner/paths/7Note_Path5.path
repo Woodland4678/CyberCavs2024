@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.82,
-        "y": 6.43
+        "x": 4.517435320584927,
+        "y": 6.303566892848072
       },
       "prevControl": {
-        "x": 5.661267988842283,
-        "y": 6.873745752356369
+        "x": 5.35870330942721,
+        "y": 6.747312645204441
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "7NotePath5_End"
     }
   ],
   "rotationTargets": [],

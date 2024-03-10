@@ -33,7 +33,7 @@ public class Climber extends SubsystemBase {
     integratedClimberEncoder = climberMainMotor.getEncoder();
     powerDistribution = PHD;
     climberController.setOutputRange(-1, 1);
-    climberMainMotor.setSmartCurrentLimit(60);
+    climberMainMotor.setSmartCurrentLimit(80);
    // climberMainMotor.setIdleMode(mode.brake);
   }
 

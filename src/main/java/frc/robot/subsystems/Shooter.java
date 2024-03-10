@@ -195,7 +195,7 @@ public class Shooter extends SubsystemBase {
    
    
    /*New shooter calcs March 9th 2024 */
-   shooterAngleTarget = 0.0341 * Math.pow(targetY ,2) - 1.237 * targetY + 71.1036;
+   shooterAngleTarget = 0.0341 * Math.pow(targetY ,2) - 1.237 * targetY + 70.9036;
     if (shooterAngleTarget < Constants.ShooterConstants.minShooterAngle) {
       shooterAngleTarget = Constants.ShooterConstants.minShooterAngle;
     }

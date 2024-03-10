@@ -156,7 +156,7 @@ public class AutoAim extends Command {
     }
     if (hasShot && isAuto) {
       hasShotCnt++;
-      if (hasShotCnt > 10) {
+      if (hasShotCnt > 1) {
         isDone = true;
       }
     }

@@ -146,6 +146,10 @@ public class Robot extends TimedRobot
     
     var diagState = 0; //diagnostic state 
    
+ledstrip = LEDStrip.getInstance();
+
+    var diagState = 0; //diagnostic state 
+   
     // if (m_robotContainer.isElbowReady()){
     //   diagState += LEDStrip.elbowDiag; 
     // }
