@@ -56,8 +56,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final SwerveSubsystem S_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                         "swerve"));
+  // ??? private final SwerveSubsystem S_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  //                                                                       "swerve"));
   private final Shooter S_Shooter = new Shooter();
   private final Intake S_Intake = new Intake();
   private final Arm S_Arm = new Arm();
@@ -75,6 +75,7 @@ public class RobotContainer {
     ledStrip = LEDStrip.getInstance();
     configureBindings();
     // Configure the trigger bindings
+    /**
     Command driveFieldOrientedDirectAngle = S_Swerve.driveCommand(
         () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
@@ -92,6 +93,7 @@ public class RobotContainer {
         () -> -m_driverController.getRawAxis(4));
     S_Swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     S_Shooter.setDefaultCommand(new AutoAdjustShooterAngle(S_Shooter, S_Intake, S_Swerve));
+    
     // S_Swerve.setDefaultCommand(new TeleopSwerve(S_Swerve,
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
     //     () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
@@ -103,7 +105,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("SetShooterCloseShot", new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-3000, -2600)));
     NamedCommands.registerCommand("SetShooterAngleCloseShot", new InstantCommand(() -> S_Shooter.setShooterAngle(77)));
     NamedCommands.registerCommand("SubwooferShot", new SubwooferShot(S_Shooter, S_Intake, true));
-
+*/
   }
 
   /**
@@ -143,15 +145,18 @@ public class RobotContainer {
      * back button = calibrate rest
      * start button = reset swerve modules
      */
+    /** 
     m_driverController.back().onTrue(new InstantCommand(() -> S_Swerve.zeroGyro()));
     m_driverController.start().onTrue(new InstantCommand(() -> S_Swerve.resetSwerveModules()));
     m_driverController.a().whileTrue(new RotateToAmp(S_Swerve, m_driverController));
+    */
+    m_driverController.a().whileTrue(new QuickShoot(S_Shooter, S_Intake));
     //m_driverController.a().onTrue(new MoveArmAmp(S_Arm));
     //m_driverController.b().onTrue(new MoveArmToRest(S_Arm));
     //m_driverController.rightTrigger().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-3000,-2500)));
     m_driverController.x().onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
-    m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, S_Shooter, S_Intake, m_driverController, false));
-    m_driverController.leftTrigger().whileTrue(new AutoGrabNote(S_Swerve, S_Intake, false));
+    // m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, S_Shooter, S_Intake, m_driverController, false));
+    // m_driverController.leftTrigger().whileTrue(new AutoGrabNote(S_Swerve, S_Intake, false));
     m_driverController.y().whileTrue(new SubwooferShot(S_Shooter, S_Intake, false));
     //m_driverController.y().whileTrue(new AutoAim(S_Swerve, m_driverController));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.5,0.5,-0.5, 0.5)));
@@ -202,7 +207,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new TestAuto(S_Swerve);
+  // ??? return new TestAuto(S_Swerve);
+  return new Command() {
+    
+  };
+
   }
   public void setDriveMode()
   {
@@ -211,7 +220,7 @@ public class RobotContainer {
 
   public void setMotorBrake(boolean brake)
   {
-    S_Swerve.setMotorBrake(brake);
+  //  ??? S_Swerve.setMotorBrake(brake);
   }
 public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
     S_Arm.setElbowPIDF(p, i, f, iz, ff);
@@ -232,7 +241,7 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
     S_Shooter.setShooterMotorsPIDF(p, i, d, iz, ff);
   }
   public void setAutoAimPIDF(double p, double i, double d, double iz, double ff) {
-    S_Swerve.setAutoAimPIDF(p, i, d, iz, ff);
+    // ??? S_Swerve.setAutoAimPIDF(p, i, d, iz, ff);
   }
   public void resetArmAngles() {
     S_Arm.resetToAbsolute();
@@ -250,19 +259,24 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
     return S_Arm.isElbowReady();
  }  
  public boolean isFrontLeftSwerveReady(){
-  return S_Swerve.isModuleReady(0);
+  // ??? return S_Swerve.isModuleReady(0);
+  return true;
  }
  public boolean isFrontRightSwerveReady(){
-  return S_Swerve.isModuleReady(1);
+  // ??? return S_Swerve.isModuleReady(1);
+  return false;
  }
  public boolean isBackLeftSwerveReady(){
-  return S_Swerve.isModuleReady(2);
+  // ??? return S_Swerve.isModuleReady(2);
+  return false;
  }
  public boolean isBackRightSwerveReady(){
-  return S_Swerve.isModuleReady(3);
+  // ??? return S_Swerve.isModuleReady(3);
+  return false;
  }
  public boolean isGyroReady(){
-  return S_Swerve.isGyroReady();
+  // ??? return S_Swerve.isGyroReady();
+  return false;
  }
  public boolean isLimelightReady(){
   return true;

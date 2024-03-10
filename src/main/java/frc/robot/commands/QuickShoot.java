@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.LEDStrip;
+import frc.robot.LEDStrip.LEDModes;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
@@ -38,6 +40,7 @@ public class QuickShoot extends Command {
       isDone = true;
     }
     count++;
+    LEDStrip.getInstance().setLEDMode(LEDModes.BLINKGREEN);
   }
 
   // Called once the command ends or is interrupted.

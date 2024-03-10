@@ -57,19 +57,18 @@ public class LEDStrip {
 
     private static final LEDStrip instance = new LEDStrip();
 
-    // private constructor so clients can't use it
+      // private constructor so clients can't use it
     private LEDStrip(){
         addressableLED.setLength(ledBuffer.getLength());
 
         // Set the data
         addressableLED.setData(ledBuffer);
         addressableLED.start();
-        LEDMode = LEDModes.SOLIDBLUE; // ??? set these OFF to start
+        LEDMode = LEDModes.OFF; // ??? set these OFF to start
     }
 
-    
     public static LEDStrip getInstance(){
-        return instance;
+                return instance;
     }
     
     private void setColour(int r,int g, int b){
@@ -108,14 +107,14 @@ public class LEDStrip {
      */
     public void diagnosticLEDmode(){
         if (diagnosticPattern == allClear) { // if all is good, go entirely blue
-	        setLEDMode(LEDModes.SOLIDBLUE);
+            for(int i = 0;i<ledBuffer.getLength();i++)
+                ledBuffer.setRGB(i, 0, 0, 255); 
         }
 	    else { // Something other than "all is well".  Light up the required segments that have a 0 bit in bval
-            setLEDMode(LEDModes.ROBOTDISABLEDPATTERN);
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-                // Set the value
-                ledBuffer.setRGB(i, 255, 0, 0); // Everything is red to start with.
-            }
+
+            // start with the whole strip red
+            for(int i = 0;i<ledBuffer.getLength();i++)
+                ledBuffer.setRGB(i, 255, 0, 0); 
 
             // First strip of LEDS, 6 leds per diagnostic state, 
             // represents shoulder/elbow/gryo/limelight/april tag camera (not necessarily in that order) 
@@ -157,9 +156,8 @@ public class LEDStrip {
                 for(int i = 52; i<=59;i++)
                     ledBuffer.setRGB(i, 0, 255, 0);
             }
-            // ??? this is probably redundant
-            // addressableLED.setData(ledBuffer);
 	    }
+        setLEDMode(LEDModes.ROBOTDISABLEDPATTERN);
     }
 
     public void setDiagnosticPattern(int binaryVal){
@@ -168,31 +166,6 @@ public class LEDStrip {
 
     public void setLEDMode(LEDModes inputLEDMode){
         LEDMode = inputLEDMode;
-
-            switch(LEDMode){
-            case OFF:
-                setColour(0,0,0);
-                break;
-            case SOLIDGREEN:
-                setColour(0, 255, 0);
-                break;
-            case SOLIDRED:
-                setColour(255, 0, 0);
-                break;
-            case SOLIDBLUE:
-                setColour(0, 0, 255);
-                break;
-            case BLINKGREEN:
-                blinkLEDs(0, 255, 0);
-                break;
-            case RAINBOW:
-                rainbow();
-                break;
-            case ROBOTDISABLEDPATTERN:
-                diagnosticLEDmode();
-                break;
-        }
-        addressableLED.setData(ledBuffer); // ??? remove this line if we use the periodic(), below
     }
 
     public void periodic(){
@@ -216,7 +189,7 @@ public class LEDStrip {
                 rainbow();
                 break;
             case ROBOTDISABLEDPATTERN:
-                diagnosticLEDmode();
+            //    diagnosticLEDmode();
                 break;
         }
         addressableLED.setData(ledBuffer);

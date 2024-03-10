@@ -121,6 +121,7 @@ public class Robot extends TimedRobot
     // for (int i = 0; i < 20; i++) {
     //   SmartDashboard.putNumber("PDH Amp draw channel: " + i, m_robotContainer.getPDHCurrentDraw(i));
     // }
+    ledstrip.periodic();
   }
 
   /**
@@ -135,36 +136,16 @@ public class Robot extends TimedRobot
     disabledTimer.start();
 
     ledstrip = LEDStrip.getInstance();
-    // ??? test
-    // System.out.print("disabledInit() LEDStrip.getInstance() = " + ledstrip.toString());
-    for (int index = 0; index < ledstrip.ledBuffer.getLength(); index++){
-			ledstrip.ledBuffer.setRGB(index, 0, 0, 255);
-		}
-    //System.out.print("disabledInit() ledstrip.ledBuffer = " + ledstrip.ledBuffer.toString());
-    ledstrip.addressableLED.setData(ledstrip.ledBuffer);
+    ledstrip.setLEDMode(LEDModes.SOLIDBLUE);
   }
 
   @Override
   public void disabledPeriodic()
   {
-ledstrip = LEDStrip.getInstance();
-    // ??? test
-    // System.out.print("disabledPeriodic() LEDStrip.getInstance() = " + ledstrip.toString());
-    for (int index = 0; index < ledstrip.ledBuffer.getLength(); index++){
-			ledstrip.ledBuffer.setRGB(index, 0, 0, 255);
-		}
-    ledstrip.addressableLED.setData(ledstrip.ledBuffer);
-
-    var diagState = 0; //diagnostic state 
     m_robotContainer.resetArmAngles();
-    // 0x01 is first set of LEDs (lower right).  Front right Swerve
-    // 0x02 is second set (mid lower right). Shoulder encoder
-    // 0x04 is third set (mid upper right). Elbow encoder
-    // 0x08 is 4th set (upper right).  Rear right Swerve
-    // 0x10 is 5th set (upper left). Rear left Swerve
-    // 0x20 is 6th set (mid upper left).  Gyro
-    // 0x40 is 7th set (mid lower left).  Limelight
-    // 0x80 is 8th set (lower left).  Front left Swerve
+    
+    var diagState = 0; //diagnostic state 
+   
     // if (m_robotContainer.isElbowReady()){
     //   diagState += LEDStrip.elbowDiag; 
     // }
@@ -174,15 +155,15 @@ ledstrip = LEDStrip.getInstance();
     // if (m_robotContainer.isGyroReady()){
     //   diagState += LEDStrip.gyroDiag; 
     // }
-    // if (m_robotContainer.isLimelightReady()){
-    //   diagState += LEDStrip.limelightDiag; 
-    // }
+    if (m_robotContainer.isLimelightReady()){
+      diagState += LEDStrip.limelightDiag; 
+    }
     // if (m_robotContainer.isAprilTagCameraReady()){
     //   diagState += LEDStrip.apriltagDiag;
     // }  
-    // if (m_robotContainer.isFrontLeftSwerveReady()){
-    //   diagState += LEDStrip.swerve1Diag; 
-    // }
+    if (m_robotContainer.isFrontLeftSwerveReady()){
+      diagState += LEDStrip.swerve1Diag; 
+    }
     // if (m_robotContainer.isFrontRightSwerveReady()){
     //   diagState += LEDStrip.swerve2Diag; 
     // }
@@ -192,8 +173,10 @@ ledstrip = LEDStrip.getInstance();
     // if (m_robotContainer.isBackRightSwerveReady()){
     //   diagState += LEDStrip.swerve4Diag; 
     // }
-    // ledstrip.setDiagnosticPattern(diagState);
-    // ledstrip.diagnosticLEDmode();
+    ledstrip.setDiagnosticPattern(diagState);
+    ledstrip.diagnosticLEDmode();
+    // ledstrip.periodic();
+  
     // if (disabledTimer.hasElapsed(Constants.Drivebase.WHEEL_LOCK_TIME))
     // {
     //   m_robotContainer.setMotorBrake(false);
@@ -207,7 +190,7 @@ ledstrip = LEDStrip.getInstance();
   @Override
   public void autonomousInit()
   {
-    m_robotContainer.setMotorBrake(true);
+    /**m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -215,6 +198,7 @@ ledstrip = LEDStrip.getInstance();
     {
       m_autonomousCommand.schedule();
     }
+    */
   }
 
   /**
