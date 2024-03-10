@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3624950107043077,
-        "y": 5.511956166769477
+        "x": 3.9896948365325304,
+        "y": 3.3276969411081683
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.377154468594652,
-        "y": 6.025037192931529
+        "x": 4.008184242880713,
+        "y": 3.3092075347599867
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SideWoofer6End"
     },
     {
       "anchor": {
-        "x": 2.171922058129831,
-        "y": 5.981058819260496
+        "x": 1.835943131345722,
+        "y": 4.058424693425964
       },
       "prevControl": {
-        "x": 2.230559889691208,
-        "y": 5.907761529808774
+        "x": 1.8451878345198132,
+        "y": 4.012201177555508
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,12 +38,12 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 33.690067525979785,
+    "velocity": 0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "7 Note Auto",
+  "folder": "ClearSideToMiddleWoofer",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

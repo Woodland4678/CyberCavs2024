@@ -80,7 +80,7 @@ public class Arm extends SubsystemBase {
     integratedElbowEncoder.setPositionConversionFactor(Constants.ArmConstants.elbowAngleConversionFactor);
     integratedWristEncoder.setPositionConversionFactor(Constants.ArmConstants.wristAngleConversionFactor);
     shoulderController.setOutputRange(-0.5, 0.5);
-    elbowController.setOutputRange(-0.5, 0.5);
+    elbowController.setOutputRange(-0.8, 0.8);
     wristController.setOutputRange(-0.5, 0.5);
     armWristMotor.setClosedLoopRampRate(0.25);
     armRollerMotor.setClosedLoopRampRate(0.1);

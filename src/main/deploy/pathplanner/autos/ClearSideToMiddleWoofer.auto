@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.39,
-      "y": 5.44
+      "x": 0.78,
+      "y": 4.38
     },
-    "rotation": 0
+    "rotation": -59.43631907012195
   },
   "command": {
     "type": "sequential",
@@ -18,22 +18,21 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "7Note_Path1"
-                }
-              }
-            ]
+            "pathName": "SideWoofer1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "AutoGrabNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SideWoofer2"
           }
         },
         {
@@ -45,13 +44,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7Note_Path2"
+            "pathName": "SideWoofer3"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "AutoGrabNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SideWoofer4"
           }
         },
         {
@@ -63,13 +68,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7Note_Path3"
+            "pathName": "SideWoofer5"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "AutoGrabNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SideWoofer6"
           }
         },
         {
@@ -79,75 +90,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "7Note_Path4"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "AutoGrabNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7Note_Path5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7Note_Path6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoGrabNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7Note_Path7"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 100.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7Note_Path8"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoGrabNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7Note_Path9"
           }
         },
         {
@@ -159,6 +104,6 @@
       ]
     }
   },
-  "folder": "7Note_Auto",
+  "folder": "ClearSideToMiddle",
   "choreoAuto": false
 }

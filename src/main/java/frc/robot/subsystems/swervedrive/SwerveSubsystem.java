@@ -59,7 +59,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public        double      maximumSpeed = Units.feetToMeters(14.5);
+  public        double      maximumSpeed = Units.feetToMeters(20.04); 
 
   private Relay headlights;
   private NetworkTable limelight;
@@ -104,11 +104,12 @@ public class SwerveSubsystem extends SubsystemBase
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
+      // Alternative method if you don't want to supply the conversion factor via JSON files.
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+     // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
       swerveDrive.resetDriveEncoders();
       //swerveDrive.swerveController.addSlewRateLimiters(new SlewRateLimiter(5.5), new SlewRateLimiter(5.5), new SlewRateLimiter(3.5));
-      // Alternative method if you don't want to supply the conversion factor via JSON files.
-      // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+      
     } catch (Exception e)
     {
       throw new RuntimeException(e);
@@ -243,7 +244,7 @@ public double getAprilTagX() {
     }
     else {
       for (int i = 0; i < results.size(); i++) {
-        if (results.get(i).getFiducialId() == 6) {
+        if (results.get(i).getFiducialId() == 3) {
           return results.get(i).getYaw();
         }
       }
@@ -274,7 +275,7 @@ public double getAprilTagY() {
     }
     else {
       for (int i = 0; i < results.size(); i++) {
-        if (results.get(i).getFiducialId() == 4) {
+        if (results.get(i).getFiducialId() == 3) {
           return results.get(i).getPitch();
         }
       }

@@ -12,6 +12,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.LEDStrip;
+import frc.robot.LEDStrip.LEDModes;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveDrive;
@@ -33,11 +35,13 @@ public class AutoGrabNote extends Command {
   boolean isAuto = false;
   int noteCloseCount = 0;
   int runCnt = 0;
+ // private LEDStrip ledStrip;
   /** Creates a new AutoGrabNote. */
   public AutoGrabNote(SwerveSubsystem S_Swerve, Intake S_Intake, boolean isAuto) {
     this.S_Swerve = S_Swerve;
     this.S_Intake = S_Intake;
     this.isAuto = isAuto;
+    //ledStrip = LEDStrip.getInstance();
     addRequirements(S_Swerve, S_Intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -80,12 +84,13 @@ public class AutoGrabNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putNumber("Note Close Count", noteCloseCount);
    // rController.setPID(S_Swerve.getAutoAimP(), S_Swerve.getAutoAimI(), S_Swerve.getAutoAimD());
     //rController.setIZone(S_Swerve.getAutoAimIZ());
     switch(grabState) {
       case 0:
         if (S_Swerve.limelightHasTarget() == 1) {
-          if (S_Swerve.getLimelightY() < -5) {
+          if (S_Swerve.getLimelightY() < -3) {
             noteCloseCount++;
           }
             // degrees = S_Swerve.getHeading().getDegrees();
@@ -115,6 +120,7 @@ public class AutoGrabNote extends Command {
             // }  
             if (S_Intake.getPieceAquired() || S_Intake.isNoteOnRamp()) {
               grabState++;
+              //LEDStrip.LEDModes = LEDMode.
             }     
             if (yMeasurement < -10) {
               waitCnt++;
@@ -127,11 +133,11 @@ public class AutoGrabNote extends Command {
             }
         }
         else {
-          if (noteCloseCount > 15) {
-            driveSpeed = new ChassisSpeeds(-1, 0, 0);
+          if (noteCloseCount > 2) {
+            driveSpeed = new ChassisSpeeds(1, 0, 0);
             S_Swerve.setChassisSpeeds(driveSpeed);
           }
-          if (isAuto && noteCloseCount < 15) {
+          else if (isAuto) {
             driveSpeed = new ChassisSpeeds(0, 0, 1.75);
             rController.setSetpoint(S_Swerve.getHeading().getDegrees());
             S_Swerve.setChassisSpeeds(driveSpeed);
@@ -140,6 +146,7 @@ public class AutoGrabNote extends Command {
           }
           if (S_Intake.isNoteOnRamp()) {
             grabState++;
+            //LEDStrip.setLEDMode(LEDModes.BLINKGREEN);
           }
         }
       break;

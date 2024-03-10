@@ -160,7 +160,7 @@ public class RobotContainer {
     m_driverController.pov(270).onTrue(new InstantCommand(() -> S_Intake.stopIntakeMotors()));
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-1)));
     m_driverController.rightBumper().onFalse(new InstantCommand(() -> S_Arm.stopArmRollers()));
-    m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.6)));
+    m_driverController.pov(90).onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(0.4)));
     m_driverController.pov(90).onFalse(new InstantCommand(() -> S_Arm.stopArmRollers()));
     //m_driverController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setRollerOutputPercent(-0.30)));
     //m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.stopArmRollers()));
@@ -175,9 +175,9 @@ public class RobotContainer {
     m_operatorController.x().onTrue(new MoveArmToRest(S_Arm));
     m_operatorController.back().onTrue(new CalibrateWrist(S_Arm));
 
-    m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.increaseShooterAngle()));
-    //m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(Constants.ClimberConstants.maxClimberHeight)));
-    m_operatorController.pov(180).onTrue(new InstantCommand(() -> S_Shooter.decreaseShooterAngle()));
+//    m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.increaseShooterAngle()));
+    m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(Constants.ClimberConstants.maxClimberHeight)));
+    //m_operatorController.pov(180).onTrue(new InstantCommand(() -> S_Shooter.decreaseShooterAngle()));
     //m_operatorController.pov(90).onTrue(new InstantCommand(() -> S_Shooter.stopAngleMotors()));
      m_operatorController.pov(270).onTrue(new ClimberDown(S_Climber));
     m_operatorController.leftBumper().onTrue(new InstantCommand(() -> S_Climber.disengageLock()));

@@ -150,13 +150,14 @@ public class Robot extends TimedRobot
 ledstrip = LEDStrip.getInstance();
     // ??? test
     // System.out.print("disabledPeriodic() LEDStrip.getInstance() = " + ledstrip.toString());
-    for (int index = 0; index < ledstrip.ledBuffer.getLength(); index++){
-			ledstrip.ledBuffer.setRGB(index, 0, 0, 255);
-		}
-    ledstrip.addressableLED.setData(ledstrip.ledBuffer);
+    // for (int index = 0; index < ledstrip.ledBuffer.getLength(); index++){
+		// 	ledstrip.ledBuffer.setRGB(index, 0, 0, 255);
+		// }
+    // ledstrip.addressableLED.setData(ledstrip.ledBuffer);
 
     var diagState = 0; //diagnostic state 
     m_robotContainer.resetArmAngles();
+    ledstrip.setLEDMode(LEDModes.SOLIDBLUE);
     // 0x01 is first set of LEDs (lower right).  Front right Swerve
     // 0x02 is second set (mid lower right). Shoulder encoder
     // 0x04 is third set (mid upper right). Elbow encoder

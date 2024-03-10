@@ -76,7 +76,7 @@ public final class Constants {
     public static final double autoGrabNote_Y_Tolerance = 1;
     public static final double autoGrabNote_Y_Target = -12;
 
-    public static final double autoGrabNote_R_P = 0.15;
+    public static final double autoGrabNote_R_P = 0.11;
     public static final double autoGrabNote_R_I = 0;
     public static final double autoGrabNote_R_D = 0;
     public static final double autoGrabNote_R_Tolerance = 3;
@@ -105,7 +105,7 @@ public final class Constants {
     public static final double wristD = 0;
     public static final double wristIz = 5;
     public static final int wristMagSensorMaxValue = 950;
-    public static final double shoulderAbsoluteOffset = 195.8; //arm resting against the limelight holder
+    public static final double shoulderAbsoluteOffset = 139.5; //arm resting against the limelight holder, at 40 degrees from horizontal
     public static final double elbowAbsoluteOffset = 301.4; 
     public static final double shoulderGearRatio = (25.0/1.0) * (60.0/24.0);
     public static final double elbowGearRatio = 25/1;
