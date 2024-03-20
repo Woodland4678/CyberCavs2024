@@ -56,11 +56,13 @@ public final class Constants {
     public static final int subwooferShotRPMTolerance = 100;
     public static final int subwooferShotAngleTolerance = 5;
     public static final double subwooferShotAngle = 64;
-    public static final double subwooferShotLeftRPM = -2500;
-    public static final double subwooferShotRightRPM = -2100;
+    public static final double subwooferShotLeftRPM = -4000;
+    public static final double subwooferShotRightRPM = -2500;
 
     public static final double minShooterAngle = 64.0;
-    public static final double maxShooterAngle = 92.0;
+    public static final double maxShooterAngle = 94.0;
+
+    public static final double AmpSideQuickShootTwoAngle = 75;
   }
   public static class Swerve {
     public static final int headlightsRelayChannel = 3;
@@ -70,7 +72,7 @@ public final class Constants {
     public static final double autoGrabNote_X_Tolerance = 1;
     public static final double autoGrabNote_X_Target = 0;
 
-    public static final double autoGrabNote_Y_P = 0.12;
+    public static final double autoGrabNote_Y_P = 0.18;
     public static final double autoGrabNote_Y_I = 0;
     public static final double autoGrabNote_Y_D = 0;
     public static final double autoGrabNote_Y_Tolerance = 1;
@@ -85,7 +87,7 @@ public final class Constants {
     public static final double rotateRobot_I = 0;
     public static final double rotateRobot_D = 0;
 
-    public static final double autoAimYawOffset = 2; //was 3.9
+    public static final double autoAimYawOffset = 0.5; //was 3.9
   }
   public static class ArmConstants {
     public static final int armShoulderMotorCanID = 11;
@@ -101,7 +103,7 @@ public final class Constants {
     public static final double elbowI = 0;
     public static final double elbowD = 1;
     public static final double wristP = 0.006;
-    public static final double wristI = 0.0001;
+    public static final double wristI = 0.00005;
     public static final double wristD = 0;
     public static final double wristIz = 5;
     public static final int wristMagSensorMaxValue = 950;
@@ -122,8 +124,8 @@ public final class Constants {
     public static final ArmPosition AmpIntermediatePos1 = new ArmPosition(132, -154, 0, true);
     public static final ArmPosition AmpIntermediatePos2 = new ArmPosition(5.55, 17.63, 0, false);
     public static final ArmPosition trapIntermediatePos2 = new ArmPosition(1, 30.63, 0, false);
-    public static final ArmPosition ampScoring = new ArmPosition(7, 29, -35, false); // Approximate x and y values
-    public static final ArmPosition trapScoring = new ArmPosition(70, 0, -106.76, true); //Approximate x and y values
+    public static final ArmPosition ampScoring = new ArmPosition(7, 31, -35, false); // Approximate x and y values
+    public static final ArmPosition trapScoring = new ArmPosition(70, 0, -105.76, true); //Approximate x and y values
     public static final ArmPosition testPos = new ArmPosition(11, 29, 0, false);
     public static final ArmPosition testPos1 = new ArmPosition(8, 16, 0, false);
     public static final int hasNoteSensor = 7;
@@ -163,7 +165,7 @@ public final class Constants {
     public static final double scorePosition = 2; //TODO get actual value
 
     public static final double minClimberPosition = 10; //TODO get actual value
-    public static final double maxClimberHeight = -79;
+    public static final double maxClimberHeight = -80;
 
   }
   public static class ArmPosition{

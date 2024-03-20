@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.335208098987628,
+        "y": 1.8617511520737338
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.631554120251098,
+        "y": 1.6418592837185677
+      },
+      "isLocked": false,
+      "linkedName": "SideWoofer3End"
+    },
+    {
+      "anchor": {
+        "x": 3.828440799738743,
+        "y": 2.86
+      },
+      "prevControl": {
+        "x": 4.356181283791141,
+        "y": 1.8484974055662398
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ClearSideToMiddleNoCloseNote_Path1_End"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.35,
+      "rotationDegrees": -35.75,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.1,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": -35.75,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "ClearSideToMiddleNoCloseNote",
+  "previewStartingState": {
+    "rotation": 13.626994859891568,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

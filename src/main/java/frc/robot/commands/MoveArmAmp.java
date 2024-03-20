@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Shooter;
 import frc.robot.Constants.ArmPosition;
 import frc.robot.Constants;
 
@@ -15,10 +16,12 @@ public class MoveArmAmp extends Command {
   ArmPosition targetPos;
   int moveToAmpState = 0;
   int count = 0;
+  Shooter S_Shooter;
   /** Creates a new MoveArm. */
-  public MoveArmAmp(Arm S_Arm) {
+  public MoveArmAmp(Arm S_Arm, Shooter S_Shooter) {
     this.S_Arm = S_Arm;
-    addRequirements(S_Arm);
+    this.S_Shooter = S_Shooter;
+    addRequirements(S_Arm, S_Shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,6 +30,7 @@ public class MoveArmAmp extends Command {
   public void initialize() {
     moveToAmpState = 0;
     count = 0;
+    S_Shooter.setShooterAngle(75);
     //targetPos = Constants.ArmConstants.ampScoring;
     //targetPos = Constants.ArmConstants.testPos; 
   }
@@ -55,6 +59,7 @@ public class MoveArmAmp extends Command {
             moveToAmpState ++;
             count = 0;
           }
+          S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
         }
         else {count = 0;} 
         break;

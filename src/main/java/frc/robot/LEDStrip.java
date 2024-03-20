@@ -21,7 +21,8 @@ public class LEDStrip {
         SOLIDRED,
         SOLIDBLUE,
         RAINBOW,
-        ROBOTDISABLEDPATTERN
+        ROBOTDISABLEDPATTERN, 
+        MANUAL
       }
     
     private LEDModes LEDMode;
@@ -29,7 +30,7 @@ public class LEDStrip {
 
     AddressableLED addressableLED = new AddressableLED(0); //should be PWM location
     AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(NUM_LEDS);
-    private double intervalSeconds= 0.2; 
+    private double intervalSeconds= 0.07; 
     private double blinkTime = 3;
 	private boolean blinkLEDon = true;
 	private double lastChange = 0;
@@ -91,7 +92,7 @@ public class LEDStrip {
 		} else {
 			setColour(0, 0, 0);
 		}
-        if (blinkCnt > 12) {
+        if (blinkCnt > 20) {
             setLEDMode(LEDModes.SOLIDGREEN);
         }
     }
@@ -104,6 +105,40 @@ public class LEDStrip {
 		}
 
 		rainbowFirstHue = (rainbowFirstHue + 3) % 180;
+    }
+    public void setStripSection(int section, int r, int g, int b) {
+        switch(section) {
+            case 0:
+                for (int i = 0; i <= 9; i++) {
+                    ledBuffer.setRGB(i, r, g, b);
+                }
+                for (int i = 50; i <= 59; i++) {
+                    ledBuffer.setRGB(i, r, g, b);
+                }
+            break;
+
+            case 1:
+                for (int i = 10; i <= 19; i++) {
+                    ledBuffer.setRGB(i, r, g, b);
+                }
+                for (int i = 40; i <= 49; i++) {
+                    ledBuffer.setRGB(i, r, g, b);
+                }
+            break;
+
+            case 2:
+                for (int i = 20; i <= 28; i++) {
+                    ledBuffer.setRGB(i, r, g, b);
+                }
+                for (int i = 30; i <= 39; i++) {
+                    ledBuffer.setRGB(i, r, g, b);
+                }
+            break;
+        }
+    }
+    public void setTopLEDS(int r, int g, int b) {
+        ledBuffer.setRGB(29, r, g, b);
+        ledBuffer.setRGB(59, r, g, b);
     }
 
     /*
@@ -196,8 +231,11 @@ public class LEDStrip {
                 rainbow();
                 break;
             case ROBOTDISABLEDPATTERN:
-            //    diagnosticLEDmode();
+                diagnosticLEDmode();
                 break;
+            case MANUAL:
+
+            break;
         }
         addressableLED.setData(ledBuffer);
     }

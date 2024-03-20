@@ -65,16 +65,30 @@ public class Climber extends SubsystemBase {
     isClimberLocked = true;
   }
   public void moveClimberToPosition(double pos) {
-    //if (isClimberLocked == false) {
+    if (isClimberLocked == false) {
       climberController.setReference(pos, com.revrobotics.CANSparkFlex.ControlType.kPosition);
-    //}
+    }
   }
+  // public void setClimberSpeed(double speed) {
+  //   if (!isClimberLocked) {
+  //     if (integratedClimberEncoder.getPosition() > -15) {
+  //       climberController.setReference(-5, com.revrobotics.CANSparkFlex.ControlType.kPosition);
+  //     }
+  //     else if (!isClimberDown()) {
+  //       climberMainMotor.set(speed); //positive to bring climber down/climb
+  //     }
+  //     if (isClimberDown()) {
+  //       stopClimber();
+  //     }
+  //   }
+  // }
   public void setClimberSpeed(double speed) {
-    if (!isClimberDown()) {
-      climberMainMotor.set(speed); //positive to bring climber down/climb
+    
+    if (isClimberDown()) {
+      stopClimber();
     }
     else {
-      stopClimber();
+      climberMainMotor.set(speed);
     }
   }
   public void stopClimber() {
@@ -89,5 +103,8 @@ public class Climber extends SubsystemBase {
     climberController.setD(d);
     climberController.setIZone(iz);
     climberController.setFF(ff);
+  }
+  public double getClimberPosition() {
+    return integratedClimberEncoder.getPosition();
   }
 }

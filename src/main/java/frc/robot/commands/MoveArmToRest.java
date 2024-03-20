@@ -9,15 +9,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmPosition;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Shooter;
 
 public class MoveArmToRest extends Command {
   /** Creates a new MoveArmToRest. */
   Arm S_Arm;
   int moveToAmpState = 0;
   int count = 0;
-  public MoveArmToRest(Arm S_Arm) {
+  Shooter S_Shooter;
+  public MoveArmToRest(Arm S_Arm, Shooter S_Shooter) {
     this.S_Arm = S_Arm;
-    addRequirements(S_Arm);
+    this.S_Shooter = S_Shooter;
+    addRequirements(S_Arm, S_Shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,6 +32,7 @@ public class MoveArmToRest extends Command {
       moveToAmpState = 2;
       S_Arm.MoveArm(Constants.ArmConstants.restPosition);
     }
+    S_Shooter.setShooterAngle(75);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,6 +58,7 @@ public class MoveArmToRest extends Command {
           if (count > 3) {
             moveToAmpState ++;
             count = 0;
+            S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
           }
         }
         else {count = 0;} 

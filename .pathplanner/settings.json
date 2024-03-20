@@ -1,12 +1,17 @@
 {
-  "robotWidth": 0.7874,
-  "robotLength": 0.9398,
+  "robotWidth": 0.75,
+  "robotLength": 0.93,
   "holonomicMode": true,
   "pathFolders": [
     "7 Note Auto",
+    "AmpSideToMiddleNoWoofer",
+    "AmpSideToMiddleWoofer",
     "Auto 1",
+    "ClearSideStraightToMiddle",
     "ClearSideToMiddleAuto",
+    "ClearSideToMiddleNoCloseNote",
     "ClearSideToMiddleWoofer",
+    "AmpSideStraightToMiddle",
     "Test Auto"
   ],
   "autoFolders": [
@@ -16,9 +21,9 @@
     "New Folder",
     "Test Auto"
   ],
-  "defaultMaxVel": 4.2,
+  "defaultMaxVel": 4.1,
   "defaultMaxAccel": 6.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
-  "maxModuleSpeed": 4.5
+  "maxModuleSpeed": 5.0
 }

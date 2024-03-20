@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2127435683442798,
-        "y": 2.711999709713705
+        "x": 2.098624768678109,
+        "y": 4.54443194600675
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.502775862694583,
-        "y": 3.73816176203781
+        "x": 3.388657063028412,
+        "y": 5.570593998330854
       },
       "isLocked": false,
       "linkedName": "SideWoofer4End"
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.2,
+    "maxVelocity": 4.1,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0

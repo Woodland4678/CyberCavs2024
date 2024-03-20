@@ -32,7 +32,7 @@ public class MoveArmTrap extends Command {
     moveToTrapState = 0;
     count = 0;
     S_Shooter.setShooterAngle(85);
-    S_Arm.setArmRollers(18);
+    //S_Arm.setArmRollers(18);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,9 +42,9 @@ public class MoveArmTrap extends Command {
       case 0:
        // S_Arm.MoveArm(Constants.ArmConstants.AmpIntermediatePos1);
        S_Arm.moveToAngle(Constants.ArmConstants.AmpIntermediatePos1.xTarget, Constants.ArmConstants.AmpIntermediatePos1.yTarget);
-        if (S_Arm.getShoulderAngleError() < 3) {
+        if (S_Arm.getShoulderAngleError() < 4.5) {
           count ++;
-          if (count > 15) {
+          if (count > 5) {
             moveToTrapState ++;
             count = 0;
           }
@@ -52,9 +52,9 @@ public class MoveArmTrap extends Command {
         else {count = 0;}   
         break;     
       case 1:
-        if (S_Arm.MoveArm(Constants.ArmConstants.trapIntermediatePos2) < 2) {
+        if (S_Arm.MoveArm(Constants.ArmConstants.trapIntermediatePos2) < 4) {
           count ++;
-          if (count > 10) {
+          if (count > 3) {
             moveToTrapState ++;
             count = 0;
           }

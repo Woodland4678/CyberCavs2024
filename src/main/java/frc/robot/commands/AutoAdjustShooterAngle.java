@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.hal.simulation.ConstBufferCallback;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve;
@@ -19,6 +20,7 @@ public class AutoAdjustShooterAngle extends Command {
   SwerveSubsystem S_Swerve;
   int lostTargetCount = 0;
   double shooterAngleTarget = Constants.ShooterConstants.shooterStartingAngle;
+  
   /** Creates a new AutoAdjustShooterAngle. */
   public AutoAdjustShooterAngle(Shooter S_Shooter, Intake S_Intake, SwerveSubsystem S_Swerve) {
     this.S_Shooter =  S_Shooter;
@@ -46,12 +48,12 @@ public class AutoAdjustShooterAngle extends Command {
       }
       else {
         lostTargetCount++;
-        if (lostTargetCount > 15) {
+        if (lostTargetCount > 15 && !DriverStation.isAutonomous()) {
           S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
         }
       }
     }
-    else {
+    else if (!DriverStation.isAutonomous()){
       S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
     }
   }

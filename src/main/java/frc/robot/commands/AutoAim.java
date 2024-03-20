@@ -4,16 +4,22 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.LEDStrip;
+import frc.robot.LEDStrip.LEDModes;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -41,6 +47,10 @@ public class AutoAim extends Command {
    boolean isAuto = false;
    boolean hasShot = false;
    int hasShotCnt = 0;
+   boolean rpmReady = false;
+   boolean shooterAngleReady = false;
+   boolean robotAngleReady = false;
+   Optional<Alliance> ally;
   /** Creates a new AutoAim. */
   public AutoAim(SwerveSubsystem S_Swerve, Shooter S_Shooter, Intake S_Intake, CommandXboxController driverController, boolean isAuto) {
     this.driverController = driverController;
@@ -57,6 +67,11 @@ public class AutoAim extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    ally = DriverStation.getAlliance();
+    LEDStrip.getInstance().setLEDMode(LEDModes.MANUAL);
+    rpmReady = false;
+    shooterAngleReady = false;
+    robotAngleReady = false;
     isDone = false;
     isShootingCnt = 0;
     isShooting = false;
@@ -65,7 +80,8 @@ public class AutoAim extends Command {
     lostTargetCount = 0;
     hasShot = false;
     hasShotCnt = 0;
-    if (S_Swerve.hasAprilTagTarget()) {
+    if (S_Swerve.hasAprilTagTarget() && (S_Swerve.getAprilTagTargetID() == 7 || S_Swerve.getAprilTagTargetID() == 3)) {
+      
       hasTarget = true;
       startingYaw = S_Swerve.getAprilTagX();
       rController.setSetpoint(S_Swerve.getHeading().getDegrees() - (startingYaw - Constants.Swerve.autoAimYawOffset));
@@ -74,12 +90,34 @@ public class AutoAim extends Command {
       currentShooterAngleTarget = S_Shooter.calculateShooterAngle(currentTargetPitch);
     }
     else {
-      rController.setSetpoint(0); //was 180
+      hasTarget = false;
+      // if (S_Swerve.getPose().getX() < 8 && (S_Swerve.getPose().getY() > 0 && S_Swerve.getPose().getY() < 5)) { //TODO this if for blue make changes for red
+      //  if (ally.get() == Alliance.Red) {
+      //     rController.setSetpoint(180); //was 180
+      //   }
+      //   else {
+      //     rController.setSetpoint(0);
+      //   }
+      // }
+      // else {
+      //   if (ally.get() == Alliance.Red) {
+      //     rController.setSetpoint(180); //was 180
+      //   }
+      //   else {
+      //     rController.setSetpoint(0);
+      //   }
+      // }
+      if (!isAuto) {
+        rController.setSetpoint(0);
+      }
+      else {
+        rController.setSetpoint(S_Swerve.getHeading().getDegrees());
+      }
       //profiledRController.setGoal(0);
     }
     S_Shooter.setShooterAngle(currentShooterAngleTarget);
     S_Shooter.setRightAndLeftRPM(-3400, -4400);
-    rController.setTolerance(4);
+    rController.setTolerance(6);
     //profiledRController.setTolerance(2);  
    // rController.setSetpoint(3.9);
    // S_Shooter.setRightAndLeftRPM(Constants.ShooterConstants.subwooferShotRightRPM, Constants.ShooterConstants.subwooferShotLeftRPM);
@@ -90,7 +128,14 @@ public class AutoAim extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (S_Swerve.hasAprilTagTarget()) {
+    
+    if (S_Swerve.hasAprilTagTarget()  && (S_Swerve.getAprilTagTargetID() == 7 || S_Swerve.getAprilTagTargetID() == 3)) {
+      if (S_Swerve.getAprilTagY() < -12.3) {
+        S_Shooter.setRightAndLeftRPM(-4000, -5000);
+      }
+      else {
+         S_Shooter.setRightAndLeftRPM(-3400, -4400);
+      }
       lostTargetCount = 0;
       hasTarget = true;
       startingYaw = S_Swerve.getAprilTagX();
@@ -105,19 +150,37 @@ public class AutoAim extends Command {
       lostTargetCount++;
       if (lostTargetCount > 25) {
         hasTarget = false;
-        rController.setSetpoint(0);
+      //  if (S_Swerve.getPose().getX() < 8 && (S_Swerve.getPose().getY() > 0 && S_Swerve.getPose().getY() < 5)) { //TODO this if for blue make changes for red
+      //     if (ally.get() == Alliance.Red) {
+      //       rController.setSetpoint(180); //was 180
+      //     }
+      //     else {
+      //       rController.setSetpoint(0);
+      //     }
+      //   }
+      //   else {
+      //    if (ally.get() == Alliance.Red) {
+      //       rController.setSetpoint(180); //was 180
+      //     }
+      //     else {
+      //       rController.setSetpoint(0);
+      //     }
+      //   }
+        if (!isAuto) {
+          rController.setSetpoint(0);
+        }
        // profiledRController.setGoal(0);
         currentShooterAngleTarget = Constants.ShooterConstants.shooterStartingAngle;
         S_Shooter.setShooterAngle(currentShooterAngleTarget);
       }
     }
      degrees = S_Swerve.getHeading().getDegrees();
-    // if (rController.getSetpoint() > 0 && degrees < 0) {
-    //   degrees = 360 + degrees;
-    // }
-    // else if (rController.getSetpoint() < 0 && degrees > 0) {
-    //   degrees = degrees - 360;
-    // }
+    if (rController.getSetpoint() == 180 && degrees < 0) {
+      degrees = 360 + degrees;
+    }
+    else if (rController.getSetpoint() == 180 && degrees > 0) {
+      degrees = degrees - 360;
+    }
     SmartDashboard.putBoolean("Shoot r controller at setpoint", rController.atSetpoint());
     SmartDashboard.putNumber("Shoot r controller error", rController.getPositionError());
     SmartDashboard.putNumber("Shoot shooter angle error", Math.abs(currentShooterAngleTarget - S_Shooter.getAnglePosition()));
@@ -127,11 +190,36 @@ public class AutoAim extends Command {
                                           -Math.pow(driverController.getLeftX(), 3) * S_Swerve.getMaximumVelocity()),
                         rSpeed,
                         true);
-    if (Math.abs(S_Shooter.getLeftVelocity() - (-4400)) < 200
-     &&  Math.abs(S_Shooter.getRightVelocity() - (-3400)) < 200 
-     && rController.atSetpoint()
-     && S_Shooter.setShooterAngle(currentShooterAngleTarget) < 0.8
-     && hasTarget) {
+
+    if (Math.abs(S_Shooter.getLeftVelocity() - (S_Shooter.getLeftTargetVelocity())) < 200 &&  Math.abs(S_Shooter.getRightVelocity() - (S_Shooter.getRightTargetVelocity())) < 200 )  {
+      rpmReady = true;
+      LEDStrip.getInstance().setStripSection(0, 0, 255, 0); //top leds
+    } else {
+      rpmReady = false;
+      LEDStrip.getInstance().setStripSection(0, 255, 0, 0);
+    }
+    if (rController.atSetpoint()) {
+      robotAngleReady = true;
+      LEDStrip.getInstance().setStripSection(1, 0, 255, 0); //middle leds
+    } else {
+      robotAngleReady = false;
+      LEDStrip.getInstance().setStripSection(1, 255, 0, 0);
+    }
+    if (S_Shooter.setShooterAngle(currentShooterAngleTarget) < 1) {
+      shooterAngleReady = true;
+      LEDStrip.getInstance().setStripSection(2, 0, 255, 0); //bottom leds
+    }
+    else {
+      shooterAngleReady = false;
+      LEDStrip.getInstance().setStripSection(2, 255, 0, 0);
+    }
+    if (hasTarget) {
+      LEDStrip.getInstance().setTopLEDS(0, 255, 0);
+    }
+    else {
+      LEDStrip.getInstance().setTopLEDS(255, 0, 0);
+    }
+    if (rpmReady && robotAngleReady && shooterAngleReady && hasTarget && S_Swerve.getRobotVelocity().vxMetersPerSecond < 1.5 && S_Swerve.getRobotVelocity().vyMetersPerSecond < 1.5) {
      count++;
      if (count > 3) {
       isShooting = true;
@@ -180,6 +268,7 @@ public class AutoAim extends Command {
     }
     S_Intake.stopIntakeMotors();
     S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
+    LEDStrip.getInstance().setLEDMode(LEDModes.SOLIDRED);
   }
 
   // Returns true when the command should end.

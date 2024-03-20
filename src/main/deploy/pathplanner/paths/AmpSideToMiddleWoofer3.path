@@ -3,49 +3,55 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.5,
-        "y": 2.0
+        "x": 4.6,
+        "y": 6.35111108060054
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.700213790348044,
-        "y": 2.0
+        "x": 5.552204426931377,
+        "y": 6.406579299645086
       },
       "isLocked": false,
-      "linkedName": "Shoot auto Link 1"
+      "linkedName": "AmpToMiddle3End"
     },
     {
       "anchor": {
-        "x": 3.5,
-        "y": 2.0
+        "x": 7.077689831055338,
+        "y": 6.009057063159172
       },
       "prevControl": {
-        "x": 4.405190045591286,
-        "y": 2.0
+        "x": 5.996059559686687,
+        "y": 6.499026331385997
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -7.5,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.2,
+    "maxVelocity": 4.1,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 20.500271918547178,
+    "velocity": 3.0,
+    "rotation": -8.615648184164192,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Test Auto",
+  "folder": "AmpSideToMiddleWoofer",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 16.69924423399362,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,6 +17,7 @@ import frc.robot.LEDStrip.LEDModes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.swing.text.AbstractDocument.LeafElement;
 
@@ -46,6 +49,8 @@ public class Robot extends TimedRobot
   private Timer disabledTimer;
 
   private LEDStrip ledstrip;
+  Optional<Alliance> ally;
+  boolean hasFlipped = false;
 
   public Robot()
   {
@@ -101,6 +106,7 @@ public class Robot extends TimedRobot
     SmartDashboard.putNumber("TunePID Feed Forward", tunePID_KFF);
     SmartDashboard.putNumber("TuneShot Left RPM", tuneShot_KLeftRPM);
     SmartDashboard.putNumber("TuneShot Right RPM", tuneShot_KRightRPM);
+    hasFlipped = false;
   }
 
   /**
@@ -148,36 +154,36 @@ public class Robot extends TimedRobot
    
     ledstrip = LEDStrip.getInstance();
    
-    // if (m_robotContainer.isElbowReady()){
-    //   diagState += LEDStrip.elbowDiag; 
-    // }
-    // if (m_robotContainer.isShoulderReady()){
-    //   diagState += LEDStrip.shoulderDiag; 
-    // }
-    // if (m_robotContainer.isGyroReady()){
-    //   diagState += LEDStrip.gyroDiag; 
-    // }
+    if (m_robotContainer.isElbowReady()){
+      diagState += LEDStrip.elbowDiag; 
+    }
+    if (m_robotContainer.isShoulderReady()){
+      diagState += LEDStrip.shoulderDiag; 
+    }
+    if (m_robotContainer.isGyroReady()){
+      diagState += LEDStrip.gyroDiag; 
+    }
     if (m_robotContainer.isLimelightReady()){
       diagState += LEDStrip.limelightDiag; 
     }
-    // if (m_robotContainer.isAprilTagCameraReady()){
-    //   diagState += LEDStrip.apriltagDiag;
-    // }  
+    if (m_robotContainer.isAprilTagCameraReady()){
+      diagState += LEDStrip.apriltagDiag;
+    }  
     if (m_robotContainer.isFrontLeftSwerveReady()){
       diagState += LEDStrip.swerve1Diag; 
     }
-    // if (m_robotContainer.isFrontRightSwerveReady()){
-    //   diagState += LEDStrip.swerve2Diag; 
-    // }
-    // if (m_robotContainer.isBackLeftSwerveReady()){
-    //   diagState += LEDStrip.swerve3Diag; 
-    // }
-    // if (m_robotContainer.isBackRightSwerveReady()){
-    //   diagState += LEDStrip.swerve4Diag; 
-    // }
-    ledstrip.setDiagnosticPattern(diagState);
-    ledstrip.diagnosticLEDmode();
-    // ledstrip.periodic();
+    if (m_robotContainer.isFrontRightSwerveReady()){
+      diagState += LEDStrip.swerve2Diag; 
+    }
+    if (m_robotContainer.isBackLeftSwerveReady()){
+      diagState += LEDStrip.swerve3Diag; 
+    }
+    if (m_robotContainer.isBackRightSwerveReady()){
+      diagState += LEDStrip.swerve4Diag; 
+    }
+     ledstrip.setDiagnosticPattern(diagState);
+     ledstrip.diagnosticLEDmode();
+     ledstrip.periodic();
   
     // if (disabledTimer.hasElapsed(Constants.Drivebase.WHEEL_LOCK_TIME))
     // {
@@ -192,7 +198,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
-    /**m_robotContainer.setMotorBrake(true);
+    m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -200,7 +206,7 @@ public class Robot extends TimedRobot
     {
       m_autonomousCommand.schedule();
     }
-    */
+    
   }
 
   /**
@@ -214,6 +220,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit()
   {
+    ally = DriverStation.getAlliance();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -221,6 +228,10 @@ public class Robot extends TimedRobot
     if (m_autonomousCommand != null)
     {
       m_autonomousCommand.cancel();
+      if (ally.get() == Alliance.Red && !hasFlipped) {
+        m_robotContainer.flipRobotHeading(); //for some dumb reason pathplanner doesn't flip the heading for red alliance, so to make teleop driving work I have to flip the heading on init
+        hasFlipped = true;
+      }
     }
     m_robotContainer.setDriveMode();
     m_robotContainer.setMotorBrake(true);
@@ -234,54 +245,50 @@ public class Robot extends TimedRobot
   @Override
   public void teleopPeriodic()
   {
-    SmartDashboard.putData("PID tuning choices", pidTuningChooser);
-    double tunePID_Dashboard_P = SmartDashboard.getNumber("TunePID P Gain", 0);
-    double tunePID_Dashboard_I = SmartDashboard.getNumber("TunePID I Gain", 0);
-    double tunePID_Dashboard_D = SmartDashboard.getNumber("TunePID D Gain", 0);
-    double tunePID_Dashboard_Iz = SmartDashboard.getNumber("TunePID I Zone", 0);
-    double tunePID_Dashboard_FF = SmartDashboard.getNumber("TunePID Feed Forward", 0);
-    double tuneShot_Dashboard_LeftRPM = SmartDashboard.getNumber("TuneShot Left RPM", 0);
-    double tuneShot_Dashboard_RightRPM = SmartDashboard.getNumber("TuneShot Right RPM", 0);
-    if (tunePID_Dashboard_P != tunePID_KP || tunePID_Dashboard_I != tunePID_KI || tunePID_Dashboard_D != tunePID_KD || tunePID_Dashboard_Iz != tunePID_KIz || tunePID_Dashboard_FF != tunePID_KFF || tuneShot_Dashboard_LeftRPM != tuneShot_KLeftRPM || tuneShot_Dashboard_RightRPM != tuneShot_KRightRPM) {
-      if (pidTuningChooser.getSelected().equals("ShooterMotorPIDF")){
-         m_robotContainer.setShooterMotorsPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
-      }
-      else if (pidTuningChooser.getSelected().equals("ElbowPID")){
-         m_robotContainer.setElbowPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
-      }
-      else if (pidTuningChooser.getSelected().equals("ShoulderPID")){
-         m_robotContainer.setShoulderPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
-      }
-      else if (pidTuningChooser.getSelected().equals("ShooterAnglePID")){
-         m_robotContainer.setShooterAnglePIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
-      }
-      else if (pidTuningChooser.getSelected().equals("AutoAimPID")){
-         m_robotContainer.setAutoAimPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
-      }
-      else if (pidTuningChooser.getSelected().equals("ShooterSpeeds")) {
-        m_robotContainer.setShooterTargets(tuneShot_Dashboard_LeftRPM, tuneShot_Dashboard_RightRPM);
-      }
-      else if (pidTuningChooser.getSelected().equals("WristPID")) {
-        m_robotContainer.setWristPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF);
-      }
-      else if (pidTuningChooser.getSelected().equals("ClimberPID")) {
-        m_robotContainer.setClimberPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF);
-      }
-      // else if (pidTuningChooser.getSelected().equals("AutoGrabNote_X_PID")){
-      //    m_robotContainer.setAutoGrabNoteXPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
-      // }
-      // else if (pidTuningChooser.getSelected().equals("AutoGrabNote_Y_PID")){
-      //    m_robotContainer.setAutoGrabNoteYPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
-      // }
-      // else if (pidTuningChooser.getSelected().equals("AutoGrabNote_R_PID")){
-      //    m_robotContainer.setAutoGrabNoteRPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
-      // }
-      tunePID_KP = tunePID_Dashboard_P;
-      tunePID_KI = tunePID_Dashboard_I;
-      tunePID_KD = tunePID_Dashboard_D;
-      tunePID_KIz = tunePID_Dashboard_Iz;
-      tunePID_KFF = tunePID_Dashboard_FF;
-    }
+    // SmartDashboard.putData("PID tuning choices", pidTuningChooser);
+    // double tunePID_Dashboard_P = SmartDashboard.getNumber("TunePID P Gain", 0);
+    // double tunePID_Dashboard_I = SmartDashboard.getNumber("TunePID I Gain", 0);
+    // double tunePID_Dashboard_D = SmartDashboard.getNumber("TunePID D Gain", 0);
+    // double tunePID_Dashboard_Iz = SmartDashboard.getNumber("TunePID I Zone", 0);
+    // double tunePID_Dashboard_FF = SmartDashboard.getNumber("TunePID Feed Forward", 0);
+    // double tuneShot_Dashboard_LeftRPM = SmartDashboard.getNumber("TuneShot Left RPM", 0);
+    // double tuneShot_Dashboard_RightRPM = SmartDashboard.getNumber("TuneShot Right RPM", 0);
+    // if (tunePID_Dashboard_P != tunePID_KP || tunePID_Dashboard_I != tunePID_KI || tunePID_Dashboard_D != tunePID_KD || tunePID_Dashboard_Iz != tunePID_KIz || tunePID_Dashboard_FF != tunePID_KFF || tuneShot_Dashboard_LeftRPM != tuneShot_KLeftRPM || tuneShot_Dashboard_RightRPM != tuneShot_KRightRPM) {
+    //   if (pidTuningChooser.getSelected().equals("ShooterMotorPIDF")){
+    //      m_robotContainer.setShooterMotorsPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("ElbowPID")){
+    //      m_robotContainer.setElbowPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("ShoulderPID")){
+    //      m_robotContainer.setShoulderPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("ShooterAnglePID")){
+    //      m_robotContainer.setShooterAnglePIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("AutoAimPID")){
+    //      m_robotContainer.setAutoAimPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF); 
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("ShooterSpeeds")) {
+    //     m_robotContainer.setShooterTargets(tuneShot_Dashboard_LeftRPM, tuneShot_Dashboard_RightRPM);
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("WristPID")) {
+    //     m_robotContainer.setWristPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF);
+    //   }
+    //   else if (pidTuningChooser.getSelected().equals("ClimberPID")) {
+    //     m_robotContainer.setClimberPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF);
+    //   }
+
+      // tunePID_KP = tunePID_Dashboard_P;
+      // tunePID_KI = tunePID_Dashboard_I;
+      // tunePID_KD = tunePID_Dashboard_D;
+      // tunePID_KIz = tunePID_Dashboard_Iz;
+      // tunePID_KFF = tunePID_Dashboard_FF;
+
+   // }
+  //  for (int i = 0; i < 20; i++) {
+  //   SmartDashboard.putNumber("PDH Amp Draw channel " + i, m_robotContainer.getPDHCurrentDraw(i));
+  //  }
     
     
   }

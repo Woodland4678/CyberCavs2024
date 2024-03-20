@@ -1,0 +1,158 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.78,
+      "y": 4.38
+    },
+    "rotation": -59.43631907012195
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "TurnOnHeadlights"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SubwooferShot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetArmToRest"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SideWoofer1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpinUpShooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoGrabNote_NoR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MoveShooterTo89"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SideWoofer2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "TurnOnHeadlights"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SideWoofer3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoGrabNote_NoR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpinUpShooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MoveShooterTo89"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddleNoCloseNote_1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddleNoCloseNote_2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoGrabNote_NoR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpinUpShooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MoveShooterTo89"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearSideToMiddleNoCloseNote_3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "ClearSideToMiddle",
+  "choreoAuto": false
+}

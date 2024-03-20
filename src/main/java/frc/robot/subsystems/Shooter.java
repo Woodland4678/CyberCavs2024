@@ -141,6 +141,12 @@ public class Shooter extends SubsystemBase {
     leftMotorController.setFF(ff);
   }
   public double setShooterAngle(double angle) {
+    if (angle > Constants.ShooterConstants.maxShooterAngle) {
+      angle = Constants.ShooterConstants.maxShooterAngle;
+    }
+    else if (angle < Constants.ShooterConstants.minShooterAngle) {
+      angle = Constants.ShooterConstants.minShooterAngle;
+    }
       angleMotorController.setReference(angle, com.revrobotics.CANSparkFlex.ControlType.kPosition);
       return Math.abs(angle - getAnglePosition());
   }
@@ -195,7 +201,7 @@ public class Shooter extends SubsystemBase {
    
    
    /*New shooter calcs March 9th 2024 */
-   shooterAngleTarget = 0.0341 * Math.pow(targetY ,2) - 1.237 * targetY + 70.9036;
+   shooterAngleTarget = 0.0341 * Math.pow(targetY ,2) - 1.237 * targetY + 68.3036;
     if (shooterAngleTarget < Constants.ShooterConstants.minShooterAngle) {
       shooterAngleTarget = Constants.ShooterConstants.minShooterAngle;
     }

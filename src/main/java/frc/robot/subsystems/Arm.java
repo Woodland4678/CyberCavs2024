@@ -237,9 +237,9 @@ public class Arm extends SubsystemBase {
       break;
       case 3:
        
-        if (Math.abs(integratedWristEncoder.getPosition() - currentHighestAngleWristCalibrate) < 2.5) {
+        if (Math.abs(integratedWristEncoder.getPosition() - currentHighestAngleWristCalibrate) < 5.5) {
           count++;
-          if (count > 25) {
+          if (count > 15) {
             integratedWristEncoder.setPosition(0);
             wristController.setReference(0, com.revrobotics.CANSparkMax.ControlType.kPosition);
              calibrateWristState = 0;
@@ -293,6 +293,9 @@ public class Arm extends SubsystemBase {
     // return false;
     
   }
+  public void setWristPositionToZero() {
+    integratedWristEncoder.setPosition(0);
+  }
   public double getShoulderAngleError() {
       return Math.abs(targetShoulderAngle - getCurrentShoulderPosition());
   }
@@ -310,7 +313,7 @@ public class Arm extends SubsystemBase {
     /*
      * ??? Need real values
      */
-    if (elbowAbsolute.getAbsolutePosition()*360 < 276 && elbowAbsolute.getAbsolutePosition()*360 > 101) {
+    if (elbowAbsolute.getAbsolutePosition()*360 < 296 && elbowAbsolute.getAbsolutePosition()*360 > 128) {
       return true;
     }
     return false;
@@ -319,7 +322,7 @@ public class Arm extends SubsystemBase {
     /*
      *  ??? Need real values
      */
-    if (shoulderAbsolute.getAbsolutePosition() * 360 < 178 && shoulderAbsolute.getAbsolutePosition()*360 > 89) {
+    if (shoulderAbsolute.getAbsolutePosition() * 360 < 272 && shoulderAbsolute.getAbsolutePosition()*360 > 206) {
       return true;
     }
     return false;

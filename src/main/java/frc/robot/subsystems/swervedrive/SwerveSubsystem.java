@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems.swervedrive;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -71,8 +73,19 @@ public class SwerveSubsystem extends SubsystemBase
   double autoAimIZ = 0;
   double autoAimFF = 0;
 
-  
+  int[] moduleCheckCount = {0,0,0,0};
+  boolean[] isModuleOkay = {false, false, false, false};
+  double[] prevModuleReading = {0,0,0,0};
 
+  boolean isLimelightOkay = false;
+  int checkLimeLightCount = 0;
+
+  boolean isRPIOkay = false;
+  int checkRPICount = 0;
+
+  int gyroCheckCount = 0;
+  boolean isGyroOkay = false;
+  double prevGyroReading = 0;
 
 
   /**
@@ -90,7 +103,7 @@ public class SwerveSubsystem extends SubsystemBase
     //  In this case the wheel diameter is 4 inches, which must be converted to meters to get meters/second.
     //  The gear ratio is 6.75 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
-    double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), (5.90625 / 1.0)); //6.75 * 14/16  its just 6.75 for practice frame
+    double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4 * 0.94), (5.90625 / 1.0)); //6.75 * 14/16  its just 6.75 for practice frame
     System.out.println("\"conversionFactor\": {");
     System.out.println("\t\"angle\": " + angleConversionFactor + ",");
     System.out.println("\t\"drive\": " + driveConversionFactor);
@@ -105,8 +118,8 @@ public class SwerveSubsystem extends SubsystemBase
     try
     {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
-      //swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+      //swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
       swerveDrive.resetDriveEncoders();
       //swerveDrive.swerveController.addSlewRateLimiters(new SlewRateLimiter(5.5), new SlewRateLimiter(5.5), new SlewRateLimiter(3.5));
       
@@ -177,14 +190,43 @@ public class SwerveSubsystem extends SubsystemBase
     return swerveDrive.getMaximumAngularVelocity();
   }
   public boolean isModuleReady(int module) {
-    //double degrees = swerveDrive[module].getCanCoder().getDegrees();
-     if (swerveDrive.getModulePositions()[module].angle.getDegrees() != 0) {
+    // if (moduleCheckCount[module] >= 100) {
+    //   if (swerveDrive.getModulePositions()[module].angle.getDegrees() != prevModuleReading[module]) {
+    //     isModuleOkay[module] = true;
+    //   }
+    //   else {
+    //     isModuleOkay[module] = false;
+    //   }
+    //   prevModuleReading[module] = swerveDrive.getModulePositions()[module].angle.getDegrees();
+    //   moduleCheckCount[module] = 0;
+    // }
+    // moduleCheckCount[module]++;
+   
+    // return isModuleOkay[module];
+
+    double degrees = swerveDrive.getModules()[module].getAbsolutePosition(); 
+     if (degrees != 0) {
       return true;
      }
     return false;
+    //return false;
   }
   public boolean isGyroReady() {
-    return true;
+    AHRS tGyro = (AHRS)swerveDrive.getGyro().getIMU();
+    return tGyro.isConnected();
+    //SmartDashboard.putNumber("TestGryoVal", this.getHeading().getDegrees());
+    // if (gyroCheckCount >= 100) {
+    //   if (this.getHeading().getDegrees() != prevGyroReading) {
+    //     isGyroOkay = true;
+    //   }
+    //   else {
+    //     isGyroOkay = false;
+    //   }
+    //   prevGyroReading = this.getHeading().getDegrees();
+    //   gyroCheckCount = 0;
+    // }
+    // gyroCheckCount++;
+    // return isGyroOkay;
     //return gyro.isConnected();
     // double curGyro = getYaw().getDegrees();
     // if (curGyro < chkGyroMinValue) {
@@ -212,22 +254,51 @@ public class SwerveSubsystem extends SubsystemBase
   }
   public boolean isLimelightReady() {
     InetAddress limelightIP;
-    try {
-      limelightIP = InetAddress.getByName("10.46.78.11");
-      boolean reachable = limelightIP.isReachable(3000);
-      if (reachable) {
-        return true;
+    checkLimeLightCount++;
+    if (checkLimeLightCount > 100) {
+      checkLimeLightCount = 0;
+      try {
+        limelightIP = InetAddress.getByName("10.46.78.12");
+        boolean reachable = limelightIP.isReachable(3000);
+        if (reachable) {
+          isLimelightOkay =  true;
+        }
+        else {
+          isLimelightOkay = false;
+        }
+      } catch (UnknownHostException e) {
+        // TODO Auto-generated catch block
+        isLimelightOkay = false;
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        isLimelightOkay = false;
       }
-      else {
-        return false;
-      }
-    } catch (UnknownHostException e) {
-      // TODO Auto-generated catch block
-      return false;
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      return false;
     }
+    return isLimelightOkay;
+  }
+  public boolean isAprilTagCameraReady() {
+    InetAddress rpiIP;
+    checkRPICount ++;
+    if (checkRPICount > 100) {
+      checkRPICount = 0;
+      try {
+        rpiIP = InetAddress.getByName("10.46.78.11");
+        boolean reachable = rpiIP.isReachable(3000);
+        if (reachable) {
+          isRPIOkay = true;
+        }
+        else {
+          isRPIOkay = false;
+        }
+      } catch (UnknownHostException e) {
+        // TODO Auto-generated catch block
+        isRPIOkay = false;
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        isRPIOkay = false;
+      }
+    }
+    return isRPIOkay;
     
   }
   /** photon vision code */
@@ -258,9 +329,20 @@ public double getAprilTagX() {
 }
 public boolean hasAprilTagTarget() {
   if (rpi.getLatestResult().getBestTarget() != null) {
-    return true;
+   // if (rpi.getLatestResult().getBestTarget().getFiducialId() == 7 || (rpi.getLatestResult().getBestTarget().getFiducialId() == 3)) {
+      return true;
+    //}
   }
   return false;
+}
+public int getAprilTagTargetID() {
+   if (rpi.getLatestResult().getBestTarget() != null) {
+    var results = rpi.getLatestResult().getTargets();
+    if (results.size() > 0) {
+      return results.get(0).getFiducialId();
+    }
+  }
+  return -1;
 }
 public double getAprilTagY() {
   Optional<Alliance> ally = DriverStation.getAlliance();
@@ -323,7 +405,7 @@ public double getAutoAimFF() {
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                                         //translation constants
-                                         new PIDConstants(5.0, 0.0, 0.0),
+                                         new PIDConstants(7, 0.0, 0.0),
                                          //rotation constants
                                          new PIDConstants(5, 0.0, 0.0),
                                          // Translation PID constants
@@ -331,7 +413,7 @@ public double getAutoAimFF() {
                                         //                   swerveDrive.swerveController.config.headingPIDF.i,
                                         //                   swerveDrive.swerveController.config.headingPIDF.d),
                                          // Rotation PID constants
-                                         4.5,
+                                         5,
                                          // Max module speed, in m/s
                                          swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
                                          // Drive base radius in meters. Distance from robot center to furthest module.
@@ -348,6 +430,22 @@ public double getAutoAimFF() {
         this // Reference to this subsystem to set requirements
                                   );
   }
+  public Command findPath(PathPlannerPath path, PathConstraints constraints, double rotationDelay) {
+    return AutoBuilder.pathfindThenFollowPath(
+                path,
+                constraints,
+                rotationDelay // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+    );
+  }
+  public Command findPathToPose(double x, double y, double rotation, PathConstraints constraints, boolean isRedAlliance) {
+    if (isRedAlliance) {
+      return AutoBuilder.pathfindToPoseFlipped(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(rotation))), constraints);    
+    }
+    else {
+      return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(rotation))), constraints);    
+    }
+  }
+  // Since AutoBuilder is configured, we can use it to build pathfinding commands
   public Command followPathCommand(String pathName) {        
         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
@@ -460,7 +558,7 @@ public double getAutoAimFF() {
       // Make the robot move
       swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
                                           Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
-                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
+                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity() * 0.75,
                         true,
                         false);
     });
@@ -515,8 +613,10 @@ public double getAutoAimFF() {
     SmartDashboard.putNumber("Limelight X", getLimelightX());
     SmartDashboard.putNumber("Limelight Y", getLimelightY());
     SmartDashboard.putNumber("Limelight obj size", getLimelightObjectSize());
-   // SmartDashboard.putNumber("Swerve Module 0 speed",swerveDrive.getModules()[0].getDriveMotor().getAppliedOutput());
-    //SmartDashboard.putNumber("Swerve Max speed",getMaximumVelocity());
+    SmartDashboard.putNumber("Swerve Module 0 speed",swerveDrive.getModules()[0].getDriveMotor().getAppliedOutput());
+    SmartDashboard.putNumber("Swerve X Speed", swerveDrive.getFieldVelocity().vxMetersPerSecond);
+    SmartDashboard.putNumber("Swerve Max speed",getMaximumVelocity());
+    SmartDashboard.putNumber("swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters()", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
    // swerveDrive.getModules()[0].getDriveMotor().getVelocity();
 
   }
@@ -738,5 +838,8 @@ public double getAutoAimFF() {
     // Fill later
     double error = 0; // Some number
     return error;
+  }
+  public void flipHeadingForRed() {
+    swerveDrive.resetOdometry(new Pose2d(new Translation2d(swerveDrive.getPose().getX(), swerveDrive.getPose().getY()), new Rotation2d(Math.toRadians(swerveDrive.getOdometryHeading().getDegrees() + 180))));
   }
 }

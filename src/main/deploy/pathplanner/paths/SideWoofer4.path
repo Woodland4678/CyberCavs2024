@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.800348735832606,
-        "y": 1.8859194475145713
+        "x": 6.335208098987628,
+        "y": 1.8617511520737338
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.9540621938386735,
-        "y": 1.6565187416089124
+        "x": 4.693348815269061,
+        "y": 2.1549403098806197
       },
       "isLocked": false,
       "linkedName": "SideWoofer3End"
     },
     {
       "anchor": {
-        "x": 3.2127435683442798,
-        "y": 2.711999709713705
+        "x": 2.098624768678109,
+        "y": 4.54443194600675
       },
       "prevControl": {
-        "x": 3.5948139438106455,
-        "y": 2.5376710212879887
+        "x": 2.4357923001560287,
+        "y": 2.668021336042672
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,28 +30,28 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.1,
-      "rotationDegrees": -43.0,
-      "rotateFast": true
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": -25.819999999999993,
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.2,
+    "maxVelocity": 4.1,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -43.0,
+    "velocity": 2.0,
+    "rotation": -25.819999999999993,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "ClearSideToMiddleWoofer",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 1.9091524329964225,
     "velocity": 0
   },
   "useDefaultConstraints": true

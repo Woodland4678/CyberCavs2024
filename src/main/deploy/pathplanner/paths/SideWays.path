@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.10493849559127752,
+        "y": 4.559091403897095
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.10493849559127755,
+        "y": 4.146277321565166
+      },
+      "isLocked": false,
+      "linkedName": "Shoot auto Link 1"
+    },
+    {
+      "anchor": {
+        "x": 2.347835552813963,
+        "y": 1.0115025944337612
+      },
+      "prevControl": {
+        "x": 2.347835552813963,
+        "y": 1.9166926400250477
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Test Auto",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

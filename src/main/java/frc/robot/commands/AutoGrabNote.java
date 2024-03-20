@@ -4,13 +4,18 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import javax.print.attribute.standard.Sides;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.LEDStrip;
 import frc.robot.LEDStrip.LEDModes;
@@ -29,18 +34,24 @@ public class AutoGrabNote extends Command {
   double rSpeed = 0;
   int grabState = 0;
   double degrees = 0;
+  double rotationSpeed = -1.75;
   boolean isDone = false;
   int waitCnt = 0;
   ChassisSpeeds driveSpeed;
   boolean isAuto = false;
+  boolean turnRight = true;
   int noteCloseCount = 0;
   int runCnt = 0;
+  int hasSeenNoteCount = 0;
+  CommandXboxController m_driverController;
  // private LEDStrip ledStrip;
   /** Creates a new AutoGrabNote. */
-  public AutoGrabNote(SwerveSubsystem S_Swerve, Intake S_Intake, boolean isAuto) {
+  public AutoGrabNote(SwerveSubsystem S_Swerve, Intake S_Intake, boolean isAuto, CommandXboxController m_driverController, boolean turnRight) {
     this.S_Swerve = S_Swerve;
     this.S_Intake = S_Intake;
     this.isAuto = isAuto;
+    this.m_driverController = m_driverController;
+    this.turnRight = turnRight;
     //ledStrip = LEDStrip.getInstance();
     addRequirements(S_Swerve, S_Intake);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -49,6 +60,7 @@ public class AutoGrabNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    hasSeenNoteCount = 0;
     // runCnt++;
     // if (isAuto && runCnt == 1) {
     //   yController.setP(0.08);
@@ -79,6 +91,13 @@ public class AutoGrabNote extends Command {
     S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
     S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
     S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.get() == Alliance.Red) {
+      rotationSpeed = rotationSpeed * -1;
+    }
+    if (!turnRight) {
+      rotationSpeed = rotationSpeed * -1;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -90,6 +109,14 @@ public class AutoGrabNote extends Command {
     switch(grabState) {
       case 0:
         if (S_Swerve.limelightHasTarget() == 1) {
+          if (S_Swerve.getLimelightY() < 10) {
+            S_Swerve.setLimelightPipeline(1);
+          }
+          else {
+            S_Swerve.setLimelightPipeline(0);
+          }
+          LEDStrip.getInstance().setLEDMode(LEDModes.SOLIDGREEN);
+          hasSeenNoteCount++;
           if (S_Swerve.getLimelightY() < -3) {
             noteCloseCount++;
           }
@@ -118,7 +145,7 @@ public class AutoGrabNote extends Command {
             //   grabState++;
             //   s_Swerve.stop();                         
             // }  
-            if (S_Intake.getPieceAquired() || S_Intake.isNoteOnRamp()) {
+            if (S_Intake.isNoteOnRamp() || S_Intake.getPieceAquired()) {
               grabState++;
               //LEDStrip.LEDModes = LEDMode.
             }     
@@ -133,26 +160,39 @@ public class AutoGrabNote extends Command {
             }
         }
         else {
-          if (noteCloseCount > 2) {
+          LEDStrip.getInstance().setLEDMode(LEDModes.SOLIDRED);
+          if (noteCloseCount > 2 && !isAuto) {
             driveSpeed = new ChassisSpeeds(1, 0, 0);
             S_Swerve.setChassisSpeeds(driveSpeed);
           }
           else if (isAuto) {
-            driveSpeed = new ChassisSpeeds(0, 0, 1.75);
-            rController.setSetpoint(S_Swerve.getHeading().getDegrees());
+            driveSpeed = new ChassisSpeeds(0, 0, rotationSpeed);
+            //rController.setSetpoint(S_Swerve.getHeading().getDegrees());
             S_Swerve.setChassisSpeeds(driveSpeed);
           } else {
-            S_Swerve.stop();
+             S_Swerve.drive(new Translation2d(-Math.pow(m_driverController.getLeftY(), 3) * S_Swerve.getMaximumVelocity(),
+                                          -Math.pow(m_driverController.getLeftX(), 3) * S_Swerve.getMaximumVelocity()),
+                                          Math.pow(-m_driverController.getRawAxis(4), 3) * S_Swerve.getMaximumAngularVelocity() * 0.6,
+                        true);
           }
-          if (S_Intake.isNoteOnRamp()) {
+          if (S_Intake.isNoteOnRamp() || S_Intake.getPieceAquired()) {
             grabState++;
             //LEDStrip.setLEDMode(LEDModes.BLINKGREEN);
           }
         }
       break;
       case 1:
-        S_Swerve.stop();
-        isDone = true;
+        
+        if (isAuto) {
+          isDone = true;
+          S_Swerve.stop();
+        }
+        else {
+          S_Swerve.drive(new Translation2d(-Math.pow(m_driverController.getLeftY(), 3) * S_Swerve.getMaximumVelocity(),
+                                          -Math.pow(m_driverController.getLeftX(), 3) * S_Swerve.getMaximumVelocity()),
+                                          Math.pow(-m_driverController.getRawAxis(4), 3) * S_Swerve.getMaximumAngularVelocity() * 0.6,
+                        true);
+        }
         LEDStrip.getInstance().setLEDMode(LEDModes.BLINKGREEN);
       break;
     }
@@ -162,6 +202,7 @@ public class AutoGrabNote extends Command {
   @Override
   public void end(boolean interrupted) {
     S_Swerve.setHeadlights(false);
+    //S_Swerve.stop();
   }
 
   // Returns true when the command should end.

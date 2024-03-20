@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.8085924743278065,
+      "y": 4.4271562828839945
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SideWoofer1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "ClearSideToMiddle",
+  "choreoAuto": false
+}
