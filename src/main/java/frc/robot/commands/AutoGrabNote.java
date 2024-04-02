@@ -88,9 +88,11 @@ public class AutoGrabNote extends Command {
     rController.setSetpoint(0);
     rController.setTolerance(Constants.Swerve.autoGrabNote_R_Tolerance);
     grabState = 0;
-    S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
-    S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
-    S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
+    if (!S_Intake.isNoteOnRamp()) {
+      S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
+      S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
+      S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerIntakeSpeed);
+    }
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.get() == Alliance.Red) {
       rotationSpeed = rotationSpeed * -1;
@@ -177,6 +179,7 @@ public class AutoGrabNote extends Command {
           }
           if (S_Intake.isNoteOnRamp() || S_Intake.getPieceAquired()) {
             grabState++;
+           
             //LEDStrip.setLEDMode(LEDModes.BLINKGREEN);
           }
         }

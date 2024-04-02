@@ -22,6 +22,7 @@ import frc.robot.commands.Climb;
 import frc.robot.commands.ClimbDown;
 import frc.robot.commands.ClimberDown;
 import frc.robot.commands.MoveArmAmp;
+import frc.robot.commands.MoveArmStuckNote;
 import frc.robot.commands.MoveArmToRest;
 import frc.robot.commands.MoveArmTrap;
 import frc.robot.commands.MoveClimber;
@@ -31,6 +32,7 @@ import frc.robot.commands.QuickShootTwo;
 import frc.robot.commands.ReverseNoteOutOfBot;
 import frc.robot.commands.RotateToAmp;
 import frc.robot.commands.RotateToStage;
+import frc.robot.commands.SpitNote;
 import frc.robot.commands.SubwooferShot;
 import frc.robot.commands.NormalShoot;
 import frc.robot.commands.PassNoteToArm;
@@ -101,9 +103,11 @@ public class RobotContainer {
   Command ClearSideWooferPath1;
   Command[] ClearSideWooferPaths = new Command[3];
   Command[] ClearSideStraightToMiddlePaths = new Command[4];
+  Command[] ClearSideStraightToMiddleAltPaths = new Command[4];
   Command[] AmpSideToMiddleWoofer = new Command[5];
   Command[] AmpSideToMiddleNoWoofer = new Command[3];
   Command[] AmpSideStraightToMiddle = new Command[3];
+  Command[] AmpSideToMiddleNoWooferAlt = new Command[3];
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -159,15 +163,25 @@ public class RobotContainer {
     ClearSideStraightToMiddlePaths[2] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("ClearSideStraightToMiddle5"));
     ClearSideStraightToMiddlePaths[3] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("ClearSideStraightToMiddle6"));
 
+    ClearSideStraightToMiddleAltPaths[0] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("ClearSideStraightToMiddle1Alt"));
+    ClearSideStraightToMiddleAltPaths[1] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("ClearSideStraightToMiddle3Alt"));
+    ClearSideStraightToMiddleAltPaths[2] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("ClearSideStraightToMiddle5"));
+    ClearSideStraightToMiddleAltPaths[3] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("ClearSideStraightToMiddle6"));
+
     AmpSideToMiddleWoofer[0] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleWoofer1"));
     AmpSideToMiddleWoofer[1] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleWoofer3"));
     AmpSideToMiddleWoofer[2] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleWoofer5"));
     // AmpSideToMiddleWoofer[3] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleNoWoofer1")); 
-    // AmpSideToMiddleWoofer[4] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideStraightToMiddle1")); 
+    // AmpSideToMiddleWoofer[4] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideStraightToMiddle1"));
+    
     
     AmpSideToMiddleNoWoofer[0] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleNoWoofer1"));
     AmpSideToMiddleNoWoofer[1] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleNoWoofer4"));
     AmpSideToMiddleNoWoofer[2] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleNoWoofer6"));
+
+    AmpSideToMiddleNoWooferAlt[0] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleNoWoofer1_alt"));
+    AmpSideToMiddleNoWooferAlt[1] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleNoWoofer6"));
+    AmpSideToMiddleNoWooferAlt[2] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideToMiddleNoWoofer2_Alt"));
 
     AmpSideStraightToMiddle[0] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideStraightToMiddle1"));
     AmpSideStraightToMiddle[1] = AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpSideStraightToMiddle3"));
@@ -239,6 +253,7 @@ public class RobotContainer {
     m_driverController.pov(90).onFalse(new InstantCommand(() -> S_Arm.stopArmRollers()));
     m_driverController.leftTrigger().whileTrue(new AutoGrabNote(S_Swerve, S_Intake, false, m_driverController, true));
     m_driverController.rightTrigger().whileTrue(new AutoAim(S_Swerve, S_Shooter, S_Intake, m_driverController, false));
+    m_driverController.b().whileTrue(new SpitNote(S_Shooter, S_Intake));
     //m_driverController.rightBumper().onTrue(new InstantCommand(() -> S_Arm.stopArmRollers()));
    // m_driverController.pov(0).onTrue(new PassNoteToArm(S_Arm, S_Intake));
     //m_driverController.pov(0).onTrue(new CalibrateWrist(S_Arm));
@@ -247,10 +262,10 @@ public class RobotContainer {
     
     m_operatorController.a().onTrue(new MoveArmAmp(S_Arm, S_Shooter));
     m_operatorController.b().onTrue(new PassNoteToArm(S_Arm, S_Intake, S_Shooter));
-    m_operatorController.y().onTrue(new MoveArmTrap(S_Arm, S_Shooter));
+    m_operatorController.y().onTrue(new MoveArmTrap(S_Arm, S_Shooter, m_operatorController));
     m_operatorController.x().onTrue(new MoveArmToRest(S_Arm, S_Shooter));
     m_operatorController.back().onTrue(new CalibrateWrist(S_Arm));
-    m_operatorController.start().onTrue(new MoveNoteForTrap(S_Arm));
+    m_operatorController.start().onTrue(new MoveArmStuckNote(S_Arm));
 
 //    m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.increaseShooterAngle()));
     m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(Constants.ClimberConstants.maxClimberHeight)));
@@ -267,6 +282,8 @@ public class RobotContainer {
     //m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(-79)));
     //m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(-45)));
     m_operatorController.pov(180).whileTrue(new Climb(S_Climber));
+    m_operatorController.leftStick().onTrue(new InstantCommand(() -> S_Shooter.higherShooterCalcAdjustment()));
+    m_operatorController.rightStick().onTrue(new InstantCommand(() -> S_Shooter.lowerShooterCalcAdjustment()));
    // m_operatorController.pov(180).onFalse(new InstantCommand(() -> S_Climber.stopClimber()));
    // m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> S_Arm.setWristPosition(0)));
     // m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setWristPosition(45)));
@@ -275,6 +292,10 @@ public class RobotContainer {
    // m_operatorController.pov(90).onTrue(new MoveClimber(S_Climber, 0)); //Change Climber Position
    // m_operatorController.leftBumper().onTrue(new MoveArmToRest(S_Arm));
   //  m_operatorController.rightBumper().onTrue(new MoveArmAmp(S_Arm));
+    
+ // autoBox.button(11,new InstantCommand(() -> S_Shooter.resetShooterAngle()));
+  //autoBox.button(11, )
+  //autoBox.getRawButton(11).onTrue(new InstantCommand(() -> S_Shooter.resetShooterAngle()));
   }
 
   /**`
@@ -331,8 +352,11 @@ public class RobotContainer {
     if (ally.get() == Alliance.Red) {
       isRedAlliance = true;
     }
-    if (autoBoxSwitch1 == 5) {
+    if (autoBoxSwitch1 == 5 && autoBoxSwitch2 == 1) {
       return new AmpSideToMiddleNoWoofer(S_Swerve, S_Intake, S_Arm, S_Shooter, S_Climber, AmpSideToMiddleNoWoofer, m_driverController, isRedAlliance);
+    }
+    else if (autoBoxSwitch1 == 5 && autoBoxSwitch2 == 2) {
+      return new frc.robot.Autos.AmpSideToMiddleNoWooferAlt(S_Swerve, S_Intake, S_Arm, S_Shooter, S_Climber, AmpSideToMiddleNoWooferAlt, m_driverController, isRedAlliance);
     }
     else if (autoBoxSwitch1 == 4 && autoBoxSwitch2 == 1) {
       return new ClearSideToMiddleWoofer(S_Swerve, S_Intake, S_Arm, S_Shooter, S_Climber, ClearSideWooferPaths, m_driverController, isRedAlliance);
@@ -385,6 +409,9 @@ public void setElbowPIDF(double p, double i, double f, double iz, double ff) {
   }
   public void resetArmAngles() {
     S_Arm.resetToAbsolute();
+  }
+  public void resetShooterAngle() {
+    S_Shooter.resetShooterAngle();
   }
   public void turnOffClimberLock() {
     S_Climber.disengageLock();

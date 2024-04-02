@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -18,7 +20,7 @@ import frc.robot.Constants;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private CANSparkMax intakeVerticalRoller; //Neo550 vertical roller
-  private CANSparkMax intakeHorizontalRoller; //Neo horizontal roller
+  private CANSparkFlex intakeHorizontalRoller; //Neo horizontal roller
   private CANSparkMax rampRoller; //Neo550 passing to roller
   private CANSparkMax indexer;
   private SparkPIDController verticalController;
@@ -39,7 +41,7 @@ public class Intake extends SubsystemBase {
   public Intake() {
     intakeVerticalRoller = new CANSparkMax(Constants.IntakeConstants.IntakeVerticalRollerCanID, MotorType.kBrushless);
     verticalController = intakeVerticalRoller.getPIDController();
-    intakeHorizontalRoller = new CANSparkMax(Constants.IntakeConstants.IntakeHorizontalRollerCanID, MotorType.kBrushless);
+    intakeHorizontalRoller = new CANSparkFlex(Constants.IntakeConstants.IntakeHorizontalRollerCanID, MotorType.kBrushless);
     horizontalController = intakeHorizontalRoller.getPIDController();
     rampRoller = new CANSparkMax(Constants.IntakeConstants.indexerCanID, MotorType.kBrushless);
     rampRollerController = rampRoller.getPIDController();
@@ -69,6 +71,30 @@ public class Intake extends SubsystemBase {
     intakeVerticalRoller.setSmartCurrentLimit(40);
     rampRoller.setSmartCurrentLimit(0);
     rampRollerController.setOutputRange(0, 0);
+
+    intakeVerticalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    intakeVerticalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
+    intakeVerticalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    intakeVerticalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    intakeVerticalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
+    intakeHorizontalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+     intakeHorizontalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
+    intakeHorizontalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    intakeHorizontalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    intakeHorizontalRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
+    indexer.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    indexer.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
+    indexer.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    indexer.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    indexer.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
+    rampRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    rampRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
+    rampRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    rampRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    rampRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
   }
 
   @Override

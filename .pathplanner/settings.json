@@ -4,6 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "7 Note Auto",
+    "AmpSideStraightToMiddle",
     "AmpSideToMiddleNoWoofer",
     "AmpSideToMiddleWoofer",
     "Auto 1",
@@ -11,7 +12,7 @@
     "ClearSideToMiddleAuto",
     "ClearSideToMiddleNoCloseNote",
     "ClearSideToMiddleWoofer",
-    "AmpSideStraightToMiddle",
+    "AmpSideToMiddleNoWoofer_Alt",
     "Test Auto"
   ],
   "autoFolders": [

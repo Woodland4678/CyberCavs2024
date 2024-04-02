@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -35,6 +36,10 @@ public class Climber extends SubsystemBase {
     climberController.setOutputRange(-1, 1);
     climberMainMotor.setSmartCurrentLimit(80);
    // climberMainMotor.setIdleMode(mode.brake);
+    climberMainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    climberMainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    climberMainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    climberMainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
   }
 
   @Override

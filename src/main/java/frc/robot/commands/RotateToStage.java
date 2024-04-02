@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import java.sql.Driver;
 import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -34,13 +35,14 @@ public class RotateToStage extends Command {
   public void initialize() {
     rController.setIZone(5);
     rSpeed = 0;
-    // Optional<Alliance> ally = DriverStation.getAlliance();
-    // if (ally.get() == Alliance.Red) {
-    //   rotateTarget = -90;
-    // }
-    // else {
-    //   rotateTarget = 90;
-    // }
+    int allianceStation = DriverStation.getLocation().getAsInt();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (((ally.get() == Alliance.Red && (allianceStation == 3)) || (ally.get() == Alliance.Blue && (allianceStation == 2 || allianceStation == 3)))) {
+       rotateTarget = 60;
+     }
+     else {
+       rotateTarget = -60;
+    }
     rController.setSetpoint(rotateTarget);
   }
 

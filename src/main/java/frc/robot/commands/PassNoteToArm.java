@@ -37,7 +37,7 @@ public class PassNoteToArm extends Command {
     if (S_Intake.isDiverterDown()) {
       state = 2;
     }
-    if (S_Arm.MoveArm(Constants.ArmConstants.restPosition) > 3) { //don't move the note to the arm if the arm isn't in the right spot
+    if (S_Arm.MoveArm(Constants.ArmConstants.restPosition) > 2) { //don't move the note to the arm if the arm isn't in the right spot
       state = -1; 
       isDone = true;
       //TODO blink LEDs red or something
@@ -75,9 +75,11 @@ public class PassNoteToArm extends Command {
       break;
 
     case 2:
+      S_Shooter.setRightAndLeftRPM(200, 200);
       S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerOuttakeSpeed);
       S_Intake.setRampRollerMotorPercentOutput(Constants.IntakeConstants.indexerOuttakeSpeed);
       S_Arm.setRollerOutputPercent(Constants.ArmConstants.armIntakeSpeed);
+      S_Intake.setIndexerPecentOutput(-Constants.IntakeConstants.indexRollerShootSpeed/2);
        
       if (S_Arm.getHasNote()) {
         S_Arm.setRollerPositionToZero();
@@ -93,6 +95,7 @@ public class PassNoteToArm extends Command {
   public void end(boolean interrupted) {
     S_Intake.stopIntakeMotors();
     S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
+    S_Shooter.stopShooterMotor();
   }
 
   // Returns true when the command should end.

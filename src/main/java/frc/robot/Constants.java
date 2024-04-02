@@ -36,7 +36,7 @@ public final class Constants {
     public static final int shooterRightMotorCanID = 9;
     public static final int shooterLeftMotorCanID = 10;
     public static final int shooterAngleMotorCanID = 19;
-    //public static final int shooterAngleEncoderAbsoluteID = 4;
+    public static final int shooterAngleEncoderAbsoluteID = 7;
     public static final double shooter_SpinUp_P = 0.0003;
     public static final double shooter_SpinUp_I = 0.0;
     public static final double shooter_SpinUp_D = 0;
@@ -48,7 +48,7 @@ public final class Constants {
     public static final double angleI = 0.00001;
     public static final double angleD = 0;
     public static final double angleFF = 0;
-    //public static final double angleAbsoluteOffset = 0;
+    public static final double angleAbsoluteOffset = 0;
     public static final double shooterStartingAngle = 64;
     public static final double angleGearRatio = 116.6666666666667;
     public static final double angleAngleConversionFactor = 360.0 / angleGearRatio;
@@ -63,6 +63,8 @@ public final class Constants {
     public static final double maxShooterAngle = 94.0;
 
     public static final double AmpSideQuickShootTwoAngle = 75;
+
+    
   }
   public static class Swerve {
     public static final int headlightsRelayChannel = 3;
@@ -128,7 +130,8 @@ public final class Constants {
     public static final ArmPosition trapScoring = new ArmPosition(70, 0, -105.76, true); //Approximate x and y values
     public static final ArmPosition testPos = new ArmPosition(11, 29, 0, false);
     public static final ArmPosition testPos1 = new ArmPosition(8, 16, 0, false);
-    public static final int hasNoteSensor = 7;
+    public static final ArmPosition StuckNotePosition = new ArmPosition(7, 9, -49, false);
+    public static final int hasNoteSensor = 2;
     public static final int wristHomeSensorChannel = 0;
     public static final double armIntakeSpeed = 0.9;
   }

@@ -16,6 +16,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 
 public class Shooter extends SubsystemBase {
@@ -29,11 +30,13 @@ public class Shooter extends SubsystemBase {
   private RelativeEncoder integratedRightMotorEncoder;
   private RelativeEncoder integratedLeftMotorEncoder;
   private RelativeEncoder integratedAngleMotorEncoder;
+  private DutyCycleEncoder shooterAngleAbsolute;
   
   double shooterRightRPMTarget = 0;
   double shooterLeftRPMTarget = 0;
 
   double shooterAngleTarget = Constants.ShooterConstants.shooterStartingAngle;
+  double shooterCalcAdjustment =0 ;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -43,6 +46,8 @@ public class Shooter extends SubsystemBase {
     leftMotorController = shooterLeftMotor.getPIDController();
     shooterAngleMotor = new CANSparkFlex(Constants.ShooterConstants.shooterAngleMotorCanID, MotorType.kBrushless);
     angleMotorController = shooterAngleMotor.getPIDController();
+
+    shooterAngleAbsolute = new DutyCycleEncoder(Constants.ShooterConstants.shooterAngleEncoderAbsoluteID);
     //shooterAngleAbsoluteEncoder = new DutyCycleEncoder(Constants.ShooterConstants.shooterAngleEncoderAbsoluteID);
     setShooterPIDFToSpinUp();
     angleMotorController.setP(Constants.ShooterConstants.angleP);
@@ -59,6 +64,17 @@ public class Shooter extends SubsystemBase {
     shooterRightMotor.setSmartCurrentLimit(80);
     shooterLeftMotor.setSmartCurrentLimit(80);
     integratedAngleMotorEncoder.setPosition(Constants.ShooterConstants.shooterStartingAngle);
+
+    shooterRightMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+    shooterRightMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    shooterRightMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    shooterRightMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    shooterRightMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
+    shooterLeftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    shooterLeftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    shooterLeftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    shooterLeftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
   
   }
 
@@ -109,6 +125,10 @@ public class Shooter extends SubsystemBase {
   }
   public double getAnglePosition() {
     return integratedAngleMotorEncoder.getPosition();
+  }
+  public void resetShooterAngle() {
+    //integratedAngleMotorEncoder.setPosition(Constants.ShooterConstants.shooterStartingAngle);
+    integratedAngleMotorEncoder.setPosition(shooterAngleAbsolute.getAbsolutePosition() * 360 - Constants.ShooterConstants.angleAbsoluteOffset);
   }
   public void setShooterPIDFToSpinUp() {
     rightMotorController.setP(Constants.ShooterConstants.shooter_SpinUp_P);
@@ -192,6 +212,12 @@ public class Shooter extends SubsystemBase {
     }
     setShooterAngle(shooterAngleTarget);
   }
+  public void higherShooterCalcAdjustment() {
+    shooterCalcAdjustment -= 0.5;
+  }
+  public void lowerShooterCalcAdjustment() {
+    shooterCalcAdjustment += 0.5;
+  }
   public double calculateShooterAngle(double targetY) {
     //*First shooter angle calcs as of March 1st 2024 */
     //shooterAngleTarget = 0.0144 * Math.pow(targetY ,2) - 1.3578 * targetY + 71.7528;
@@ -201,7 +227,7 @@ public class Shooter extends SubsystemBase {
    
    
    /*New shooter calcs March 9th 2024 */
-   shooterAngleTarget = 0.0341 * Math.pow(targetY ,2) - 1.237 * targetY + 68.3036;
+   shooterAngleTarget = 0.0341 * Math.pow(targetY ,2) - 1.237 * targetY + 70.0036 + shooterCalcAdjustment;
     if (shooterAngleTarget < Constants.ShooterConstants.minShooterAngle) {
       shooterAngleTarget = Constants.ShooterConstants.minShooterAngle;
     }

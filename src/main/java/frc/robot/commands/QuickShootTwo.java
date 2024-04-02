@@ -62,7 +62,7 @@ public class QuickShootTwo extends Command {
            
         if (S_Intake.isNoteOnRamp()) {
           state++;
-          S_Shooter.setShooterAngle(86);
+          S_Shooter.setShooterAngle(83.5);
         }
         break;
       case 2: //second note goes through

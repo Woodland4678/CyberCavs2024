@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Shooter;
 import frc.robot.Constants.ArmPosition;
@@ -15,11 +16,13 @@ public class MoveArmTrap extends Command {
   Shooter S_Shooter;
   ArmPosition targetPos;
   int moveToTrapState = 0;
+  CommandXboxController operatorController;
   int count = 0;
   /** Creates a new MoveArmTrap. */
-  public MoveArmTrap(Arm S_Arm, Shooter S_Shooter) {
+  public MoveArmTrap(Arm S_Arm, Shooter S_Shooter, CommandXboxController operatorController) {
     this.S_Arm = S_Arm;
     this.S_Shooter = S_Shooter;
+    this.operatorController = operatorController;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(S_Arm, S_Shooter);
   }
@@ -64,7 +67,25 @@ public class MoveArmTrap extends Command {
       case 2:
        S_Arm.moveToAngle(Constants.ArmConstants.trapScoring.xTarget, Constants.ArmConstants.trapScoring.yTarget);
        S_Arm.moveWristToAngle(Constants.ArmConstants.trapScoring.wristPitchTarget);
+       moveToTrapState++;
         break;
+      case 3:
+        if (operatorController.leftStick().getAsBoolean()) {
+          moveToTrapState++;
+        }
+       
+      break;
+      case 4:
+        if (operatorController.getLeftY() > 0.5) {
+          S_Arm.setWristPercentOutput(0.07);
+        }
+        else if (operatorController.getLeftY() < -0.5) {
+          S_Arm.setWristPercentOutput(-0.07);
+        }
+        else {
+          S_Arm.maintainWristPos();
+        }
+      break;
     }
   }
 

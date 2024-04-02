@@ -129,7 +129,6 @@ public class SwerveSubsystem extends SubsystemBase
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     setupPathPlanner();
-    
   }
   public void resetSwerveModules() {
     swerveDrive.resetDriveEncoders();
@@ -204,7 +203,11 @@ public class SwerveSubsystem extends SubsystemBase
    
     // return isModuleOkay[module];
 
-    double degrees = swerveDrive.getModules()[module].getAbsolutePosition(); 
+    double degrees = swerveDrive.getModules()[module].getAbsoluteEncoder().getAbsolutePosition(); 
+    // if (!swerveDrive.getModules()[module].getAbsoluteEncoderReadIssue()) {
+    //   return true;
+    // }
+    // return false;
      if (degrees != 0) {
       return true;
      }
@@ -277,34 +280,38 @@ public class SwerveSubsystem extends SubsystemBase
     return isLimelightOkay;
   }
   public boolean isAprilTagCameraReady() {
-    InetAddress rpiIP;
+    //InetAddress rpiIP;
     checkRPICount ++;
     if (checkRPICount > 100) {
       checkRPICount = 0;
-      try {
-        rpiIP = InetAddress.getByName("10.46.78.11");
-        boolean reachable = rpiIP.isReachable(3000);
-        if (reachable) {
-          isRPIOkay = true;
-        }
-        else {
-          isRPIOkay = false;
-        }
-      } catch (UnknownHostException e) {
-        // TODO Auto-generated catch block
-        isRPIOkay = false;
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        isRPIOkay = false;
-      }
+      isRPIOkay = rpi.isConnected();
+     // return rpi.isConnected();
     }
     return isRPIOkay;
+    //   try {
+    //     rpiIP = InetAddress.getByName("10.46.78.11");
+    //     boolean reachable = rpiIP.isReachable(3000);
+    //     if (reachable) {
+    //       isRPIOkay = true;
+    //     }
+    //     else {
+    //       isRPIOkay = false;
+    //     }
+    //   } catch (UnknownHostException e) {
+    //     // TODO Auto-generated catch block
+    //     isRPIOkay = false;
+    //   } catch (IOException e) {
+    //     // TODO Auto-generated catch block
+    //     isRPIOkay = false;
+    //   }
+    // }
+    // return isRPIOkay;
     
   }
   /** photon vision code */
 public double getAprilTagX() {
   Optional<Alliance> ally = DriverStation.getAlliance();
-  if (rpi.getLatestResult().getBestTarget() != null) {
+  if (rpi.getLatestResult().hasTargets()) { //rpi.getLatestResult().getBestTarget() != null 
     var results = rpi.getLatestResult().getTargets();
     if (ally.get() == Alliance.Blue) {
       for (int i = 0; i < results.size(); i++) {
@@ -315,7 +322,7 @@ public double getAprilTagX() {
     }
     else {
       for (int i = 0; i < results.size(); i++) {
-        if (results.get(i).getFiducialId() == 3) {
+        if (results.get(i).getFiducialId() == 4) {
           return results.get(i).getYaw();
         }
       }
@@ -328,7 +335,7 @@ public double getAprilTagX() {
   return 0;
 }
 public boolean hasAprilTagTarget() {
-  if (rpi.getLatestResult().getBestTarget() != null) {
+  if (rpi.getLatestResult().hasTargets()) { //rpi.getLatestResult().getBestTarget() != null
    // if (rpi.getLatestResult().getBestTarget().getFiducialId() == 7 || (rpi.getLatestResult().getBestTarget().getFiducialId() == 3)) {
       return true;
     //}
@@ -336,7 +343,7 @@ public boolean hasAprilTagTarget() {
   return false;
 }
 public int getAprilTagTargetID() {
-   if (rpi.getLatestResult().getBestTarget() != null) {
+   if (rpi.getLatestResult().hasTargets()) { // rpi.getLatestResult().getBestTarget() != null
     var results = rpi.getLatestResult().getTargets();
     if (results.size() > 0) {
       return results.get(0).getFiducialId();
@@ -346,7 +353,7 @@ public int getAprilTagTargetID() {
 }
 public double getAprilTagY() {
   Optional<Alliance> ally = DriverStation.getAlliance();
-  if (rpi.getLatestResult().getBestTarget() != null) {
+  if (rpi.getLatestResult().hasTargets()) { // rpi.getLatestResult().getBestTarget() != null
     var results = rpi.getLatestResult().getTargets();
     if (ally.get() == Alliance.Blue) {
       for (int i = 0; i < results.size(); i++) {
@@ -357,7 +364,7 @@ public double getAprilTagY() {
     }
     else {
       for (int i = 0; i < results.size(); i++) {
-        if (results.get(i).getFiducialId() == 3) {
+        if (results.get(i).getFiducialId() == 4) {
           return results.get(i).getPitch();
         }
       }
@@ -610,13 +617,14 @@ public double getAutoAimFF() {
   public void periodic()
   {
    // this.drive(new ChassisSpeeds(0,0,1));2
-    SmartDashboard.putNumber("Limelight X", getLimelightX());
-    SmartDashboard.putNumber("Limelight Y", getLimelightY());
-    SmartDashboard.putNumber("Limelight obj size", getLimelightObjectSize());
-    SmartDashboard.putNumber("Swerve Module 0 speed",swerveDrive.getModules()[0].getDriveMotor().getAppliedOutput());
-    SmartDashboard.putNumber("Swerve X Speed", swerveDrive.getFieldVelocity().vxMetersPerSecond);
-    SmartDashboard.putNumber("Swerve Max speed",getMaximumVelocity());
-    SmartDashboard.putNumber("swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters()", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
+   //SmartDashboard.putNumber("Front Right Drive Amp Draw", swerveDrive.getModules()[0].getDriveMotor().)
+   // SmartDashboard.putNumber("Limelight X", getLimelightX());
+   // SmartDashboard.putNumber("Limelight Y", getLimelightY());
+   // SmartDashboard.putNumber("Limelight obj size", getLimelightObjectSize());
+    //SmartDashboard.putNumber("Swerve Module 0 speed",swerveDrive.getModules()[0].getDriveMotor().getAppliedOutput());
+   // SmartDashboard.putNumber("Swerve X Speed", swerveDrive.getFieldVelocity().vxMetersPerSecond);
+    //SmartDashboard.putNumber("Swerve Max speed",getMaximumVelocity());
+    //SmartDashboard.putNumber("swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters()", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
    // swerveDrive.getModules()[0].getDriveMotor().getVelocity();
 
   }

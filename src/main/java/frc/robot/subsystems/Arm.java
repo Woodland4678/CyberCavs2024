@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -34,7 +35,7 @@ public class Arm extends SubsystemBase {
   private RelativeEncoder integratedElbowEncoder;
   private RelativeEncoder integratedWristEncoder;
   private RelativeEncoder integratedRollerEncoder;
-  private DigitalInput hasNoteSensor;
+  private AnalogInput hasNoteSensor;
   private AnalogInput wristHomeSensor;
   private double WristSpeed=0.3;
   private boolean WristCalibrate=false;
@@ -84,7 +85,7 @@ public class Arm extends SubsystemBase {
     wristController.setOutputRange(-0.5, 0.5);
     armWristMotor.setClosedLoopRampRate(0.25);
     armRollerMotor.setClosedLoopRampRate(0.1);
-    hasNoteSensor = new DigitalInput(Constants.ArmConstants.hasNoteSensor);
+    hasNoteSensor = new AnalogInput(Constants.ArmConstants.hasNoteSensor);
     wristHomeSensor = new AnalogInput(Constants.ArmConstants.wristHomeSensorChannel);
     
     resetToAbsolute();
@@ -92,6 +93,23 @@ public class Arm extends SubsystemBase {
     integratedRollerEncoder.setPosition(0);
     armShoulderMotor.setSmartCurrentLimit(40);
     armElbowMotor.setSmartCurrentLimit(40);
+
+    armElbowMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+    armElbowMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    armElbowMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    armElbowMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    armElbowMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
+    armShoulderMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+    armShoulderMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    armShoulderMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    armShoulderMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    armShoulderMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
+    armWristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    armWristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    armWristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    armWristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
     
   }
   @Override
@@ -111,8 +129,8 @@ public class Arm extends SubsystemBase {
                   "Arm Y Position", getCurrentYPosition());    
     SmartDashboard.putNumber( 
                   "Arm Wrist Position", getCurrentWristPosition());
-    SmartDashboard.putBoolean(
-                  "Arm has note sensor", getHasNote());
+    SmartDashboard.putNumber(
+                  "Arm has note sensor", hasNoteSensor.getValue());
     SmartDashboard.putNumber("Arm Wrist Home Sensor", wristHomeSensor.getValue());
     SmartDashboard.putNumber("Arm Roller Position", integratedRollerEncoder.getPosition());
 
@@ -150,7 +168,11 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean getHasNote(){
-    return !hasNoteSensor.get();
+    if (hasNoteSensor.getValue() > 100) {
+      return true;
+    }
+    else return false;
+   // return !hasNoteSensor.get(); 
   }
 
   public void setElbowPIDF(double p, double i, double d, double iz, double ff) {
@@ -340,4 +362,11 @@ public class Arm extends SubsystemBase {
   public void moveArmRollers(double pos) {
     rollerController.setReference(pos, com.revrobotics.CANSparkMax.ControlType.kPosition);
   } 
+  public void setWristPercentOutput(double power) {
+    //wristController.setReference(power, com.revrobotics.CANSparkMax.ControlType.k)
+    armWristMotor.set(power);
+  }
+  public void maintainWristPos() {
+    wristController.setReference(integratedWristEncoder.getPosition(), com.revrobotics.CANSparkMax.ControlType.kPosition);
+  }
 }

@@ -175,10 +175,10 @@ public class AutoAim extends Command {
       }
     }
      degrees = S_Swerve.getHeading().getDegrees();
-    if (rController.getSetpoint() == 180 && degrees < 0) {
+     if (rController.getSetpoint() > 160 && degrees < 0) {
       degrees = 360 + degrees;
     }
-    else if (rController.getSetpoint() == 180 && degrees > 0) {
+    else if (rController.getSetpoint() < -160 && degrees > 0) {
       degrees = degrees - 360;
     }
     SmartDashboard.putBoolean("Shoot r controller at setpoint", rController.atSetpoint());
@@ -205,7 +205,7 @@ public class AutoAim extends Command {
       robotAngleReady = false;
       LEDStrip.getInstance().setStripSection(1, 255, 0, 0);
     }
-    if (S_Shooter.setShooterAngle(currentShooterAngleTarget) < 1) {
+    if (S_Shooter.setShooterAngle(currentShooterAngleTarget) < 1.2) {
       shooterAngleReady = true;
       LEDStrip.getInstance().setStripSection(2, 0, 255, 0); //bottom leds
     }

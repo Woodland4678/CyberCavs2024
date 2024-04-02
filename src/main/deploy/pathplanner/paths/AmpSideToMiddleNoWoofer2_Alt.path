@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9529801582125685,
-        "y": 2.616250998267763
+        "x": 4.21,
+        "y": 5.39
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.69334881526906,
-        "y": 1.5392430784861582
+        "x": 4.590732610036649,
+        "y": 6.303566892848072
       },
       "isLocked": false,
-      "linkedName": "StraightToMiddle2End"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.980224246162779,
-        "y": 1.0701404259951388
+        "x": 6.71635400413658,
+        "y": 7.007220871584601
       },
       "prevControl": {
-        "x": 5.866105446496608,
-        "y": 0.5130810261620535
+        "x": 5.866105446496609,
+        "y": 6.831307376900469
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "StraightToMiddle3End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2,
-      "rotationDegrees": 27.046067875479277,
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 18.97,
       "rotateFast": false
     }
   ],
@@ -45,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 3.0,
-    "rotation": 25.974393962431336,
+    "rotation": 18.970407808486442,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ClearSideStraightToMiddle",
+  "folder": "AmpSideToMiddleNoWoofer_Alt",
   "previewStartingState": {
-    "rotation": -46.105081699593875,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true
