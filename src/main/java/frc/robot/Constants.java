@@ -37,32 +37,34 @@ public final class Constants {
     public static final int shooterLeftMotorCanID = 10;
     public static final int shooterAngleMotorCanID = 19;
     public static final int shooterAngleEncoderAbsoluteID = 7;
-    public static final double shooter_SpinUp_P = 0.0003;
+    public static final double shooter_SpinUp_P = 0.0007;//0.0003
     public static final double shooter_SpinUp_I = 0.0;
     public static final double shooter_SpinUp_D = 0;
     public static final double shooter_SpinUp_FF = 0.00016;
     public static final double shooter_Maintain_P = 0.10;
     public static final double shooter_Maintain_I = 0;
     public static final double shooter_Maintain_D = 0;
-    public static final double angleP = 0.04;
-    public static final double angleI = 0.00001;
-    public static final double angleD = 0;
+    public static final double angleP = 0.045;
+    public static final double angleI = 0.00025;
+    public static final double angleD = 0.5;
     public static final double angleFF = 0;
-    public static final double angleAbsoluteOffset = 0;
+    public static final double angleIZone = 2;
+    public static final double angleAbsoluteOffset = 27.2;
     public static final double shooterStartingAngle = 64;
     public static final double angleGearRatio = 116.6666666666667;
     public static final double angleAngleConversionFactor = 360.0 / angleGearRatio;
     //public static final double restAngle = 85; // TODO Just a guess, change when robot is built
-    public static final int subwooferShotRPMTolerance = 100;
+    public static final int subwooferShotRPMTolerance = 400;
     public static final int subwooferShotAngleTolerance = 5;
-    public static final double subwooferShotAngle = 64;
+    public static final double subwooferShotAngle = 70;
     public static final double subwooferShotLeftRPM = -4000;
     public static final double subwooferShotRightRPM = -2500;
 
     public static final double minShooterAngle = 64.0;
-    public static final double maxShooterAngle = 94.0;
+    public static final double maxShooterAngle = 97.5;
 
     public static final double AmpSideQuickShootTwoAngle = 75;
+    public static final double fieldPassAngle = 75;
 
     
   }
@@ -85,9 +87,9 @@ public final class Constants {
     public static final double autoGrabNote_R_D = 0;
     public static final double autoGrabNote_R_Tolerance = 3;
 
-    public static final double rotateRobot_P = 0.06;
-    public static final double rotateRobot_I = 0;
-    public static final double rotateRobot_D = 0;
+    public static final double rotateRobot_P = 0.15;
+    public static final double rotateRobot_I = 0.2;
+    public static final double rotateRobot_D = 0.01;
 
     public static final double autoAimYawOffset = 0.5; //was 3.9
   }
@@ -119,7 +121,7 @@ public final class Constants {
     public static final double wristAngleConversionFactor = 360.0 / wristGearRatio;
     public static final double shoulderLength = 19.07;
     public static final double elbowLength = 19.40;
-    public static final double intakeRollerPosition = 15.4; // Some Number, TODO 18 for trap
+    public static final double intakeRollerPosition = 12.8; // Some Number, TODO 18 for trap
 
     public static final ArmPosition restPosition = new ArmPosition(4.7, 4.2, 0, false);
     public static final ArmPosition startPosition = new ArmPosition(4.7, 4.2, 0, false); //same as rest
@@ -133,7 +135,7 @@ public final class Constants {
     public static final ArmPosition StuckNotePosition = new ArmPosition(7, 9, -49, false);
     public static final int hasNoteSensor = 2;
     public static final int wristHomeSensorChannel = 0;
-    public static final double armIntakeSpeed = 0.9;
+    public static final double armIntakeSpeed = 0.6;
   }
   public static class IntakeConstants {
     public static final int IntakeVerticalRollerCanID = 15;
@@ -153,8 +155,8 @@ public final class Constants {
     public static final double indexerIntakeSpeed = 1;
 
     public static final double horizontalRollerOuttakeSpeed = 0.9;
-    public static final double verticalRollerOuttakeSpeed = -0.9;
-    public static final double indexerOuttakeSpeed = -0.9;
+    public static final double verticalRollerOuttakeSpeed = -0.6;
+    public static final double indexerOuttakeSpeed = -0.7;
   }
   public static class ClimberConstants {
     public static final int ClimberMainMotorCanID = 18;

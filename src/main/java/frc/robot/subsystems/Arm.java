@@ -129,8 +129,8 @@ public class Arm extends SubsystemBase {
                   "Arm Y Position", getCurrentYPosition());    
     SmartDashboard.putNumber( 
                   "Arm Wrist Position", getCurrentWristPosition());
-    SmartDashboard.putNumber(
-                  "Arm has note sensor", hasNoteSensor.getValue());
+    SmartDashboard.putBoolean(
+                  "Arm has note sensor", getHasNote());
     SmartDashboard.putNumber("Arm Wrist Home Sensor", wristHomeSensor.getValue());
     SmartDashboard.putNumber("Arm Roller Position", integratedRollerEncoder.getPosition());
 
@@ -168,7 +168,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean getHasNote(){
-    if (hasNoteSensor.getValue() > 100) {
+    if (hasNoteSensor.getValue() < 500) {
       return true;
     }
     else return false;

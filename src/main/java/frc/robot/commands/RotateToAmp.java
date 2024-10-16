@@ -27,6 +27,7 @@ public class RotateToAmp extends Command {
     this.S_Swerve = S_Swerve;
     this.driverController = driverController;
     addRequirements(S_Swerve);
+    rController.setIZone(2);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

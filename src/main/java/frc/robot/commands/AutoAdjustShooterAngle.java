@@ -4,8 +4,13 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+
 import edu.wpi.first.hal.simulation.ConstBufferCallback;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve;
@@ -20,6 +25,7 @@ public class AutoAdjustShooterAngle extends Command {
   SwerveSubsystem S_Swerve;
   int lostTargetCount = 0;
   double shooterAngleTarget = Constants.ShooterConstants.shooterStartingAngle;
+  Optional<Alliance> ally;
   
   /** Creates a new AutoAdjustShooterAngle. */
   public AutoAdjustShooterAngle(Shooter S_Shooter, Intake S_Intake, SwerveSubsystem S_Swerve) {
@@ -27,6 +33,7 @@ public class AutoAdjustShooterAngle extends Command {
     this.S_Intake = S_Intake;
     this.S_Swerve = S_Swerve;
     addRequirements(S_Shooter);
+    ally = DriverStation.getAlliance();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -43,18 +50,18 @@ public class AutoAdjustShooterAngle extends Command {
     if (S_Intake.isNoteOnRamp()) {
       if (S_Swerve.hasAprilTagTarget()) {
         lostTargetCount = 0;
-        shooterAngleTarget = S_Shooter.calculateShooterAngle(S_Swerve.getAprilTagY());
+        shooterAngleTarget = S_Shooter.calculateShooterAngle(S_Swerve.getAprilTagY(), ally);
         S_Shooter.setShooterAngle(shooterAngleTarget);
       }
       else {
         lostTargetCount++;
-        if (lostTargetCount > 15 && !DriverStation.isAutonomous()) {
+        if (lostTargetCount > 25 && !DriverStation.isAutonomous()) {
           S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
         }
       }
     }
     else if (!DriverStation.isAutonomous()){
-      S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
+      //S_Shooter.setShooterAngle(Constants.ShooterConstants.shooterStartingAngle);
     }
   }
 

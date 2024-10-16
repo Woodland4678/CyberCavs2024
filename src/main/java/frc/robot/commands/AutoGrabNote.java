@@ -43,6 +43,7 @@ public class AutoGrabNote extends Command {
   int noteCloseCount = 0;
   int runCnt = 0;
   int hasSeenNoteCount = 0;
+  int rotationCount = 0;
   CommandXboxController m_driverController;
  // private LEDStrip ledStrip;
   /** Creates a new AutoGrabNote. */
@@ -88,6 +89,7 @@ public class AutoGrabNote extends Command {
     rController.setSetpoint(0);
     rController.setTolerance(Constants.Swerve.autoGrabNote_R_Tolerance);
     grabState = 0;
+    rotationCount = 0;
     if (!S_Intake.isNoteOnRamp()) {
       S_Intake.setHorizontalPercentOutput(Constants.IntakeConstants.horizontalRollerIntakeSpeed);
       S_Intake.setVerticalPercentOutput(Constants.IntakeConstants.verticalRollerIntakeSpeed);
@@ -171,6 +173,10 @@ public class AutoGrabNote extends Command {
             driveSpeed = new ChassisSpeeds(0, 0, rotationSpeed);
             //rController.setSetpoint(S_Swerve.getHeading().getDegrees());
             S_Swerve.setChassisSpeeds(driveSpeed);
+            rotationCount++;
+            if (rotationCount > 150) {
+              isDone = true;
+            }
           } else {
              S_Swerve.drive(new Translation2d(-Math.pow(m_driverController.getLeftY(), 3) * S_Swerve.getMaximumVelocity(),
                                           -Math.pow(m_driverController.getLeftX(), 3) * S_Swerve.getMaximumVelocity()),

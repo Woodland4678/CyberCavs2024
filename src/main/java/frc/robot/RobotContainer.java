@@ -21,6 +21,7 @@ import frc.robot.commands.CalibrateWrist;
 import frc.robot.commands.Climb;
 import frc.robot.commands.ClimbDown;
 import frc.robot.commands.ClimberDown;
+import frc.robot.commands.FieldPass;
 import frc.robot.commands.MoveArmAmp;
 import frc.robot.commands.MoveArmStuckNote;
 import frc.robot.commands.MoveArmToRest;
@@ -267,24 +268,31 @@ public class RobotContainer {
     m_operatorController.back().onTrue(new CalibrateWrist(S_Arm));
     m_operatorController.start().onTrue(new MoveArmStuckNote(S_Arm));
 
-//    m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.increaseShooterAngle()));
+    //m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.increaseShooterAngle()));
     m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(Constants.ClimberConstants.maxClimberHeight)));
     m_operatorController.pov(0).onTrue(new MoveNoteForTrap(S_Arm));
+  // m_operatorController.pov(0).onTrue(new InstantCommand(() -> S_Shooter.setShooterAngle(85)));
+  // m_operatorController.pov(180).onTrue(new InstantCommand(() -> S_Shooter.setShooterAngle(70)));
     m_operatorController.pov(90).whileTrue(new ClimbDown(S_Climber));
 
     //m_operatorController.pov(180).onTrue(new InstantCommand(() -> S_Shooter.decreaseShooterAngle()));
     //m_operatorController.pov(90).onTrue(new InstantCommand(() -> S_Shooter.stopAngleMotors()));
-     m_operatorController.pov(270).onTrue(new ClimberDown(S_Climber));
+    m_operatorController.pov(270).onTrue(new ClimberDown(S_Climber));
+    //m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> S_Shooter.setRightAndLeftRPM(-4000,-5000)));
+    //m_operatorController.pov(270).onTrue(new InstantCommand(() -> S_Shooter.stopShooterMotor()));
+    m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> S_Intake.setAllMotorsPercentOutput(-0.5,0.5,-0.5, 0.5)));
+    m_operatorController.rightTrigger().onFalse(new InstantCommand(() ->S_Intake.stopIntakeMotors()));
+    m_operatorController.leftTrigger().whileTrue(new FieldPass(S_Swerve, S_Shooter, S_Intake, m_driverController));
     m_operatorController.leftBumper().onTrue(new InstantCommand(() -> S_Climber.disengageLock()));
     m_operatorController.rightBumper().onTrue(new InstantCommand(() -> S_Climber.engageLock()));
-    m_operatorController.rightTrigger().whileTrue(new NormalShoot(S_Shooter, S_Swerve, S_Intake, 4400, 90.2, -5)); // Far stage shot
-    m_operatorController.leftTrigger().whileTrue(new NormalShoot(S_Shooter, S_Swerve, S_Intake, 4400, 81.5, -35)); // podium shot
+    //m_operatorController.rightTrigger().whileTrue(new NormalShoot(S_Shooter, S_Swerve, S_Intake, 4400, 90.2, -5)); // Far stage shot
+    //m_operatorController.leftTrigger().whileTrue(new NormalShoot(S_Shooter, S_Swerve, S_Intake, 4400, 81.5, -35)); // podium shot
     //m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(-79)));
     //m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> S_Climber.moveClimberToPosition(-45)));
     m_operatorController.pov(180).whileTrue(new Climb(S_Climber));
     m_operatorController.leftStick().onTrue(new InstantCommand(() -> S_Shooter.higherShooterCalcAdjustment()));
     m_operatorController.rightStick().onTrue(new InstantCommand(() -> S_Shooter.lowerShooterCalcAdjustment()));
-   // m_operatorController.pov(180).onFalse(new InstantCommand(() -> S_Climber.stopClimber()));
+    m_operatorController.pov(180).onFalse(new InstantCommand(() -> S_Climber.stopClimber()));
    // m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> S_Arm.setWristPosition(0)));
     // m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> S_Arm.setWristPosition(45)));
     //m_operatorController.rightTrigger(new SendNoteToShooter());

@@ -31,6 +31,7 @@ public class MoveArmAmp extends Command {
     moveToAmpState = 0;
     count = 0;
     S_Shooter.setShooterAngle(75);
+    S_Arm.stopArmRollers();
     //targetPos = Constants.ArmConstants.ampScoring;
     //targetPos = Constants.ArmConstants.testPos; 
   }

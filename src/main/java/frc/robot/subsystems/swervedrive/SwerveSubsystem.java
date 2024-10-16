@@ -345,9 +345,14 @@ public boolean hasAprilTagTarget() {
 public int getAprilTagTargetID() {
    if (rpi.getLatestResult().hasTargets()) { // rpi.getLatestResult().getBestTarget() != null
     var results = rpi.getLatestResult().getTargets();
-    if (results.size() > 0) {
-      return results.get(0).getFiducialId();
+    for (int i = 0; i < results.size(); i++) {
+      if (results.get(i).getFiducialId() == 4 || results.get(i).getFiducialId() == 7) {
+        return results.get(i).getFiducialId();
+      }
     }
+    // if (results.size() > 0) {
+    //   return results.get(0).getFiducialId();
+    // }
   }
   return -1;
 }

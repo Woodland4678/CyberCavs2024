@@ -36,7 +36,7 @@ public class MoveNoteForTrap extends Command {
       LEDStrip.getInstance().setLEDMode(LEDModes.BLINKGREEN);
     }
     else {
-      S_Arm.setRollerOutputPercent(0.1);
+      S_Arm.setRollerOutputPercent(0.12);
     }
   }
 

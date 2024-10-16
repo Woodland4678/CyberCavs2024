@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
@@ -13,6 +14,7 @@ import frc.robot.subsystems.Shooter;
 public class PassNoteToArm extends Command {
   int pause;
   int state;
+  int hasNoteCount = 0;
   boolean isDone = false;
   Arm S_Arm;
   int count = 0;
@@ -37,7 +39,10 @@ public class PassNoteToArm extends Command {
     if (S_Intake.isDiverterDown()) {
       state = 2;
     }
-    if (S_Arm.MoveArm(Constants.ArmConstants.restPosition) > 2) { //don't move the note to the arm if the arm isn't in the right spot
+    hasNoteCount = 0;
+    double error = S_Arm.MoveArm(Constants.ArmConstants.restPosition);
+    SmartDashboard.putNumber("Arm Pass to Arm error", error);
+    if (S_Arm.getCurrentYPosition() > 3.9) { //don't move the note to the arm if the arm isn't in the right spot
       state = -1; 
       isDone = true;
       //TODO blink LEDs red or something
@@ -82,10 +87,13 @@ public class PassNoteToArm extends Command {
       S_Intake.setIndexerPecentOutput(-Constants.IntakeConstants.indexRollerShootSpeed/2);
        
       if (S_Arm.getHasNote()) {
+        hasNoteCount++;
+       }
+      if (hasNoteCount > 3) {
         S_Arm.setRollerPositionToZero();
         S_Arm.moveArmRollers(Constants.ArmConstants.intakeRollerPosition);
         isDone = true;
-       }
+      }
       break;
     }
   }

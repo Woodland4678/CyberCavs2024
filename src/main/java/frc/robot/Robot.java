@@ -151,7 +151,7 @@ public class Robot extends TimedRobot
   public void disabledPeriodic()
   {
     m_robotContainer.resetArmAngles();
-    m_robotContainer.resetShooterAngle();
+   // m_robotContainer.resetShooterAngle();
     
     var diagState = 0; //diagnostic state 
    
@@ -282,13 +282,13 @@ public class Robot extends TimedRobot
     //     m_robotContainer.setClimberPIDF(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D, tunePID_Dashboard_Iz, tunePID_Dashboard_FF);
     //   }
 
-      // tunePID_KP = tunePID_Dashboard_P;
-      // tunePID_KI = tunePID_Dashboard_I;
-      // tunePID_KD = tunePID_Dashboard_D;
-      // tunePID_KIz = tunePID_Dashboard_Iz;
-      // tunePID_KFF = tunePID_Dashboard_FF;
+    //   tunePID_KP = tunePID_Dashboard_P;
+    //   tunePID_KI = tunePID_Dashboard_I;
+    //   tunePID_KD = tunePID_Dashboard_D;
+    //   tunePID_KIz = tunePID_Dashboard_Iz;
+    //   tunePID_KFF = tunePID_Dashboard_FF;
 
-   // }
+   //}
    //for (int i = 0; i < 20; i++) {
     //18 is back right drive
     // 0 is front right drive

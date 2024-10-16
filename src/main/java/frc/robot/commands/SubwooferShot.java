@@ -61,7 +61,7 @@ public class SubwooferShot extends Command {
         S_Intake.setIndexerPecentOutput(Constants.IntakeConstants.indexRollerShootSpeed);
       }
     if (isShooting) {
-      if (Math.abs(S_Shooter.getLeftVelocity() - S_Shooter.getLeftTargetVelocity()) > 300) {
+      if (Math.abs(S_Shooter.getLeftVelocity() - S_Shooter.getLeftTargetVelocity()) > 500) {
         hasShot = true;
       }
     }
