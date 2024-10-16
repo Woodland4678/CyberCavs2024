@@ -46,7 +46,7 @@ public class Shooter extends SubsystemBase {
   double shooterLeftRPMTarget = 0;
 
   double shooterAngleTarget = Constants.ShooterConstants.shooterStartingAngle;
-  double shooterCalcAdjustment =0 ;
+  double shooterCalcAdjustment = 0.0;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -344,7 +344,7 @@ public class Shooter extends SubsystemBase {
   else {
     dist = practiceDist.get(targetY);
   }
-   shooterAngleTarget = angleForDist.get(dist);
+   shooterAngleTarget = angleForDist.get(dist) + shooterCalcAdjustment;
    SmartDashboard.putNumber("Shooter targetY", targetY);
        SmartDashboard.putNumber("Shooter calculated distance", dist);
     SmartDashboard.putNumber("Shooter calculated angle", shooterAngleTarget);
